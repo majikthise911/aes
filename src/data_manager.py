@@ -174,5 +174,18 @@ class DataManager:
         return summary
 
     def clear_all_proposals(self) -> None:
-        """Clear all stored proposals."""
+        """Clear all stored proposals and delete associated PDF files."""
+        import os
+        from config import PROPOSALS_DIR
+
+        # Delete all stored PDF files
+        for proposal in self.proposals:
+            pdf_path = proposal.get('metadata', {}).get('pdf_path')
+            if pdf_path and os.path.exists(pdf_path):
+                try:
+                    os.remove(pdf_path)
+                except Exception as e:
+                    print(f"Warning: Could not delete {pdf_path}: {e}")
+
+        # Clear proposals list
         self.proposals = []

@@ -1,1 +1,6 @@
 config/.env
+__pycache__/
+*.pyc
+*.pyo
+data/proposals/*.pdf
+data/proposals.json

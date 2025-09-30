@@ -1,0 +1,479 @@
+import openai
+import json
+from typing import Dict, Optional, List
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from the config/.env file
+env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config', '.env')
+load_dotenv(env_path)
+
+class GPTExtractor:
+    """Handles AI-powered data extraction from EPC proposal text."""
+
+    def __init__(self):
+        self.client = openai.OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+
+    def chunk_text(self, text: str, max_chunk_size: int = 50000) -> List[str]:
+        """Split text into chunks if it's too large."""
+        if len(text) <= max_chunk_size:
+            return [text]
+
+        # Split by paragraphs first, then sentences if needed
+        chunks = []
+        current_chunk = ""
+
+        paragraphs = text.split('\n\n')
+
+        for paragraph in paragraphs:
+            if len(current_chunk) + len(paragraph) <= max_chunk_size:
+                current_chunk += paragraph + '\n\n'
+            else:
+                if current_chunk:
+                    chunks.append(current_chunk.strip())
+                current_chunk = paragraph + '\n\n'
+
+        if current_chunk:
+            chunks.append(current_chunk.strip())
+
+        return chunks
+
+    def extract_project_data(self, text: str) -> Dict:
+        """Extract structured data from EPC proposal text using GPT."""
+
+        # Check if we need to chunk the text
+        chunks = self.chunk_text(text)
+
+        if len(chunks) == 1:
+            # Single chunk processing
+            return self._extract_from_single_chunk(text)
+        else:
+            # Multi-chunk processing - extract from each chunk and merge
+            return self._extract_from_multiple_chunks(chunks)
+
+    def _extract_from_single_chunk(self, text: str) -> Dict:
+        """Extract data from a single text chunk."""
+
+        prompt = """
+        You are an expert at extracting information from EPC (Engineering, Procurement, Construction) proposals for renewable energy projects.
+
+        Extract the following information from the provided text and return it as a JSON object:
+
+        {
+            "project_info": {
+                "project_name": "string",
+                "location": {
+                    "address": "string",
+                    "city": "string",
+                    "county": "string",
+                    "state": "string",
+                    "coordinates": {"lat": float, "lon": float} // if available
+                },
+                "jurisdiction": "string"
+            },
+            "epc_contractor": {
+                "company_name": "string",
+                "contact_person": "string",
+                "phone": "string",
+                "email": "string",
+                "proposal_date": "string",
+                "proposal_version": "string"
+            },
+            "technology": {
+                "type": "string", // e.g., "PV", "BESS", "Wind", "PV+BESS", etc.
+                "description": "string"
+            },
+            "capacity": {
+                "ac_mw": float,
+                "dc_mw": float,
+                "storage_mwh": float // if applicable
+            },
+            "equipment": {
+                "modules": {
+                    "manufacturer": "string",
+                    "model": "string",
+                    "wattage": float
+                },
+                "inverters": {
+                    "manufacturer": "string",
+                    "model": "string"
+                },
+                "racking": {
+                    "manufacturer": "string",
+                    "type": "string"
+                },
+                "batteries": { // if applicable
+                    "manufacturer": "string",
+                    "model": "string",
+                    "capacity_kwh": float
+                }
+            },
+            "costs": {
+                "total_project_cost": float,
+                "cost_breakdown": {
+                    "equipment": float,
+                    "labor": float,
+                    "materials": float,
+                    "development": float,
+                    "other": float
+                },
+                "cost_per_watt_dc": float,
+                "cost_per_watt_ac": float
+            }
+        }
+
+        Important instructions:
+        - If information is not available, use null for that field
+        - For costs, look for dollar amounts and convert to numbers (remove $ and commas)
+        - For locations, try to extract as much detail as possible
+        - Be conservative - only extract information you're confident about
+        - Return ONLY valid JSON, no additional text, no markdown, no code blocks
+        - Start your response with { and end with }
+        - Do not include any explanatory text before or after the JSON
+
+        Text to analyze:
+        """
+
+        try:
+            response = self.client.chat.completions.create(
+                model="gpt-4o",
+                messages=[
+                    {"role": "system", "content": "You are an expert at extracting structured data from technical documents."},
+                    {"role": "user", "content": f"{prompt}\n\n{text}"}
+                ],
+                temperature=0.1,
+                max_tokens=4000
+            )
+
+            raw_response = response.choices[0].message.content
+
+            # Clean the response - remove markdown code blocks if present
+            cleaned_response = self._clean_json_response(raw_response)
+
+            extracted_data = json.loads(cleaned_response)
+            return extracted_data
+
+        except json.JSONDecodeError as e:
+            # Log the actual response for debugging and try fallback
+            raw_response = response.choices[0].message.content if 'response' in locals() else "No response"
+
+            # Try a simpler fallback extraction
+            fallback_result = self._create_fallback_result(raw_response if 'response' in locals() else "")
+            if fallback_result:
+                return fallback_result
+
+            raise Exception(f"Error parsing GPT response as JSON: {str(e)}. Raw response: {raw_response[:500]}...")
+        except Exception as e:
+            raise Exception(f"Error extracting data with GPT: {str(e)}")
+
+    def _extract_from_multiple_chunks(self, chunks: List[str]) -> Dict:
+        """Extract data from multiple chunks and merge results."""
+        results = []
+
+        for i, chunk in enumerate(chunks):
+            try:
+                chunk_result = self._extract_from_single_chunk(chunk)
+                if chunk_result:
+                    results.append(chunk_result)
+            except Exception as e:
+                print(f"Warning: Failed to process chunk {i+1}: {str(e)}")
+                continue
+
+        if not results:
+            raise Exception("Failed to extract data from any chunks")
+
+        # Merge results - take the most complete data from all chunks
+        merged_result = self._merge_extraction_results(results)
+        return merged_result
+
+    def _merge_extraction_results(self, results: List[Dict]) -> Dict:
+        """Merge multiple extraction results into a single comprehensive result."""
+        if not results:
+            return {}
+
+        if len(results) == 1:
+            return results[0]
+
+        # Start with the first result and merge others
+        merged = results[0].copy()
+
+        for result in results[1:]:
+            # Merge project_info
+            if result.get('project_info'):
+                if not merged.get('project_info'):
+                    merged['project_info'] = {}
+                for key, value in result['project_info'].items():
+                    if value and (not merged['project_info'].get(key) or merged['project_info'][key] in [None, 'N/A', '']):
+                        merged['project_info'][key] = value
+
+            # Merge other sections similarly
+            for section in ['technology', 'capacity', 'equipment', 'costs']:
+                if result.get(section):
+                    if not merged.get(section):
+                        merged[section] = {}
+                    self._merge_section(merged[section], result[section])
+
+        return merged
+
+    def _merge_section(self, target: Dict, source: Dict) -> None:
+        """Merge a section from source into target."""
+        for key, value in source.items():
+            if isinstance(value, dict) and isinstance(target.get(key), dict):
+                self._merge_section(target[key], value)
+            elif value and (not target.get(key) or target[key] in [None, 'N/A', '']):
+                target[key] = value
+
+    def _clean_json_response(self, response: str) -> str:
+        """Clean GPT response to extract valid JSON."""
+        if not response or not response.strip():
+            raise Exception("Empty response from GPT")
+
+        # Remove markdown code blocks
+        if '```json' in response:
+            start = response.find('```json') + 7
+            end = response.find('```', start)
+            if end != -1:
+                response = response[start:end]
+        elif '```' in response:
+            start = response.find('```') + 3
+            end = response.find('```', start)
+            if end != -1:
+                response = response[start:end]
+
+        # Remove any leading/trailing text that isn't JSON
+        response = response.strip()
+
+        # Find the JSON object by looking for the first { and last }
+        start_idx = response.find('{')
+        end_idx = response.rfind('}')
+
+        if start_idx == -1 or end_idx == -1 or start_idx >= end_idx:
+            raise Exception(f"No valid JSON object found in response: {response[:200]}...")
+
+        json_str = response[start_idx:end_idx + 1]
+
+        # Basic validation - should start with { and end with }
+        if not json_str.startswith('{') or not json_str.endswith('}'):
+            raise Exception(f"Invalid JSON structure: {json_str[:200]}...")
+
+        return json_str
+
+    def _create_fallback_result(self, response: str) -> Optional[Dict]:
+        """Create a basic result structure when JSON parsing fails."""
+        try:
+            # Create a minimal valid structure
+            fallback = {
+                "project_info": {
+                    "project_name": "Data extraction failed - manual review required",
+                    "location": {
+                        "address": None,
+                        "city": None,
+                        "county": None,
+                        "state": None,
+                        "coordinates": None
+                    },
+                    "jurisdiction": None
+                },
+                "epc_contractor": {
+                    "company_name": "Unknown EPC",
+                    "contact_person": None,
+                    "phone": None,
+                    "email": None,
+                    "proposal_date": None,
+                    "proposal_version": None
+                },
+                "technology": {
+                    "type": "Unknown",
+                    "description": None
+                },
+                "capacity": {
+                    "ac_mw": None,
+                    "dc_mw": None,
+                    "storage_mwh": None
+                },
+                "equipment": {
+                    "modules": {"manufacturer": None, "model": None, "wattage": None},
+                    "inverters": {"manufacturer": None, "model": None},
+                    "racking": {"manufacturer": None, "type": None},
+                    "batteries": {"manufacturer": None, "model": None, "capacity_kwh": None}
+                },
+                "costs": {
+                    "total_project_cost": None,
+                    "cost_breakdown": {"equipment": None, "labor": None, "materials": None, "development": None, "other": None},
+                    "cost_per_watt_dc": None,
+                    "cost_per_watt_ac": None
+                }
+            }
+
+            # Add a note about the parsing failure
+            fallback["parsing_note"] = f"JSON parsing failed. Response preview: {response[:200]}..."
+
+            return fallback
+
+        except Exception:
+            return None
+
+    def extract_location_coordinates(self, address: str) -> Optional[Dict[str, float]]:
+        """Extract coordinates from an address using GPT."""
+
+        prompt = f"""
+        Convert the following address to latitude and longitude coordinates.
+        Return only a JSON object with "lat" and "lon" fields as floats.
+        If you cannot determine coordinates, return null.
+
+        Address: {address}
+        """
+
+        try:
+            response = self.client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.1,
+                max_tokens=100
+            )
+
+            result = json.loads(response.choices[0].message.content)
+            if result and "lat" in result and "lon" in result:
+                return {"lat": float(result["lat"]), "lon": float(result["lon"])}
+            return None
+
+        except:
+            return None
+
+    def generate_epc_recommendation_report(self, proposals_data: List[Dict]) -> str:
+        """Generate a comprehensive EPC recommendation report using GPT."""
+
+        if not proposals_data:
+            return "No proposals available for analysis."
+
+        # Prepare the data summary for GPT analysis
+        summary = self._prepare_proposals_summary(proposals_data)
+
+        prompt = f"""
+        You are an expert EPC (Engineering, Procurement, Construction) consultant specializing in renewable energy project evaluation. You have been asked to analyze multiple EPC contractor proposals for the same project and provide a comprehensive recommendation.
+
+        Based on the proposal data provided, please generate a detailed recommendation report that includes:
+
+        1. **EXECUTIVE SUMMARY**
+           - Your top recommended EPC contractor
+           - Key reasoning in 2-3 sentences
+
+        2. **DETAILED ANALYSIS**
+           - Cost Analysis: Compare total costs, cost per watt, and cost breakdowns
+           - Technical Analysis: Evaluate equipment choices, technology approaches
+           - Risk Assessment: Identify potential risks with each contractor
+           - Value Analysis: Consider value proposition beyond just lowest cost
+
+        3. **CONTRACTOR PROFILES**
+           - Brief assessment of each EPC contractor's proposal
+           - Strengths and weaknesses of each
+
+        4. **FINANCIAL COMPARISON**
+           - Cost ranking and analysis
+           - Value for money assessment
+           - Financial risk considerations
+
+        5. **TECHNICAL EVALUATION**
+           - Equipment quality and reliability
+           - Technology compatibility
+           - Installation approach
+
+        6. **RECOMMENDATION & JUSTIFICATION**
+           - Final recommendation with detailed justification
+           - Risk mitigation suggestions
+           - Next steps and considerations
+
+        7. **ALTERNATIVE SCENARIOS**
+           - If budget is the primary concern
+           - If quality/reliability is the primary concern
+           - If timeline is critical
+
+        Please be objective, thorough, and provide actionable insights. Focus on practical business considerations that would help in making the final EPC selection decision.
+
+        PROPOSAL DATA:
+        {summary}
+
+        Please provide a well-structured, professional report suitable for executive decision-making.
+        """
+
+        try:
+            response = self.client.chat.completions.create(
+                model="gpt-4o",
+                messages=[
+                    {"role": "system", "content": "You are an expert EPC consultant and technical advisor with 20+ years of experience in renewable energy project evaluation and contractor selection."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.3,
+                max_tokens=6000
+            )
+
+            return response.choices[0].message.content
+
+        except Exception as e:
+            return f"Error generating recommendation report: {str(e)}"
+
+    def _prepare_proposals_summary(self, proposals_data: List[Dict]) -> str:
+        """Prepare a structured summary of proposals for GPT analysis."""
+        summary = []
+
+        for i, proposal in enumerate(proposals_data, 1):
+            # Safely extract nested dictionaries, defaulting to empty dict if None
+            epc = proposal.get('epc_contractor') or {}
+            costs = proposal.get('costs') or {}
+            equipment = proposal.get('equipment') or {}
+            capacity = proposal.get('capacity') or {}
+            project_info = proposal.get('project_info') or {}
+            technology = proposal.get('technology') or {}
+
+            # Safely extract equipment sub-sections
+            modules = equipment.get('modules') or {}
+            inverters = equipment.get('inverters') or {}
+            racking = equipment.get('racking') or {}
+            batteries = equipment.get('batteries') or {}
+            cost_breakdown = costs.get('cost_breakdown') or {}
+
+            # Helper function to format costs
+            def format_cost(value):
+                if value is None or value == 'N/A':
+                    return 'N/A'
+                try:
+                    return f"${float(value):,.2f}"
+                except (ValueError, TypeError):
+                    return 'N/A'
+
+            # Helper function to safely get string values
+            def safe_get(d, key, default='N/A'):
+                val = d.get(key, default)
+                return val if val is not None else default
+
+            proposal_summary = f"""
+PROPOSAL #{i} - {safe_get(epc, 'company_name', 'Unknown EPC')}
+=================================================
+EPC Contractor: {safe_get(epc, 'company_name', 'Unknown')}
+Contact: {safe_get(epc, 'contact_person')}
+Proposal Date: {safe_get(epc, 'proposal_date')}
+
+Project Details:
+- Project Name: {safe_get(project_info, 'project_name')}
+- Technology: {safe_get(technology, 'type')}
+- AC Capacity: {safe_get(capacity, 'ac_mw')} MW
+- DC Capacity: {safe_get(capacity, 'dc_mw')} MW
+
+Financial Details:
+- Total Project Cost: {format_cost(costs.get('total_project_cost'))}
+- Cost per Watt DC: {format_cost(costs.get('cost_per_watt_dc'))}
+- Equipment Cost: {format_cost(cost_breakdown.get('equipment'))}
+- Labor Cost: {format_cost(cost_breakdown.get('labor'))}
+- Materials Cost: {format_cost(cost_breakdown.get('materials'))}
+
+Equipment Specifications:
+- Solar Modules: {safe_get(modules, 'manufacturer')} {safe_get(modules, 'model', '')} ({safe_get(modules, 'wattage')}W)
+- Inverters: {safe_get(inverters, 'manufacturer')} {safe_get(inverters, 'model', '')}
+- Racking: {safe_get(racking, 'manufacturer')} ({safe_get(racking, 'type')})
+- Batteries: {safe_get(batteries, 'manufacturer')} {safe_get(batteries, 'model', '')} (if applicable)
+"""
+            summary.append(proposal_summary)
+
+        return '\n'.join(summary)

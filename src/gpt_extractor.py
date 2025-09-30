@@ -119,6 +119,12 @@ class GPTExtractor:
                 },
                 "cost_per_watt_dc": float,
                 "cost_per_watt_ac": float
+            },
+            "scope": {
+                "assumptions": ["list of key assumptions"],
+                "exclusions": ["list of key exclusions/items not included"],
+                "clarifications": ["list of clarifications and special conditions"],
+                "inclusions": ["list of key items included in scope"]
             }
         }
 
@@ -126,6 +132,9 @@ class GPTExtractor:
         - If information is not available, use null for that field
         - For costs, look for dollar amounts and convert to numbers (remove $ and commas)
         - For locations, try to extract as much detail as possible
+        - For scope section: carefully extract assumptions, exclusions, clarifications, and inclusions from the proposal
+        - Look for sections titled "Assumptions", "Exclusions", "Clarifications", "Scope of Work", "Included", "Not Included", etc.
+        - Extract the actual list items, not just section headers
         - Be conservative - only extract information you're confident about
         - Return ONLY valid JSON, no additional text, no markdown, no code blocks
         - Start your response with { and end with }
@@ -142,7 +151,7 @@ class GPTExtractor:
                     {"role": "user", "content": f"{prompt}\n\n{text}"}
                 ],
                 temperature=0.1,
-                max_tokens=4000
+                max_tokens=3000  # Reduced for faster response
             )
 
             raw_response = response.choices[0].message.content
@@ -313,6 +322,56 @@ class GPTExtractor:
         except Exception:
             return None
 
+    def extract_scope_details(self, text: str) -> Dict:
+        """Extract detailed scope information (assumptions, exclusions, clarifications) from proposal text.
+
+        Uses gpt-4o-mini for faster, cheaper extraction of structured scope data.
+        """
+
+        prompt = """Extract ALL scope items from these sections:
+
+1. ASSUMPTIONS - What's assumed (look for: "Assumptions", "Basis of Estimate", "Our Proposal Assumes")
+2. EXCLUSIONS - What's NOT included (look for: "Exclusions", "Not Included", "Out of Scope", "Exceptions")
+3. CLARIFICATIONS - Special conditions (look for: "Clarifications", "Notes", "Special Conditions")
+4. INCLUSIONS - What's included (look for: "Inclusions", "Scope of Work", "Included Items")
+
+Extract complete items, not fragments. Return JSON:
+{
+  "assumptions": ["item1", "item2", ...],
+  "exclusions": ["item1", "item2", ...],
+  "clarifications": ["item1", "item2", ...],
+  "inclusions": ["item1", "item2", ...]
+}
+
+Return empty arrays [] if sections not found. No explanatory text, only JSON.
+"""
+
+        try:
+            response = self.client.chat.completions.create(
+                model="gpt-4o-mini",  # Faster and cheaper for structured extraction
+                messages=[
+                    {"role": "system", "content": "Extract structured scope data from construction proposals. Be thorough and precise."},
+                    {"role": "user", "content": f"{prompt}\n\n{text}"}
+                ],
+                temperature=0.1,
+                max_tokens=3000
+            )
+
+            raw_response = response.choices[0].message.content
+            cleaned_response = self._clean_json_response(raw_response)
+            scope_data = json.loads(cleaned_response)
+
+            return scope_data
+
+        except Exception as e:
+            # Return empty structure if extraction fails
+            return {
+                "assumptions": [],
+                "exclusions": [],
+                "clarifications": [],
+                "inclusions": []
+            }
+
     def extract_location_coordinates(self, address: str) -> Optional[Dict[str, float]]:
         """Extract coordinates from an address using GPT."""
 
@@ -419,37 +478,60 @@ class GPTExtractor:
         summary = []
 
         for i, proposal in enumerate(proposals_data, 1):
-            epc = proposal.get('epc_contractor', {})
-            costs = proposal.get('costs', {})
-            equipment = proposal.get('equipment', {})
-            capacity = proposal.get('capacity', {})
-            project_info = proposal.get('project_info', {})
+            # Safely extract nested dictionaries, defaulting to empty dict if None
+            epc = proposal.get('epc_contractor') or {}
+            costs = proposal.get('costs') or {}
+            equipment = proposal.get('equipment') or {}
+            capacity = proposal.get('capacity') or {}
+            project_info = proposal.get('project_info') or {}
+            technology = proposal.get('technology') or {}
+
+            # Safely extract equipment sub-sections
+            modules = equipment.get('modules') or {}
+            inverters = equipment.get('inverters') or {}
+            racking = equipment.get('racking') or {}
+            batteries = equipment.get('batteries') or {}
+            cost_breakdown = costs.get('cost_breakdown') or {}
+
+            # Helper function to format costs
+            def format_cost(value):
+                if value is None or value == 'N/A':
+                    return 'N/A'
+                try:
+                    return f"${float(value):,.2f}"
+                except (ValueError, TypeError):
+                    return 'N/A'
+
+            # Helper function to safely get string values
+            def safe_get(d, key, default='N/A'):
+                val = d.get(key, default)
+                return val if val is not None else default
 
             proposal_summary = f"""
-PROPOSAL #{i} - {epc.get('company_name', 'Unknown EPC')}
+PROPOSAL #{i} - {safe_get(epc, 'company_name', 'Unknown EPC')}
 =================================================
-EPC Contractor: {epc.get('company_name', 'Unknown')}
-Contact: {epc.get('contact_person', 'N/A')}
-Proposal Date: {epc.get('proposal_date', 'N/A')}
+EPC Contractor: {safe_get(epc, 'company_name', 'Unknown')}
+Contact: {safe_get(epc, 'contact_person')}
+Proposal Date: {safe_get(epc, 'proposal_date')}
 
 Project Details:
-- Project Name: {project_info.get('project_name', 'N/A')}
-- Technology: {proposal.get('technology', {}).get('type', 'N/A')}
-- AC Capacity: {capacity.get('ac_mw', 'N/A')} MW
-- DC Capacity: {capacity.get('dc_mw', 'N/A')} MW
+- Project Name: {safe_get(project_info, 'project_name')}
+- Technology: {safe_get(technology, 'type')}
+- AC Capacity: {safe_get(capacity, 'ac_mw')} MW
+- DC Capacity: {safe_get(capacity, 'dc_mw')} MW
 
 Financial Details:
-- Total Project Cost: ${costs.get('total_project_cost', 'N/A'):,} (if available)
-- Cost per Watt DC: ${costs.get('cost_per_watt_dc', 'N/A')} (if available)
-- Equipment Cost: ${costs.get('cost_breakdown', {}).get('equipment', 'N/A')} (if available)
-- Labor Cost: ${costs.get('cost_breakdown', {}).get('labor', 'N/A')} (if available)
-- Materials Cost: ${costs.get('cost_breakdown', {}).get('materials', 'N/A')} (if available)
+- Total Project Cost: {format_cost(costs.get('total_project_cost'))}
+- Cost per Watt DC: {format_cost(costs.get('cost_per_watt_dc'))}
+- Equipment Cost: {format_cost(cost_breakdown.get('equipment'))}
+- Labor Cost: {format_cost(cost_breakdown.get('labor'))}
+- Materials Cost: {format_cost(cost_breakdown.get('materials'))}
 
 Equipment Specifications:
-- Solar Modules: {equipment.get('modules', {}).get('manufacturer', 'N/A')} {equipment.get('modules', {}).get('model', '')} ({equipment.get('modules', {}).get('wattage', 'N/A')}W)
-- Inverters: {equipment.get('inverters', {}).get('manufacturer', 'N/A')} {equipment.get('inverters', {}).get('model', '')}
-- Racking: {equipment.get('racking', {}).get('manufacturer', 'N/A')} ({equipment.get('racking', {}).get('type', 'N/A')})
-- Batteries: {equipment.get('batteries', {}).get('manufacturer', 'N/A')} {equipment.get('batteries', {}).get('model', '')} (if applicable)
+- Solar Modules: {safe_get(modules, 'manufacturer')} {safe_get(modules, 'model', '')} ({safe_get(modules, 'wattage')}W)
+- Inverters: {safe_get(inverters, 'manufacturer')} {safe_get(inverters, 'model', '')}
+- Racking: {safe_get(racking, 'manufacturer')} ({safe_get(racking, 'type')})
+- Batteries: {safe_get(batteries, 'manufacturer')} {safe_get(batteries, 'model', '')} (if applicable)
 """
             summary.append(proposal_summary)
 
