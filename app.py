@@ -18,7 +18,7 @@ st.set_page_config(
 # Import modular components
 from config import save_proposals, load_proposals, apply_custom_css
 from utils import process_uploaded_files, apply_filters, get_existing_pdfs, process_existing_pdf
-from views import show_overview, show_map_view, show_cost_analysis, show_comparison_view, show_ai_report, show_chatbot
+from views import show_dashboard, show_cost_comparison, show_ai_analysis, show_database
 
 # Initialize session state
 def initialize_session_state():
@@ -242,26 +242,20 @@ def main():
         st.info("👆 Upload EPC proposals using the sidebar to get started")
         return
 
-    # Create tabs for different views
-    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["📊 Overview", "🗺️ Map View", "💰 Cost Analysis", "📋 Comparison", "📝 AI Report", "💬 Ask AI"])
+    # Create tabs for different views (consolidated 4-tab structure)
+    tab1, tab2, tab3, tab4 = st.tabs(["📊 Dashboard", "💰 Cost & Comparison", "🤖 AI Analysis", "🗄️ Database"])
 
     with tab1:
-        show_overview(proposals)
+        show_dashboard(proposals)
 
     with tab2:
-        show_map_view(proposals)
+        show_cost_comparison(proposals)
 
     with tab3:
-        show_cost_analysis(proposals)
+        show_ai_analysis(proposals)
 
     with tab4:
-        show_comparison_view(proposals)
-
-    with tab5:
-        show_ai_report(proposals)
-
-    with tab6:
-        show_chatbot(proposals)
+        show_database(proposals)
 
 if __name__ == "__main__":
     # Check for API key

@@ -202,13 +202,17 @@ def apply_filters():
         st.session_state.filtered_proposals = []
         return
 
+    # Project filter
+    project_options = list(set([p.get('project_info', {}).get('project_name', 'Unknown') for p in all_proposals]))
+    selected_project = st.selectbox("Project", ["All"] + sorted(project_options), key="project_filter")
+
     # EPC Contractor filter
     epc_options = list(set([p.get('epc_contractor', {}).get('company_name', 'Unknown') for p in all_proposals]))
-    selected_epc = st.selectbox("EPC Contractor", ["All"] + sorted(epc_options), key="epc_filter")
+    selected_epc = st.selectbox("EPC Contractor", ["All"] + sorted(epc_options), key="epc_filter_main")
 
     # Technology filter
     tech_options = list(set([p.get('technology', {}).get('type', 'Unknown') for p in all_proposals]))
-    selected_tech = st.selectbox("Technology Type", ["All"] + sorted(tech_options), key="tech_filter")
+    selected_tech = st.selectbox("Technology Type", ["All"] + sorted(tech_options), key="tech_filter_main")
 
     # Capacity range filter
     capacities = [p.get('capacity', {}).get('ac_mw') for p in all_proposals if p.get('capacity', {}).get('ac_mw')]
@@ -224,7 +228,7 @@ def apply_filters():
                 min_value=min_capacity,
                 max_value=max_capacity,
                 value=(min_capacity, max_capacity),
-                key="capacity_filter"
+                key="capacity_filter_main"
             )
         else:
             st.info(f"All proposals have the same capacity: {min_capacity} MW")
@@ -232,10 +236,13 @@ def apply_filters():
 
     # State filter
     states = list(set([p.get('project_info', {}).get('location', {}).get('state', 'Unknown') for p in all_proposals]))
-    selected_state = st.selectbox("State", ["All"] + sorted(states), key="state_filter")
+    selected_state = st.selectbox("State", ["All"] + sorted(states), key="state_filter_main")
 
     # Apply filters
     filtered = all_proposals
+
+    if selected_project != "All":
+        filtered = [p for p in filtered if p.get('project_info', {}).get('project_name', 'Unknown') == selected_project]
 
     if selected_epc != "All":
         filtered = [p for p in filtered if p.get('epc_contractor', {}).get('company_name', 'Unknown') == selected_epc]
@@ -250,6 +257,17 @@ def apply_filters():
         filtered = [p for p in filtered if p.get('project_info', {}).get('location', {}).get('state', 'Unknown') == selected_state]
 
     st.session_state.filtered_proposals = filtered
+
+    # Clear cached AI analysis results when filters change
+    # This ensures AI analysis reflects the current filter state
+    filter_key = f"{selected_project}_{selected_epc}_{selected_tech}_{selected_state}_{min_cap}_{max_cap}"
+    if 'last_filter_key' not in st.session_state or st.session_state.last_filter_key != filter_key:
+        # Filters changed - clear cached analysis
+        if 'scope_ai_analysis' in st.session_state:
+            del st.session_state.scope_ai_analysis
+        if 'generated_report' in st.session_state:
+            del st.session_state.generated_report
+        st.session_state.last_filter_key = filter_key
 
     # Show filter summary
     if len(filtered) != len(all_proposals):

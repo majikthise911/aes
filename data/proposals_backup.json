@@ -1,0 +1,1125 @@
+[
+  {
+    "project_info": {
+      "project_name": "Solar Project Alpha",
+      "location": {
+        "address": null,
+        "city": null,
+        "county": null,
+        "state": "TX",
+        "coordinates": {
+          "lat": 34.06,
+          "lon": -99.11
+        }
+      },
+      "jurisdiction": "Electric Reliability Council of Texas (ERCOT)"
+    },
+    "epc_contractor": {
+      "company_name": "EPC Alpha",
+      "contact_person": "John Smith",
+      "phone": "555-0101",
+      "email": "jsmith@epcalpha.com",
+      "proposal_date": "3/5/2025",
+      "proposal_version": null
+    },
+    "technology": {
+      "type": "PV",
+      "description": "Solar photovoltaic project"
+    },
+    "capacity": {
+      "ac_mw": 673.2,
+      "dc_mw": 744.6,
+      "storage_mwh": null
+    },
+    "equipment": {
+      "modules": {
+        "manufacturer": "Jinko",
+        "model": "JKM560N-72HL4-BDV",
+        "wattage": 560.0
+      },
+      "inverters": {
+        "manufacturer": "Sungrow",
+        "model": "SG4400UD-MV"
+      },
+      "racking": {
+        "manufacturer": "Nextracker",
+        "type": "Horizon single axis tracker"
+      },
+      "batteries": {
+        "manufacturer": null,
+        "model": null,
+        "capacity_kwh": null
+      }
+    },
+    "costs": {
+      "total_project_cost": 613569548.05,
+      "cost_breakdown": {
+        "equipment": 285000000.0,
+        "labor": 175000000.0,
+        "materials": 95000000.0,
+        "development": 38000000.0,
+        "other": 20569548.05
+      },
+      "cost_per_watt_dc": 0.824,
+      "cost_per_watt_ac": 0.912
+    },
+    "scope": {
+      "assumptions": [
+        "EPC Alpha's proposal is based on the received RFP documents as of 3/5/2025.",
+        "Proposal includes addendums 1 thru 6, and these Clarifications and Exclusions.",
+        "Proposal is based on Owner and EPC Alpha being able to come to mutually agreeable EPC Agreement terms and conditions.",
+        "Proposal is based on utilizing current redlines on previous EPC agreement between Owner and EPC Alpha as a basis for EPC negotiation.",
+        "Builder's risk insurance will be provided by Owner and shall include business interruption coverage. The maximum deductible for the builders risk policy shall not exceed $100,000.",
+        "Proposal excludes any micro-cracking or hail damage insurance coverage by EPC Alpha. This is coverage assumed to be covered under Owners policy.",
+        "Proposal excludes any costs associated with interconnection fees or upgrades.",
+        "Proposal assumes use of all non-union labor.",
+        "Proposal includes a 24-month workmanship warranty and standard manufacturers warranties.",
+        "Proposal does not include impacts of medical epidemics or pandemics (i.e. Coronavirus) that are unknown at the time of this proposal submission.",
+        "Spare parts are not included in the proposal price.",
+        "Proposal includes the provisions to comply with the prevailing wage or apprenticeship provisions of the IRA.",
+        "Proposal includes domestically sourced racking and steel.",
+        "EPC Alpha is aware of the known or announced Tariff increases on the global supply market and is working with our supply chain partners to understand any impacts to pricing of materials and components.",
+        "Proposal excludes any scopes related to BESS engineering, procurement, and construction that are mentioned in the RFP.",
+        "Owner has not provided Interconnection Agreement and/or Power Purchase Agreements.",
+        "Owner or Owners independent engineer shall be responsible for the Electric Reliability Council of Texas (ERCOT) Quarterly Stability Assessment (QSA) and Resource Asset Registration Form (RARF) required milestones, deliverables, and submissions.",
+        "SOV cashflow to be proposed with future binding bidding process."
+      ],
+      "exclusions": [
+        "Proposal excludes any micro-cracking or hail damage insurance coverage by EPC Alpha.",
+        "Proposal excludes any costs associated with interconnection fees or upgrades.",
+        "Proposal excludes any scopes related to BESS engineering, procurement, and construction that are mentioned in the RFP.",
+        "Proposal excludes removal or handling of pre-existing hazardous materials or contaminated soil.",
+        "Proposal does not include aggregate reuse and any stabilization via quicklime and/or cement.",
+        "Proposal does not include any remediation for winter and frost conditions.",
+        "Proposal does not include Substation area grading, pad prep, mowing, clearing, grubbing, aggregate, stabilization, and seeding.",
+        "Proposal excludes module washing.",
+        "Proposal excludes module scanning.",
+        "Proposal excludes permanent site lighting and security system."
+      ],
+      "clarifications": [
+        "Proposal assumes permits can be obtained within the timeframes noted in EPC Alpha's Proposal Schedule.",
+        "Contractor will make all efforts to file its SWPPP Notice of Termination (NOT) at Substantial Completion.",
+        "Owner shall be responsible for performing all pre-activity environmental surveys within fourteen (14) days prior to the start of construction.",
+        "Proposal assumes that Owner will relocate and mitigate any environmental implications related to any and all protected species on site, including Kangaroo Rats, Whooping Cranes, and migratory birds.",
+        "Proposal is based on the 30% Design Documents provided in the RFP with exception to the deviations mentioned in this document."
+      ],
+      "inclusions": [
+        "Proposal includes obtaining the following permits: NPDES Stormwater Permit, Access Permit, Building Permit.",
+        "Proposal includes a 24-month workmanship warranty and standard manufacturers warranties.",
+        "Proposal includes the provisions to comply with the prevailing wage or apprenticeship provisions of the IRA.",
+        "Proposal includes domestically sourced racking and steel.",
+        "Proposal includes (1) seeding application of 50% of total project area.",
+        "Proposal includes grading quantities per sheet PV-C.02.01 in 30% Civil Design Documents."
+      ]
+    },
+    "metadata": {
+      "filename": "EPC_Alpha_Solar_Technical_Proposal.pdf",
+      "stored_filename": "EPC_Alpha_Solar_Technical_Proposal.pdf",
+      "pdf_path": "C:\\Users\\jclay\\Desktop\\main\\code\\aes\\data\\proposals\\EPC_Alpha_Solar_Technical_Proposal.pdf",
+      "uploaded_at": "2025-09-30T11:11:39.478677",
+      "file_size": 4216901.0
+    }
+  },
+  {
+    "project_info": {
+      "project_name": "Solar Project Alpha",
+      "location": {
+        "address": null,
+        "city": null,
+        "county": null,
+        "state": "Texas",
+        "coordinates": {
+          "lat": 34.06,
+          "lon": -99.11
+        }
+      },
+      "jurisdiction": "ERCOT"
+    },
+    "epc_contractor": {
+      "company_name": "EPC Beta",
+      "contact_person": "Jane Doe",
+      "phone": "555-0202",
+      "email": "jdoe@epcbeta.com",
+      "proposal_date": "03/05/2025",
+      "proposal_version": null
+    },
+    "technology": {
+      "type": "PV",
+      "description": "Photovoltaic system with Jinko 560W modules and NEXTracker XTR tracking system"
+    },
+    "capacity": {
+      "ac_mw": 673.2,
+      "dc_mw": 750.0,
+      "storage_mwh": null
+    },
+    "equipment": {
+      "modules": {
+        "manufacturer": "Jinko",
+        "model": "JKM560N-72HL4-BDV",
+        "wattage": 560.0
+      },
+      "inverters": {
+        "manufacturer": "Sungrow",
+        "model": "SG4400UD-MV"
+      },
+      "racking": {
+        "manufacturer": "NEXTracker",
+        "type": "NX Horizon XTR"
+      },
+      "batteries": {
+        "manufacturer": null,
+        "model": null,
+        "capacity_kwh": null
+      }
+    },
+    "costs": {
+      "total_project_cost": 525000000.0,
+      "cost_breakdown": {
+        "equipment": 270000000.0,
+        "development": 45000000.0,
+        "other": 35000000.0,
+        "labor": 125000000.0,
+        "materials": 50000000.0
+      },
+      "cost_per_watt_dc": 0.70,
+      "cost_per_watt_ac": 0.78
+    },
+    "scope": {
+      "assumptions": [
+        "Pricing is contingent upon building the project per the schedule submitted.",
+        "Pricing is based on Owner providing solar modules.",
+        "Pricing is based on LNTP, NTP, dates and amounts issued to EPC Beta on or before necessary dates for EPC Beta to maintain a cash neutral position.",
+        "Any delays caused by any Owner provided zoning/CUP/permits will result in cost and/or day for day schedule relief.",
+        "EPC Beta has assumed utilizing a separated contract for the project.",
+        "Applicable materials will be procured as tax exempt.",
+        "Pricing is based on a project retainage amount of 10%.",
+        "Pricing is based on receiving a 15% down payment at time of NTP.",
+        "Pricing based on the project progress payments Being NET 30.",
+        "Pricing based on EPC Beta staying cash positive/neutral throughout the project.",
+        "Our pricing is based on Owner provided 30% drawings.",
+        "Final site constraints inclusive of wetland delineations, property boundaries, applicable offsets, etc. will need to be provided at the start of detailed engineering.",
+        "Pricing is based on the laws in effect as of today and EPC Beta has excluded the risk of any change in law or similar action by a governmental authority that could impact pricing such as changes to import fees, tariffs, trade remedies, duties, and taxes.",
+        "EPC Beta has bid this project using Texas labor rates/prevailing wage with utilizing carpenters for the associated tasks.",
+        "Contractor shall not be liable for any lost tax credits, exemptions or similar tax benefits associated with the Project or Contractor's Work.",
+        "Material pricing is based on current quotes received from suppliers.",
+        "Our pricing assumes we will not pay any sales tax on the following items with tax exemptions in the state of Texas for a renewable project: CAB System, Cabling, Grounding materials, Load Break Disconnects, Termination Materials.",
+        "Contractor shall own all float in the Project Schedule and float shall be for the exclusive use and benefit of Contractor."
+      ],
+      "exclusions": [
+        "Mass Dewatering Systems.",
+        "Demo of any unknown existing buildings, structures, waste, or garbage, other than stated above.",
+        "Any public road repairs/widening, either before or after construction, unless noted above.",
+        "Any culverts on the existing public roads.",
+        "Road use agreements.",
+        "Cost related to any pesticides or pest management.",
+        "Drain tile repairs, rerouting, or removal.",
+        "Permitting for crossing of jurisdictional waterways.",
+        "Any unforeseen underground conditions and the disposal of hazardous and/or contaminated soil.",
+        "Discovery or handling of karst/gypsum formations.",
+        "Module washing is excluded.",
+        "Module recycling costs associated with damaged modules has been excluded at this time.",
+        "All Substation grading, SWPPP, fencing, seeding, design, gravel, etc. civil work for the substation pad and road are excluded."
+      ],
+      "clarifications": [
+        "EPC Beta has included a two-year workmanship warranty on all its work for the project at no cost to the Owner.",
+        "EPC Beta has included a two-year warranty on all equipment provided by EPC Beta to the project.",
+        "EPC Beta has not included a performance guarantee. EPC Beta's proposal assumes the use of plant performance testing as a requirement for achieving Substantial Completion.",
+        "OM building construction has been priced per owner provided documents at this time."
+      ],
+      "inclusions": [
+        "EPC Beta is responsible for SWPPP design and civil engineering.",
+        "EPC Beta will grade the site for tracker tolerances.",
+        "EPC Beta will procure and install a NEXTracker XTR tracking system.",
+        "Procurement and installation of galvanized pile.",
+        "Installation of the complete DC collection system.",
+        "Performance testing has been included.",
+        "Pricing has assumed procurement, installation, and commissioning of the SCADA system."
+      ]
+    },
+    "metadata": {
+      "filename": "EPC_Beta_Solar_Proposal.pdf",
+      "stored_filename": "EPC_Beta_Solar_Proposal.pdf",
+      "pdf_path": "C:\\Users\\jclay\\Desktop\\main\\code\\aes\\data\\proposals\\EPC_Beta_Solar_Proposal.pdf",
+      "uploaded_at": "2025-09-30T11:13:57.945385",
+      "file_size": 432638.0
+    }
+  },
+  {
+    "project_info": {
+      "project_name": "Solar Project Alpha",
+      "location": {
+        "address": "North Central Texas",
+        "city": null,
+        "county": "Regional County",
+        "state": "Texas",
+        "coordinates": {
+          "lat": 34.06,
+          "lon": -99.11
+        }
+      },
+      "jurisdiction": "Texas"
+    },
+    "epc_contractor": {
+      "company_name": "EPC Gamma",
+      "contact_person": "Robert Johnson",
+      "phone": "555-0303",
+      "email": "rjohnson@epcgamma.com",
+      "proposal_date": "March 5, 2025",
+      "proposal_version": null
+    },
+    "technology": {
+      "type": "PV",
+      "description": "Single axis tracker with bifacial modules"
+    },
+    "capacity": {
+      "ac_mw": 600.0,
+      "dc_mw": 744.63,
+      "storage_mwh": null
+    },
+    "equipment": {
+      "modules": {
+        "manufacturer": "Jinko",
+        "model": "JKM560N-72HL4BDV",
+        "wattage": 560.0
+      },
+      "inverters": {
+        "manufacturer": "Sungrow",
+        "model": "SG400UD-MV-US"
+      },
+      "racking": {
+        "manufacturer": "ATI/NXT",
+        "type": "Single axis tracker 1P"
+      },
+      "batteries": null
+    },
+    "costs": {
+      "total_project_cost": 443741720.0,
+      "cost_breakdown": {
+        "equipment": 200000000.0,
+        "labor": 120000000.0,
+        "materials": 80000000.0,
+        "development": 28741720.0,
+        "other": 15000000.0
+      },
+      "cost_per_watt_dc": 0.596,
+      "cost_per_watt_ac": 0.74
+    },
+    "scope": {
+      "assumptions": [
+        "Proposal is valid for seven (7) days due to current commodity fluctuation.",
+        "Pricing is based on Owner provided 30% Electrical Civil Design Sets Rev F dated 03/26/2024.",
+        "LNTP payment required for long lead time materials (trackers, piles, transformer, modules, some electrical BOS items) and engineering.",
+        "Steel pricing based on HRC Steel Index; if the index rises more than 5% from the quote date, Contractor reserves the right to adjust the pricing.",
+        "Warranty includes 24 months coverage on workmanship beginning on the date of substantial completion of project.",
+        "Contractor reserves the right to work with developer to approve any and all subcontractors and vendors.",
+        "35-year design life.",
+        "Proposal includes 6.75% sales tax on all applicable permanent materials.",
+        "Includes contractor permits only as an allowance of $150,000.00.",
+        "Based upon non-union labor. IRA compliant in regards to labor rates and apprenticeship.",
+        "Base pricing includes domestic pile supply and tracker supply only.",
+        "Pricing based on a 5 X 10 calendar."
+      ],
+      "exclusions": [
+        "Demo/removal of existing debris piles and trees is excluded.",
+        "Demo of existing barbed wire fence, structures, and roads have not been included.",
+        "Excludes Drain Tile work/replacement.",
+        "Owner Spare Parts. Can be provided at a later date.",
+        "Module washing (other than general cleaning at time of install).",
+        "Module pallet scanning.",
+        "Excludes module procurement.",
+        "Excludes soil stabilization."
+      ],
+      "clarifications": [
+        "Contractor will work with Owner to ensure the project gets the best pricing possible as commodities change.",
+        "Pricing and lead times for materials are subject to change until engineering progresses to the point where material orders can be placed.",
+        "Contractor will provide all design and engineering drawings to Owner for its review.",
+        "Contractor shall provide Owners personnel with up to five (5) days of on-site training in the use, repair and operation of the Equipment."
+      ],
+      "inclusions": [
+        "Contractor shall procure and furnish (except for the Owner-Furnished Equipment) all equipment and materials to complete the Work.",
+        "Contractor will include and is responsible for all sales tax for equipment purchased and furnished by Contractor.",
+        "Contractor shall provide a list of recommended spare parts which shall include vendors pricing of such parts, delivery lead times, and quote validity.",
+        "Contractor shall provide all necessary labor, materials, equipment, services and any other items to be used by Contractor or its Subcontractors in the prosecution of this Agreement."
+      ]
+    },
+    "metadata": {
+      "filename": "EPC_Gamma_Solar_Proposal.pdf",
+      "stored_filename": "EPC_Gamma_Solar_Proposal.pdf",
+      "pdf_path": "C:\\Users\\jclay\\Desktop\\main\\code\\aes\\data\\proposals\\EPC_Gamma_Solar_Proposal.pdf",
+      "uploaded_at": "2025-09-30T11:16:30.946589",
+      "file_size": 13236453.0
+    }
+  },
+  {
+    "project_info": {
+      "project_name": "Solar Project Beta",
+      "location": {
+        "address": null,
+        "city": null,
+        "county": "Regional County",
+        "state": "Texas",
+        "coordinates": {
+          "lat": 34.06,
+          "lon": -99.11
+        }
+      },
+      "jurisdiction": "Regional County, Texas"
+    },
+    "epc_contractor": {
+      "company_name": "EPC Delta",
+      "contact_person": "Michael Davis",
+      "phone": "555-0404",
+      "email": "mdavis@epcdelta.com",
+      "proposal_date": "July 25th, 2025",
+      "proposal_version": null
+    },
+    "technology": {
+      "type": "PV",
+      "description": "The project involves PV and HV Engineering, Procurement, and Construction services."
+    },
+    "capacity": {
+      "ac_mw": 673.2,
+      "dc_mw": 725.7,
+      "storage_mwh": null
+    },
+    "equipment": {
+      "modules": {
+        "manufacturer": "Longi",
+        "model": "LR5-78HBD-545M",
+        "wattage": 545.0
+      },
+      "inverters": {
+        "manufacturer": "SMA",
+        "model": "SC4400 UP-US"
+      },
+      "racking": {
+        "manufacturer": "NexTracker",
+        "type": "Horizon 60 HailPro"
+      },
+      "batteries": null
+    },
+    "costs": {
+      "total_project_cost": 469451616.65,
+      "cost_breakdown": {
+        "equipment": 210000000.0,
+        "labor": 135000000.0,
+        "materials": 75000000.0,
+        "development": 32451616.65,
+        "other": 17000000.0
+      },
+      "cost_per_watt_dc": 0.647,
+      "cost_per_watt_ac": 0.697
+    },
+    "scope": {
+      "assumptions": [
+        "Tariffs are not included in the base price SOV. The estimated tariffs through mid-July, 2025 have been presented below the line for each procurement category.",
+        "Bid has been prepared based on EPC Delta's experience in Texas.",
+        "Piles are assumed to be non coated (black steel) ranging from W6X12 up to W6X25.",
+        "Power factor of 0.94 assumed for losses calculations.",
+        "This proposal is based on non-union labor.",
+        "Proposal validity is 30 days.",
+        "Proposal includes a two year workmanship warranty for the substation."
+      ],
+      "exclusions": [
+        "Hail protection of the PV modules when in the pallet or installed on the tracker (60 degree HailPro).",
+        "Module washing during or after installation.",
+        "Scanning of each barcode on every module installed.",
+        "Lightning protection for PV Inverters.",
+        "Removal or remediation of any contaminated soils or hazardous materials encountered.",
+        "EPC Delta has excluded any rock trenching, rock blasting, mechanical breaking or rock drilling."
+      ],
+      "clarifications": [
+        "An additional corrosion study will be provided by JDH corrosion, based on the corrosion potential in the geotech report.",
+        "EPC Delta is requesting 0.4% of total modules for construction spares.",
+        "Performance testing EPC Delta agrees to an ASTM standard-based Capacity Test.",
+        "Construction spares have been included for the PV plant construction."
+      ],
+      "inclusions": [
+        "Proposal includes the provision of a 20 MVAR capacitor bank per MPT.",
+        "Proposal assumes the main power transformer setting, filling, and testing will be done by manufacturer.",
+        "EPC Delta will provide substation on-site orientation and familiarization (OF) to owner and operator.",
+        "Storage for the owner provided HV circuit breakers is included."
+      ]
+    },
+    "metadata": {
+      "filename": "EPC_Delta_Solar_Proposal.pdf",
+      "stored_filename": "EPC_Delta_Solar_Proposal.pdf",
+      "pdf_path": "C:\\Users\\jclay\\Desktop\\main\\code\\aes\\data\\proposals\\EPC_Delta_Solar_Proposal.pdf",
+      "uploaded_at": "2025-09-30T11:18:09.872545",
+      "file_size": 6406264.0
+    }
+  },
+  {
+    "project_info": {
+      "project_name": "Solar Project Charlie",
+      "location": {
+        "address": "Greater Austin Area",
+        "city": "Austin",
+        "county": "Travis County",
+        "state": "Texas",
+        "coordinates": {
+          "lat": 30.27,
+          "lon": -97.74
+        }
+      },
+      "jurisdiction": "ERCOT"
+    },
+    "epc_contractor": {
+      "company_name": "EPC Alpha",
+      "contact_person": "John Smith",
+      "phone": "555-0101",
+      "email": "jsmith@epcalpha.com",
+      "proposal_date": "April 12, 2025",
+      "proposal_version": null
+    },
+    "technology": {
+      "type": "PV",
+      "description": "Solar photovoltaic with single-axis tracking"
+    },
+    "capacity": {
+      "ac_mw": 400.0,
+      "dc_mw": 500.0,
+      "storage_mwh": null
+    },
+    "equipment": {
+      "modules": {
+        "manufacturer": "Trina Solar",
+        "model": "TSM-575DE21",
+        "wattage": 575.0
+      },
+      "inverters": {
+        "manufacturer": "Power Electronics",
+        "model": "FS3450"
+      },
+      "racking": {
+        "manufacturer": "GameChange Solar",
+        "type": "Genius Tracker"
+      },
+      "batteries": null
+    },
+    "costs": {
+      "total_project_cost": 387500000.0,
+      "cost_breakdown": {
+        "equipment": 180000000.0,
+        "labor": 110000000.0,
+        "materials": 62500000.0,
+        "development": 23000000.0,
+        "other": 12000000.0
+      },
+      "cost_per_watt_dc": 0.775,
+      "cost_per_watt_ac": 0.969
+    },
+    "scope": {
+      "assumptions": [
+        "Proposal based on 30% design documents provided by Owner.",
+        "Project schedule assumes NTP by June 1, 2025.",
+        "All permits assumed obtainable within proposed timeline.",
+        "Non-union labor rates applied.",
+        "IRA prevailing wage and apprenticeship compliance included.",
+        "Domestic content requirements met for racking and structural steel.",
+        "Builder's risk insurance provided by Owner.",
+        "24-month workmanship warranty included."
+      ],
+      "exclusions": [
+        "Interconnection costs and utility upgrades.",
+        "Land acquisition and lease payments.",
+        "Property taxes during construction.",
+        "Module washing post-installation.",
+        "Substation civil work (grading, fencing, gravel).",
+        "Hazardous material remediation.",
+        "Off-site road improvements.",
+        "Permanent meteorological stations beyond standard requirement."
+      ],
+      "clarifications": [
+        "Price valid for 45 days from proposal date.",
+        "Payment terms: NET 30 on approved invoices.",
+        "10% retainage held until final completion.",
+        "GCR of 0.40 used for site layout design.",
+        "Performance testing included at plant level.",
+        "Two-year warranty on EPC workmanship."
+      ],
+      "inclusions": [
+        "Full EPC scope: engineering, procurement, construction.",
+        "SWPPP design and implementation.",
+        "Erosion control measures.",
+        "Access road construction and site grading.",
+        "Perimeter fencing and gates.",
+        "DC and AC collection systems.",
+        "SCADA system installation and commissioning.",
+        "Pre-commissioning and commissioning services.",
+        "As-built documentation.",
+        "Operations training (5 days on-site)."
+      ]
+    },
+    "metadata": {
+      "filename": "EPC_Alpha_Austin_Proposal.pdf",
+      "stored_filename": "EPC_Alpha_Austin_Proposal.pdf",
+      "pdf_path": "C:\\Users\\jclay\\Desktop\\main\\code\\aes\\data\\proposals\\EPC_Alpha_Austin_Proposal.pdf",
+      "uploaded_at": "2025-10-06T14:22:15.123456",
+      "file_size": 3847291.0
+    }
+  },
+  {
+    "project_info": {
+      "project_name": "Solar Project Charlie",
+      "location": {
+        "address": "Greater Austin Area",
+        "city": "Austin",
+        "county": "Travis County",
+        "state": "Texas",
+        "coordinates": {
+          "lat": 30.27,
+          "lon": -97.74
+        }
+      },
+      "jurisdiction": "ERCOT"
+    },
+    "epc_contractor": {
+      "company_name": "EPC Beta",
+      "contact_person": "Jane Doe",
+      "phone": "555-0202",
+      "email": "jdoe@epcbeta.com",
+      "proposal_date": "April 10, 2025",
+      "proposal_version": null
+    },
+    "technology": {
+      "type": "PV",
+      "description": "Single-axis tracking photovoltaic system"
+    },
+    "capacity": {
+      "ac_mw": 400.0,
+      "dc_mw": 496.0,
+      "storage_mwh": null
+    },
+    "equipment": {
+      "modules": {
+        "manufacturer": "Longi",
+        "model": "LR5-72HBD-620M",
+        "wattage": 620.0
+      },
+      "inverters": {
+        "manufacturer": "Sungrow",
+        "model": "SG3450UD-MV"
+      },
+      "racking": {
+        "manufacturer": "Nextracker",
+        "type": "NX Horizon"
+      },
+      "batteries": null
+    },
+    "costs": {
+      "total_project_cost": 357120000.0,
+      "cost_breakdown": {
+        "equipment": 165000000.0,
+        "labor": 98000000.0,
+        "materials": 58120000.0,
+        "development": 22000000.0,
+        "other": 14000000.0
+      },
+      "cost_per_watt_dc": 0.72,
+      "cost_per_watt_ac": 0.893
+    },
+    "scope": {
+      "assumptions": [
+        "Pricing contingent on project schedule as submitted.",
+        "Owner provides building permits and CUP approvals.",
+        "LNTP issued by May 15, 2025 for long-lead materials.",
+        "15% down payment at NTP.",
+        "Cash neutral payment terms throughout project.",
+        "Texas prevailing wage rates applied.",
+        "Tax-exempt procurement for applicable materials.",
+        "Final site constraints provided at detailed engineering kickoff.",
+        "0.40 GCR used for layout optimization."
+      ],
+      "exclusions": [
+        "Interconnection facilities and utility costs.",
+        "Environmental surveys and monitoring.",
+        "Archaeological studies.",
+        "Drain tile work.",
+        "Public road repairs or widening.",
+        "Road use agreements with counties.",
+        "Import/export of grading materials.",
+        "Substation transformer and switchgear.",
+        "Module washing equipment.",
+        "Vegetation management plan.",
+        "Livestock fencing outside project area."
+      ],
+      "clarifications": [
+        "Two-year workmanship warranty provided.",
+        "Equipment warranties transferred to Owner at project completion.",
+        "Performance testing required for substantial completion.",
+        "OM building included as allowance.",
+        "Water sourced from onsite wells or municipal supply."
+      ],
+      "inclusions": [
+        "Complete SWPPP design and civil engineering.",
+        "Site grading to tracker tolerances.",
+        "Onsite access roads and laydown areas.",
+        "Security fencing (6' chain-link with barbed wire).",
+        "Tracker system procurement and installation.",
+        "Galvanized steel piles (domestic content).",
+        "Full DC collection system.",
+        "MV collection to POI.",
+        "Pre-commissioning and performance testing.",
+        "SCADA system (including fiber network).",
+        "Permanent seeding of disturbed areas."
+      ]
+    },
+    "metadata": {
+      "filename": "EPC_Beta_Austin_Proposal.pdf",
+      "stored_filename": "EPC_Beta_Austin_Proposal.pdf",
+      "pdf_path": "C:\\Users\\jclay\\Desktop\\main\\code\\aes\\data\\proposals\\EPC_Beta_Austin_Proposal.pdf",
+      "uploaded_at": "2025-10-06T14:25:33.789012",
+      "file_size": 4129876.0
+    }
+  },
+  {
+    "project_info": {
+      "project_name": "Solar Project Charlie",
+      "location": {
+        "address": "Greater Austin Area",
+        "city": "Austin",
+        "county": "Travis County",
+        "state": "Texas",
+        "coordinates": {
+          "lat": 30.27,
+          "lon": -97.74
+        }
+      },
+      "jurisdiction": "ERCOT"
+    },
+    "epc_contractor": {
+      "company_name": "EPC Gamma",
+      "contact_person": "Robert Johnson",
+      "phone": "555-0303",
+      "email": "rjohnson@epcgamma.com",
+      "proposal_date": "April 15, 2025",
+      "proposal_version": null
+    },
+    "technology": {
+      "type": "PV",
+      "description": "Single-axis tracker PV system with bifacial modules"
+    },
+    "capacity": {
+      "ac_mw": 400.0,
+      "dc_mw": 510.0,
+      "storage_mwh": null
+    },
+    "equipment": {
+      "modules": {
+        "manufacturer": "Jinko",
+        "model": "JKM580N-72HL4-BDV",
+        "wattage": 580.0
+      },
+      "inverters": {
+        "manufacturer": "SMA",
+        "model": "SC3450 UP-US"
+      },
+      "racking": {
+        "manufacturer": "Array Technologies",
+        "type": "DuraTrack HZ v3"
+      },
+      "batteries": null
+    },
+    "costs": {
+      "total_project_cost": 377850000.0,
+      "cost_breakdown": {
+        "equipment": 173000000.0,
+        "labor": 105000000.0,
+        "materials": 61850000.0,
+        "development": 24000000.0,
+        "other": 14000000.0
+      },
+      "cost_per_watt_dc": 0.741,
+      "cost_per_watt_ac": 0.945
+    },
+    "scope": {
+      "assumptions": [
+        "Proposal valid for 7 days due to commodity volatility.",
+        "Based on Owner-provided 30% design documents.",
+        "LNTP required for trackers, piles, and major electrical equipment.",
+        "24-month workmanship warranty from substantial completion.",
+        "35-year design life for all systems.",
+        "6.75% Texas sales tax on permanent materials.",
+        "Non-union labor with IRA wage compliance.",
+        "Domestic pile and tracker supply included.",
+        "GCR of 0.40 per design specifications."
+      ],
+      "exclusions": [
+        "Debris removal and site cleanup (pre-existing).",
+        "Barbed wire fence demolition.",
+        "Drain tile repairs.",
+        "Owner spare parts (available as adder).",
+        "Wetland mitigation work.",
+        "Lightning protection beyond standard grounding.",
+        "Public road improvements.",
+        "Module washing systems.",
+        "Module procurement (Owner-furnished).",
+        "Soil stabilization additives."
+      ],
+      "clarifications": [
+        "Contractor to work with Owner on value engineering opportunities.",
+        "Material pricing subject to change until purchase orders placed.",
+        "All design drawings submitted for Owner review.",
+        "Equipment documentation provided prior to substantial completion.",
+        "5 days of on-site O&M training included."
+      ],
+      "inclusions": [
+        "Full design, engineering, procurement, and construction.",
+        "All applicable permits and fees (allowance $125K).",
+        "Sales tax on equipment purchased by Contractor.",
+        "Recommended spare parts list with pricing.",
+        "Labor, materials, equipment, and services for complete installation.",
+        "Testing and commissioning.",
+        "As-built drawings and documentation."
+      ]
+    },
+    "metadata": {
+      "filename": "EPC_Gamma_Austin_Proposal.pdf",
+      "stored_filename": "EPC_Gamma_Austin_Proposal.pdf",
+      "pdf_path": "C:\\Users\\jclay\\Desktop\\main\\code\\aes\\data\\proposals\\EPC_Gamma_Austin_Proposal.pdf",
+      "uploaded_at": "2025-10-06T14:28:47.456789",
+      "file_size": 5842193.0
+    }
+  },
+  {
+    "project_info": {
+      "project_name": "Solar Project Delta",
+      "location": {
+        "address": "Roswell Area",
+        "city": "Roswell",
+        "county": "Chaves County",
+        "state": "New Mexico",
+        "coordinates": {
+          "lat": 33.39,
+          "lon": -104.52
+        }
+      },
+      "jurisdiction": "New Mexico"
+    },
+    "epc_contractor": {
+      "company_name": "EPC Alpha",
+      "contact_person": "John Smith",
+      "phone": "555-0101",
+      "email": "jsmith@epcalpha.com",
+      "proposal_date": "May 3, 2025",
+      "proposal_version": null
+    },
+    "technology": {
+      "type": "PV",
+      "description": "Ground-mount solar with single-axis tracking"
+    },
+    "capacity": {
+      "ac_mw": 300.0,
+      "dc_mw": 372.0,
+      "storage_mwh": null
+    },
+    "equipment": {
+      "modules": {
+        "manufacturer": "Canadian Solar",
+        "model": "CS7N-MB-AG 670W",
+        "wattage": 670.0
+      },
+      "inverters": {
+        "manufacturer": "Sungrow",
+        "model": "SG3150U-MV"
+      },
+      "racking": {
+        "manufacturer": "Nextracker",
+        "type": "NX Horizon XTR"
+      },
+      "batteries": null
+    },
+    "costs": {
+      "total_project_cost": 282960000.0,
+      "cost_breakdown": {
+        "equipment": 128000000.0,
+        "labor": 79000000.0,
+        "materials": 46960000.0,
+        "development": 18000000.0,
+        "other": 11000000.0
+      },
+      "cost_per_watt_dc": 0.76,
+      "cost_per_watt_ac": 0.943
+    },
+    "scope": {
+      "assumptions": [
+        "Pricing based on 30% design documents dated March 2025.",
+        "New Mexico labor rates and prevailing wage compliance.",
+        "IRA domestic content requirements met.",
+        "Non-union workforce.",
+        "NTP assumed by July 1, 2025.",
+        "Builder's risk insurance provided by Owner.",
+        "24-month workmanship warranty.",
+        "GCR of 0.42 used for system design.",
+        "Sales tax applied per New Mexico renewable energy statutes."
+      ],
+      "exclusions": [
+        "Utility interconnection costs.",
+        "Transmission line upgrades.",
+        "Land acquisition costs.",
+        "Off-site improvements.",
+        "Module washing systems.",
+        "Archaeological monitoring.",
+        "Biological surveys.",
+        "Well drilling or water rights.",
+        "Substation transformer (Owner-provided).",
+        "Change-in-law cost impacts."
+      ],
+      "clarifications": [
+        "Price valid for 60 days from proposal date.",
+        "Payment terms: 10% retainage until final completion.",
+        "Progress payments NET 30.",
+        "Performance testing at plant level included.",
+        "Two-year warranty on all EPC work.",
+        "Equipment warranties assigned to Owner at completion."
+      ],
+      "inclusions": [
+        "Complete EPC services.",
+        "Civil engineering and SWPPP design.",
+        "Site grading and access roads.",
+        "Perimeter fencing (6' chain-link).",
+        "Tracker installation and commissioning.",
+        "DC and MV collection systems.",
+        "SCADA and communications.",
+        "Erosion control and revegetation.",
+        "Commissioning and testing.",
+        "As-built documentation.",
+        "O&M training (5 days)."
+      ]
+    },
+    "metadata": {
+      "filename": "EPC_Alpha_Roswell_Proposal.pdf",
+      "stored_filename": "EPC_Alpha_Roswell_Proposal.pdf",
+      "pdf_path": "C:\\Users\\jclay\\Desktop\\main\\code\\aes\\data\\proposals\\EPC_Alpha_Roswell_Proposal.pdf",
+      "uploaded_at": "2025-10-06T14:31:12.234567",
+      "file_size": 4523187.0
+    }
+  },
+  {
+    "project_info": {
+      "project_name": "Solar Project Delta",
+      "location": {
+        "address": "Roswell Area",
+        "city": "Roswell",
+        "county": "Chaves County",
+        "state": "New Mexico",
+        "coordinates": {
+          "lat": 33.39,
+          "lon": -104.52
+        }
+      },
+      "jurisdiction": "New Mexico"
+    },
+    "epc_contractor": {
+      "company_name": "EPC Beta",
+      "contact_person": "Jane Doe",
+      "phone": "555-0202",
+      "email": "jdoe@epcbeta.com",
+      "proposal_date": "May 1, 2025",
+      "proposal_version": null
+    },
+    "technology": {
+      "type": "PV",
+      "description": "Single-axis tracking solar system"
+    },
+    "capacity": {
+      "ac_mw": 300.0,
+      "dc_mw": 375.0,
+      "storage_mwh": null
+    },
+    "equipment": {
+      "modules": {
+        "manufacturer": "Longi",
+        "model": "LR5-78HBD-625M",
+        "wattage": 625.0
+      },
+      "inverters": {
+        "manufacturer": "Power Electronics",
+        "model": "FS3150"
+      },
+      "racking": {
+        "manufacturer": "GameChange Solar",
+        "type": "Genius Tracker MAX"
+      },
+      "batteries": null
+    },
+    "costs": {
+      "total_project_cost": 262500000.0,
+      "cost_breakdown": {
+        "equipment": 118000000.0,
+        "labor": 72000000.0,
+        "materials": 44500000.0,
+        "development": 17000000.0,
+        "other": 11000000.0
+      },
+      "cost_per_watt_dc": 0.70,
+      "cost_per_watt_ac": 0.875
+    },
+    "scope": {
+      "assumptions": [
+        "Proposal based on Owner-furnished 30% design.",
+        "LNTP required for trackers and major equipment by June 1, 2025.",
+        "15% mobilization payment at NTP.",
+        "Cash neutral payment structure.",
+        "New Mexico prevailing wage rates applied.",
+        "Tax-exempt material procurement where applicable.",
+        "Final site boundaries provided at engineering start.",
+        "0.42 GCR per technical specifications.",
+        "Native backfill suitable for trenching."
+      ],
+      "exclusions": [
+        "Utility interconnection facilities.",
+        "PPA or off-take agreement costs.",
+        "Environmental impact studies.",
+        "Cultural resource surveys.",
+        "Road use agreements with county.",
+        "Import of engineered fill material.",
+        "Dewatering systems.",
+        "Module washing post-installation.",
+        "Vegetation management (long-term).",
+        "Switchyard equipment."
+      ],
+      "clarifications": [
+        "Two-year workmanship warranty included.",
+        "Equipment warranties transferred to Owner.",
+        "Performance testing required for substantial completion.",
+        "Water sourcing from municipal supply or onsite wells.",
+        "OM building construction included (allowance basis)."
+      ],
+      "inclusions": [
+        "Full SWPPP design and implementation.",
+        "Erosion control measures.",
+        "Site grading to design tolerances.",
+        "Access roads and staging areas.",
+        "Security fencing and gates.",
+        "Tracker procurement and installation.",
+        "Domestic content piles and steel.",
+        "Complete DC collection system.",
+        "MV collection to POI.",
+        "SCADA system with fiber backbone.",
+        "Commissioning and performance testing.",
+        "Permanent site seeding."
+      ]
+    },
+    "metadata": {
+      "filename": "EPC_Beta_Roswell_Proposal.pdf",
+      "stored_filename": "EPC_Beta_Roswell_Proposal.pdf",
+      "pdf_path": "C:\\Users\\jclay\\Desktop\\main\\code\\aes\\data\\proposals\\EPC_Beta_Roswell_Proposal.pdf",
+      "uploaded_at": "2025-10-06T14:34:28.876543",
+      "file_size": 3987654.0
+    }
+  },
+  {
+    "project_info": {
+      "project_name": "Solar Project Delta",
+      "location": {
+        "address": "Roswell Area",
+        "city": "Roswell",
+        "county": "Chaves County",
+        "state": "New Mexico",
+        "coordinates": {
+          "lat": 33.39,
+          "lon": -104.52
+        }
+      },
+      "jurisdiction": "New Mexico"
+    },
+    "epc_contractor": {
+      "company_name": "EPC Gamma",
+      "contact_person": "Robert Johnson",
+      "phone": "555-0303",
+      "email": "rjohnson@epcgamma.com",
+      "proposal_date": "May 5, 2025",
+      "proposal_version": null
+    },
+    "technology": {
+      "type": "PV",
+      "description": "Bifacial module PV with single-axis tracking"
+    },
+    "capacity": {
+      "ac_mw": 300.0,
+      "dc_mw": 378.0,
+      "storage_mwh": null
+    },
+    "equipment": {
+      "modules": {
+        "manufacturer": "Trina Solar",
+        "model": "TSM-DEG21C.20 630W",
+        "wattage": 630.0
+      },
+      "inverters": {
+        "manufacturer": "SMA",
+        "model": "SC3150 UP-US"
+      },
+      "racking": {
+        "manufacturer": "Array Technologies",
+        "type": "DuraTrack HZ v3"
+      },
+      "batteries": null
+    },
+    "costs": {
+      "total_project_cost": 275940000.0,
+      "cost_breakdown": {
+        "equipment": 125000000.0,
+        "labor": 76000000.0,
+        "materials": 45940000.0,
+        "development": 18000000.0,
+        "other": 11000000.0
+      },
+      "cost_per_watt_dc": 0.73,
+      "cost_per_watt_ac": 0.920
+    },
+    "scope": {
+      "assumptions": [
+        "Proposal valid 7 days due to market volatility.",
+        "Based on 30% design dated March 15, 2025.",
+        "LNTP payment for long-lead materials.",
+        "Steel pricing indexed to HRC; right to adjust if >5% increase.",
+        "24-month workmanship warranty from substantial completion.",
+        "35-year system design life.",
+        "New Mexico sales tax on applicable materials.",
+        "Permits allowance: $100,000.",
+        "Non-union labor with IRA compliance.",
+        "Domestic pile and tracker content.",
+        "0.42 GCR design basis."
+      ],
+      "exclusions": [
+        "Pre-existing site debris removal.",
+        "Existing fence demolition.",
+        "Owner spare parts (available as adder).",
+        "Pile remediation >2% of total count.",
+        "Special pile coatings.",
+        "Public utility improvements.",
+        "Fence grounding (except at crossings).",
+        "Well improvements or drilling.",
+        "Hazardous material handling.",
+        "Biological monitoring services.",
+        "Module scanning (pallet level).",
+        "Performance guarantees on Owner equipment."
+      ],
+      "clarifications": [
+        "Contractor works with Owner on value engineering.",
+        "Material lead times subject to change.",
+        "All design drawings for Owner review.",
+        "Equipment documentation prior to substantial completion.",
+        "5 days on-site training for Owner's O&M team."
+      ],
+      "inclusions": [
+        "Full EPC scope per design documents.",
+        "All sales tax on Contractor-purchased equipment.",
+        "Recommended spare parts list.",
+        "Complete labor, materials, and services.",
+        "Testing, commissioning, and startup.",
+        "As-built documentation package."
+      ]
+    },
+    "metadata": {
+      "filename": "EPC_Gamma_Roswell_Proposal.pdf",
+      "stored_filename": "EPC_Gamma_Roswell_Proposal.pdf",
+      "pdf_path": "C:\\Users\\jclay\\Desktop\\main\\code\\aes\\data\\proposals\\EPC_Gamma_Roswell_Proposal.pdf",
+      "uploaded_at": "2025-10-06T14:37:55.345678",
+      "file_size": 5123847.0
+    }
+  }
+]
