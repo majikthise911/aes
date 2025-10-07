@@ -121,6 +121,98 @@ class GPTExtractor:
                 "cost_per_watt_dc": float,
                 "cost_per_watt_ac": float
             },
+            "detailed_sov": {
+                "procurement": {
+                    "pv_modules": {"cost": float, "unit_cost": float},
+                    "power_conversion_system": {"cost": float, "unit_cost": float},
+                    "racking_system": {"cost": float, "unit_cost": float},
+                    "pv_pile_supply": {"cost": float, "unit_cost": float},
+                    "battery_storage": {"cost": float, "unit_cost": float},
+                    "gsu_transformer": {"cost": float, "unit_cost": float},
+                    "mv_transformer": {"cost": float, "unit_cost": float}
+                },
+                "design": {
+                    "thirty_percent_design": {"cost": float, "unit_cost": float},
+                    "supplemental_geotech": {"cost": float, "unit_cost": float},
+                    "detailed_design_ifc": {"cost": float, "unit_cost": float},
+                    "civil_design": {"cost": float, "unit_cost": float},
+                    "electrical_design": {"cost": float, "unit_cost": float},
+                    "structural_design": {"cost": float, "unit_cost": float}
+                },
+                "contractor_general": {
+                    "mobilization": {"cost": float, "unit_cost": float},
+                    "general_conditions": {"cost": float, "unit_cost": float},
+                    "permitting": {"cost": float, "unit_cost": float},
+                    "taxes": {"cost": float, "unit_cost": float},
+                    "bonding_insurance": {"cost": float, "unit_cost": float}
+                },
+                "civil_works": {
+                    "site_clearing": {"cost": float, "unit_cost": float},
+                    "laydown_areas": {"cost": float, "unit_cost": float},
+                    "survey_staking": {"cost": float, "unit_cost": float},
+                    "site_grading": {"cost": float, "unit_cost": float},
+                    "water_dust_control": {"cost": float, "unit_cost": float},
+                    "erosion_control": {"cost": float, "unit_cost": float},
+                    "onsite_roads": {"cost": float, "unit_cost": float},
+                    "offsite_roads": {"cost": float, "unit_cost": float},
+                    "seeding_reclamation": {"cost": float, "unit_cost": float},
+                    "fencing_gates": {"cost": float, "unit_cost": float},
+                    "buildings": {"cost": float, "unit_cost": float},
+                    "foundations": {"cost": float, "unit_cost": float}
+                },
+                "pv_mechanical": {
+                    "pile_installation": {"cost": float, "unit_cost": float},
+                    "racking_installation": {"cost": float, "unit_cost": float},
+                    "module_installation": {"cost": float, "unit_cost": float}
+                },
+                "dc_electrical": {
+                    "string_wiring": {"cost": float, "unit_cost": float},
+                    "combiner_boxes": {"cost": float, "unit_cost": float},
+                    "wire_management": {"cost": float, "unit_cost": float},
+                    "dc_homerun_cabling": {"cost": float, "unit_cost": float}
+                },
+                "ac_electrical": {
+                    "inverter_transformer_install": {"cost": float, "unit_cost": float},
+                    "mv_underground_cable": {"cost": float, "unit_cost": float},
+                    "mv_overhead_cable": {"cost": float, "unit_cost": float},
+                    "lv_cable_equipment": {"cost": float, "unit_cost": float}
+                },
+                "controls_communications": {
+                    "scada_das": {"cost": float, "unit_cost": float}
+                },
+                "testing_commissioning": {
+                    "contractor_testing": {"cost": float, "unit_cost": float}
+                },
+                "substation": {
+                    "engineering": {"cost": float, "unit_cost": float},
+                    "general": {"cost": float, "unit_cost": float},
+                    "civil": {"cost": float, "unit_cost": float},
+                    "electrical": {
+                        "grounding": {"cost": float, "unit_cost": float},
+                        "conduit_cable_trench": {"cost": float, "unit_cost": float},
+                        "control_cable": {"cost": float, "unit_cost": float},
+                        "structural_steel": {"cost": float, "unit_cost": float},
+                        "insulators_bus": {"cost": float, "unit_cost": float},
+                        "lighting": {"cost": float, "unit_cost": float},
+                        "hv_mv_switches": {"cost": float, "unit_cost": float},
+                        "arresters": {"cost": float, "unit_cost": float},
+                        "meters": {"cost": float, "unit_cost": float},
+                        "circuit_breakers": {"cost": float, "unit_cost": float},
+                        "transformers": {"cost": float, "unit_cost": float},
+                        "grounding_reactors": {"cost": float, "unit_cost": float},
+                        "capacitor_banks": {"cost": float, "unit_cost": float},
+                        "station_service": {"cost": float, "unit_cost": float},
+                        "auxiliary_power": {"cost": float, "unit_cost": float},
+                        "control_enclosures": {"cost": float, "unit_cost": float}
+                    },
+                    "controls": {"cost": float, "unit_cost": float}
+                },
+                "transmission": {
+                    "engineering": {"cost": float, "unit_cost": float},
+                    "underground": {"cost": float, "unit_cost": float},
+                    "overhead": {"cost": float, "unit_cost": float}
+                }
+            },
             "scope": {
                 "assumptions": ["list of key assumptions"],
                 "exclusions": ["list of key exclusions/items not included"],
@@ -132,10 +224,15 @@ class GPTExtractor:
         Important instructions:
         - If information is not available, use null for that field
         - For costs, look for dollar amounts and convert to numbers (remove $ and commas)
+        - For unit_cost ($/W), look for dollar per watt values
         - For locations, try to extract as much detail as possible
         - For scope section: carefully extract assumptions, exclusions, clarifications, and inclusions from the proposal
         - Look for sections titled "Assumptions", "Exclusions", "Clarifications", "Scope of Work", "Included", "Not Included", etc.
         - Extract the actual list items, not just section headers
+        - For detailed_sov: Look for Schedule of Values (SOV), cost breakdown tables, or detailed pricing sections
+        - Common SOV section names: "Procurement", "Civil Works", "Electrical", "Mechanical", "Substation", "Design", "General Conditions", "Mobilization", "Testing & Commissioning"
+        - Extract line-item costs like: site clearing, grading, fencing, pile installation, racking, DC cabling, MV cable, inverters, transformers, etc.
+        - If a category doesn't apply (e.g., battery_storage for PV-only project), set cost and unit_cost to null
         - Be conservative - only extract information you're confident about
         - Return ONLY valid JSON, no additional text, no markdown, no code blocks
         - Start your response with { and end with }
@@ -148,11 +245,11 @@ class GPTExtractor:
             response = self.client.chat.completions.create(
                 model="gpt-4o",
                 messages=[
-                    {"role": "system", "content": "You are an expert at extracting structured data from technical documents."},
+                    {"role": "system", "content": "You are an expert at extracting structured data from technical documents, especially EPC proposals and Schedules of Values (SOV)."},
                     {"role": "user", "content": f"{prompt}\n\n{text}"}
                 ],
                 temperature=0.1,
-                max_tokens=3000  # Reduced for faster response
+                max_tokens=6000  # Increased for detailed SOV extraction
             )
 
             raw_response = response.choices[0].message.content
@@ -217,7 +314,7 @@ class GPTExtractor:
                         merged['project_info'][key] = value
 
             # Merge other sections similarly
-            for section in ['technology', 'capacity', 'equipment', 'costs']:
+            for section in ['technology', 'capacity', 'equipment', 'costs', 'detailed_sov', 'scope']:
                 if result.get(section):
                     if not merged.get(section):
                         merged[section] = {}

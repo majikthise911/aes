@@ -23,6 +23,7 @@ class ProposalChatbot:
             capacity = proposal.get('capacity', {})
             scope = proposal.get('scope', {})
             project_info = proposal.get('project_info', {})
+            detailed_sov = proposal.get('detailed_sov', {})
 
             proposal_context = f"""
 PROPOSAL #{i}: {epc.get('company_name', 'Unknown EPC')}
@@ -53,9 +54,41 @@ CONTACT:
 - Phone: {epc.get('phone', 'N/A')}
 - Proposal Date: {epc.get('proposal_date', 'N/A')}
 """
+
+            # Add detailed SOV if available
+            if detailed_sov and any(detailed_sov.values()):
+                proposal_context += "\nDETAILED SCHEDULE OF VALUES (SOV):\n"
+                proposal_context += self._format_detailed_sov(detailed_sov)
+
             context_parts.append(proposal_context)
 
         return "\n".join(context_parts)
+
+    def _format_detailed_sov(self, detailed_sov: Dict) -> str:
+        """Format detailed SOV data for chatbot context."""
+        formatted = []
+
+        for category, items in detailed_sov.items():
+            if not items or not isinstance(items, dict):
+                continue
+
+            category_name = category.replace('_', ' ').title()
+            formatted.append(f"\n{category_name}:")
+
+            for item_name, item_data in items.items():
+                if not isinstance(item_data, dict):
+                    continue
+
+                cost = item_data.get('cost')
+                unit_cost = item_data.get('unit_cost')
+
+                if cost and cost > 0:
+                    item_label = item_name.replace('_', ' ').title()
+                    cost_str = f"${cost:,.0f}"
+                    unit_str = f" (${unit_cost:.4f}/W)" if unit_cost else ""
+                    formatted.append(f"  - {item_label}: {cost_str}{unit_str}")
+
+        return "\n".join(formatted) if formatted else "  No detailed SOV data available"
 
     def get_detailed_scope(self, proposals: List[Dict], epc_name: str = None) -> str:
         """Get detailed scope information for specific EPC or all EPCs."""
@@ -119,8 +152,13 @@ Key guidelines:
 - If asked about scope items, reference specific assumptions, exclusions, or clarifications
 - Format responses clearly with bullet points when appropriate
 - If you don't have the information, say so clearly
+- When asked for cost breakdowns or comparisons, create markdown tables
+- You have access to detailed Schedule of Values (SOV) data including line-item costs for civil, electrical, mechanical, substation, and other categories
+- You can filter and aggregate costs by category (e.g., "show me all high voltage costs", "civil work costs", "electrical costs")
+- When creating tables, use proper markdown table format with | and alignment
+- For cost queries, show both absolute costs ($) and unit costs ($/W) when available
 
-You have access to detailed proposal information including costs, equipment specs, scope details, and more."""},
+You have access to detailed proposal information including costs, equipment specs, scope details, detailed SOV line items, and more."""},
             {"role": "user", "content": f"Here is the proposal data I have:\n\n{context}"}
         ]
 
