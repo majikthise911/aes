@@ -1498,19 +1498,16 @@ def show_dashboard(proposals):
             # Get PV DC capacity
             pv_dc_capacity = proposal.get('capacity', {}).get('dc_mw', 0)
 
-            # Check if has BESS
-            bess_power = 0
-            batteries = proposal.get('equipment', {}).get('batteries')
-            if batteries and isinstance(batteries, dict):
-                bess_power = batteries.get('power_mw', 0)
+            # Check if has BESS - use storage capacity (MWh)
+            bess_capacity = proposal.get('capacity', {}).get('storage_mwh', 0)
 
             # Store capacities by project (will take average if multiple proposals)
             if project_name not in project_capacities:
                 project_capacities[project_name] = {'pv': [], 'bess': []}
 
             project_capacities[project_name]['pv'].append(pv_dc_capacity)
-            if bess_power > 0:
-                project_capacities[project_name]['bess'].append(bess_power)
+            if bess_capacity and bess_capacity > 0:
+                project_capacities[project_name]['bess'].append(bess_capacity)
 
         # Calculate technology totals (average per project)
         tech_capacity = {}
@@ -1522,7 +1519,7 @@ def show_dashboard(proposals):
             # Average BESS capacity for this project
             if caps['bess']:
                 avg_bess = sum(caps['bess']) / len(caps['bess'])
-                tech_capacity['BESS'] = tech_capacity.get('BESS', 0) + avg_bess
+                tech_capacity['BESS (MWh)'] = tech_capacity.get('BESS (MWh)', 0) + avg_bess
 
         if tech_capacity:
             fig = px.pie(
