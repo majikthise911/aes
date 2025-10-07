@@ -24,6 +24,7 @@ class ProposalChatbot:
             scope = proposal.get('scope', {})
             project_info = proposal.get('project_info', {})
             detailed_sov = proposal.get('detailed_sov', {})
+            schedule = proposal.get('schedule', {})
 
             proposal_context = f"""
 PROPOSAL #{i}: {epc.get('company_name', 'Unknown EPC')}
@@ -54,6 +55,20 @@ CONTACT:
 - Phone: {epc.get('phone', 'N/A')}
 - Proposal Date: {epc.get('proposal_date', 'N/A')}
 """
+
+            # Add schedule if available
+            if schedule and any(schedule.values()):
+                proposal_context += "\nSCHEDULE:\n"
+                if schedule.get('total_duration_months'):
+                    proposal_context += f"- Total Duration: {schedule['total_duration_months']} months\n"
+                if schedule.get('commercial_operation_date'):
+                    proposal_context += f"- COD: {schedule['commercial_operation_date']}\n"
+                if schedule.get('notice_to_proceed_date'):
+                    proposal_context += f"- NTP: {schedule['notice_to_proceed_date']}\n"
+                if schedule.get('work_schedule'):
+                    proposal_context += f"- Work Schedule: {schedule['work_schedule']}\n"
+                if schedule.get('milestones') and len(schedule['milestones']) > 0:
+                    proposal_context += f"- Key Milestones: {len(schedule['milestones'])} milestones\n"
 
             # Add detailed SOV if available
             if detailed_sov and any(detailed_sov.values()):

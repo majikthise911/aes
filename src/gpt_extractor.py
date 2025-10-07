@@ -218,6 +218,23 @@ class GPTExtractor:
                 "exclusions": ["list of key exclusions/items not included"],
                 "clarifications": ["list of clarifications and special conditions"],
                 "inclusions": ["list of key items included in scope"]
+            },
+            "schedule": {
+                "total_duration_months": float,
+                "total_duration_days": float,
+                "commercial_operation_date": "string (COD)",
+                "notice_to_proceed_date": "string (NTP)",
+                "mobilization_date": "string",
+                "substantial_completion_date": "string",
+                "work_schedule": "string (e.g., '5-10s' or '10 hours, 6 days')",
+                "milestones": [
+                    {
+                        "name": "string (milestone name)",
+                        "date": "string (date or relative timing)",
+                        "description": "string (optional)"
+                    }
+                ],
+                "critical_path_items": ["list of critical path activities if mentioned"]
             }
         }
 
@@ -233,6 +250,11 @@ class GPTExtractor:
         - Common SOV section names: "Procurement", "Civil Works", "Electrical", "Mechanical", "Substation", "Design", "General Conditions", "Mobilization", "Testing & Commissioning"
         - Extract line-item costs like: site clearing, grading, fencing, pile installation, racking, DC cabling, MV cable, inverters, transformers, etc.
         - If a category doesn't apply (e.g., battery_storage for PV-only project), set cost and unit_cost to null
+        - For schedule: Look for project schedule, timeline, Gantt charts, or milestone tables
+        - Common schedule terms: COD (Commercial Operation Date), NTP (Notice to Proceed), Substantial Completion, Mobilization
+        - Extract work schedule format (e.g., "10 hours/day, 6 days/week" or "5-10s")
+        - Look for total project duration in months or days
+        - Extract any milestones with dates or relative timing (e.g., "Month 3", "90 days after NTP")
         - Be conservative - only extract information you're confident about
         - Return ONLY valid JSON, no additional text, no markdown, no code blocks
         - Start your response with { and end with }
@@ -314,7 +336,7 @@ class GPTExtractor:
                         merged['project_info'][key] = value
 
             # Merge other sections similarly
-            for section in ['technology', 'capacity', 'equipment', 'costs', 'detailed_sov', 'scope']:
+            for section in ['technology', 'capacity', 'equipment', 'costs', 'detailed_sov', 'scope', 'schedule']:
                 if result.get(section):
                     if not merged.get(section):
                         merged[section] = {}
