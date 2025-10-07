@@ -402,15 +402,8 @@ Return empty arrays [] if sections not found. No explanatory text, only JSON.
         except:
             return None
 
-    def generate_epc_recommendation_report(self, proposals_data: List[Dict], scope_analysis: Dict = None) -> str:
-        """
-        Generate a comprehensive EPC recommendation report using multi-chain reasoning.
-
-        Uses 3-chain approach:
-        1. Initial analysis of cost, technical specs, and scope
-        2. Deep evaluation considering trade-offs and risks
-        3. Self-critique and final recommendation
-        """
+    def generate_epc_recommendation_report(self, proposals_data: List[Dict]) -> str:
+        """Generate a comprehensive EPC recommendation report using GPT."""
 
         if not proposals_data:
             return "No proposals available for analysis."
@@ -418,208 +411,68 @@ Return empty arrays [] if sections not found. No explanatory text, only JSON.
         # Prepare the data summary for GPT analysis
         summary = self._prepare_proposals_summary(proposals_data)
 
-        # Get scope analysis summary if available
-        scope_summary = ""
-        if scope_analysis:
-            scope_summary = f"""
+        prompt = f"""
+        You are an expert EPC (Engineering, Procurement, Construction) consultant specializing in renewable energy project evaluation. You have been asked to analyze multiple EPC contractor proposals for the same project and provide a comprehensive recommendation.
 
-SCOPE ANALYSIS RESULTS:
-{scope_analysis.get('final_assessment', 'No scope analysis available')}
-"""
+        Based on the proposal data provided, please generate a detailed recommendation report that includes:
+
+        1. **EXECUTIVE SUMMARY**
+           - Your top recommended EPC contractor
+           - Key reasoning in 2-3 sentences
+
+        2. **DETAILED ANALYSIS**
+           - Cost Analysis: Compare total costs, cost per watt, and cost breakdowns
+           - Technical Analysis: Evaluate equipment choices, technology approaches
+           - Risk Assessment: Identify potential risks with each contractor
+           - Value Analysis: Consider value proposition beyond just lowest cost
+
+        3. **CONTRACTOR PROFILES**
+           - Brief assessment of each EPC contractor's proposal
+           - Strengths and weaknesses of each
+
+        4. **FINANCIAL COMPARISON**
+           - Cost ranking and analysis
+           - Value for money assessment
+           - Financial risk considerations
+
+        5. **TECHNICAL EVALUATION**
+           - Equipment quality and reliability
+           - Technology compatibility
+           - Installation approach
+
+        6. **RECOMMENDATION & JUSTIFICATION**
+           - Final recommendation with detailed justification
+           - Risk mitigation suggestions
+           - Next steps and considerations
+
+        7. **ALTERNATIVE SCENARIOS**
+           - If budget is the primary concern
+           - If quality/reliability is the primary concern
+           - If timeline is critical
+
+        Please be objective, thorough, and provide actionable insights. Focus on practical business considerations that would help in making the final EPC selection decision.
+
+        PROPOSAL DATA:
+        {summary}
+
+        Please provide a well-structured, professional report suitable for executive decision-making.
+        """
 
         try:
-            # CHAIN 1: Initial Comprehensive Analysis
-            chain1_result = self._chain1_initial_recommendation(summary, scope_summary)
+            response = self.client.chat.completions.create(
+                model="gpt-4o",
+                messages=[
+                    {"role": "system", "content": "You are an expert EPC consultant and technical advisor with 20+ years of experience in renewable energy project evaluation and contractor selection."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.3,
+                max_tokens=6000
+            )
 
-            # CHAIN 2: Deep Evaluation
-            chain2_result = self._chain2_deep_evaluation(summary, scope_summary, chain1_result)
-
-            # CHAIN 3: Self-Critique and Final Recommendation
-            chain3_result = self._chain3_final_recommendation(summary, scope_summary, chain1_result, chain2_result)
-
-            return chain3_result
+            return response.choices[0].message.content
 
         except Exception as e:
             return f"Error generating recommendation report: {str(e)}"
-
-    def _chain1_initial_recommendation(self, proposals_summary: str, scope_summary: str) -> str:
-        """Chain 1: Initial comprehensive analysis."""
-
-        prompt = f"""You are an expert EPC consultant conducting the INITIAL ANALYSIS phase.
-
-Analyze the proposals and provide:
-
-1. **COST ANALYSIS**
-   - Total cost comparison and ranking
-   - Cost per watt analysis
-   - Cost breakdown evaluation (equipment, labor, materials)
-   - Value assessment
-
-2. **TECHNICAL ANALYSIS**
-   - Equipment quality comparison (modules, inverters, racking)
-   - Technology approach evaluation
-   - Technical specifications assessment
-
-3. **SCOPE ANALYSIS**
-   - Comprehensiveness of each proposal's scope
-   - Key assumptions and their implications
-   - Important exclusions and risks
-   - Clarity of deliverables
-
-4. **INITIAL CONTRACTOR ASSESSMENT**
-   - Strengths of each contractor's proposal
-   - Weaknesses and concerns
-   - Completeness of information
-
-PROPOSAL DATA:
-{proposals_summary}
-{scope_summary}
-
-Provide objective, data-driven analysis. Be thorough and identify any red flags or concerns."""
-
-        response = self.client.chat.completions.create(
-            model="gpt-4o",
-            messages=[
-                {"role": "system", "content": "You are a senior EPC consultant with 20+ years of experience in renewable energy project evaluation. This is Chain 1: Initial Analysis."},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.2,
-            max_tokens=3000
-        )
-
-        return response.choices[0].message.content
-
-    def _chain2_deep_evaluation(self, proposals_summary: str, scope_summary: str, chain1_analysis: str) -> str:
-        """Chain 2: Deep evaluation considering trade-offs."""
-
-        prompt = f"""You are an expert EPC consultant conducting DEEP EVALUATION phase.
-
-Review the initial analysis and provide:
-
-1. **TRADE-OFF ANALYSIS**
-   - Cost vs. Quality considerations
-   - Risk vs. Value assessment
-   - Short-term vs. Long-term implications
-
-2. **RISK ASSESSMENT**
-   - Financial risks with each option
-   - Technical risks and mitigation strategies
-   - Scope-related risks (missing items, unclear terms)
-   - Execution risks
-
-3. **VALUE ENGINEERING PERSPECTIVE**
-   - Where can costs be optimized?
-   - Are premium costs justified?
-   - Hidden value in proposals
-
-4. **STRATEGIC CONSIDERATIONS**
-   - Contractor reputation and track record implications
-   - Equipment quality and long-term reliability
-   - Warranty and support considerations
-
-5. **SCENARIO ANALYSIS**
-   - Best option if budget is primary concern
-   - Best option if quality/reliability is primary
-   - Best option if timeline is critical
-   - Balanced recommendation
-
-INITIAL ANALYSIS:
-{chain1_analysis}
-
-PROPOSAL DATA:
-{proposals_summary}
-{scope_summary}
-
-Challenge the initial analysis. Look for nuances and considerations that might have been missed."""
-
-        response = self.client.chat.completions.create(
-            model="gpt-4o",
-            messages=[
-                {"role": "system", "content": "You are a senior EPC consultant specializing in risk assessment and value engineering. This is Chain 2: Deep Evaluation."},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.3,
-            max_tokens=3000
-        )
-
-        return response.choices[0].message.content
-
-    def _chain3_final_recommendation(self, proposals_summary: str, scope_summary: str,
-                                     chain1_analysis: str, chain2_evaluation: str) -> str:
-        """Chain 3: Self-critique and final recommendation."""
-
-        prompt = f"""You are the lead EPC consultant providing the FINAL RECOMMENDATION.
-
-Review both previous analyses and create a comprehensive executive report.
-
-**Your task:**
-1. Synthesize findings from both analysis phases
-2. Identify any contradictions or gaps in reasoning
-3. Provide clear, actionable recommendation
-4. Structure as a professional executive report
-
-**Required report structure:**
-
-## EXECUTIVE SUMMARY
-- Top recommended EPC contractor
-- Key reasoning (2-3 sentences)
-- Estimated cost and value proposition
-
-## DETAILED FINDINGS
-
-### Financial Analysis
-[Cost comparison, value assessment, budget implications]
-
-### Technical Evaluation
-[Equipment quality, technology approach, specifications]
-
-### Scope & Risk Assessment
-[Scope comprehensiveness, key risks, mitigation strategies]
-
-### Contractor Comparison
-[Head-to-head comparison with strengths/weaknesses]
-
-## FINAL RECOMMENDATION
-
-### Primary Recommendation
-[Contractor name, justification, expected outcomes]
-
-### Risk Mitigation Plan
-[Key risks and how to address them]
-
-### Alternative Options
-- If budget is primary concern: [recommendation]
-- If quality is primary concern: [recommendation]
-- If timeline is critical: [recommendation]
-
-## NEXT STEPS
-[Actionable items for moving forward]
-
----
-
-CHAIN 1 ANALYSIS:
-{chain1_analysis}
-
-CHAIN 2 EVALUATION:
-{chain2_evaluation}
-
-PROPOSAL DATA:
-{proposals_summary}
-{scope_summary}
-
-Create a polished, executive-ready report that provides clear direction for EPC selection."""
-
-        response = self.client.chat.completions.create(
-            model="gpt-4o",
-            messages=[
-                {"role": "system", "content": "You are the lead EPC consultant synthesizing all analysis into a final executive recommendation. This is Chain 3: Final Recommendation."},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.2,
-            max_tokens=4000
-        )
-
-        return response.choices[0].message.content
 
     def _prepare_proposals_summary(self, proposals_data: List[Dict]) -> str:
         """Prepare a structured summary of proposals for GPT analysis."""
@@ -724,7 +577,6 @@ Scope of Work:
             "initial_analysis": chain1_analysis,
             "significance_evaluation": chain2_evaluation,
             "final_assessment": chain3_validation,
-            "proposal_count": len(proposals_data),  # Track how many proposals were analyzed
             "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
 

@@ -49,10 +49,23 @@ def initialize_session_state():
             st.stop()
 
 def main():
-    st.markdown('<div class="main-header">⚡ EPC Proposal Dashboard</div>', unsafe_allow_html=True)
+    # Main header with logo
+    col_logo, col_title = st.columns([1, 5])
+    with col_logo:
+        logo_path = os.path.join(os.path.dirname(__file__), "Screenshot 2025-10-07 090943.png")
+        if os.path.exists(logo_path):
+            st.image(logo_path, width=150)
+    with col_title:
+        st.markdown('<div class="main-header">EPC Proposal Dashboard</div>', unsafe_allow_html=True)
 
     # Sidebar
     with st.sidebar:
+        # Logo at the top
+        logo_path = os.path.join(os.path.dirname(__file__), "Screenshot 2025-10-07 090943.png")
+        if os.path.exists(logo_path):
+            st.image(logo_path, use_container_width=True)
+            st.divider()
+
         # Command Chat at the top
         st.header("💬 AI Assistant")
 
@@ -63,7 +76,7 @@ def main():
 
         if 'command_messages' not in st.session_state:
             st.session_state.command_messages = [
-                {"role": "assistant", "content": "👋 Hi! I can help you manage your proposals. Try:\n- 'Add cost data from Excel to Blattner'\n- 'Show only proposals under $500M'\n- 'Delete a proposal'\n\nJust tell me what you need!"}
+                {"role": "assistant", "content": "👋 Hi! I can help you manage your proposals with natural language commands.\n\nI can edit proposal data, fix typos, delete proposals, and add cost data from Excel files.\n\n💡 Click 'Example Commands' below to see what I can do!"}
             ]
 
         # Show chat messages
@@ -74,6 +87,31 @@ def main():
                     st.markdown(f"**You:** {msg['content']}")
                 else:
                     st.markdown(f"**AI:** {msg['content']}")
+
+        # Examples dropdown
+        with st.expander("💡 Example Commands"):
+            st.markdown("""
+**Edit Proposal Data:**
+- `Change EPC Alpha's total cost to $500M`
+- `Update Solar Project Charlie AC capacity to 450 MW`
+- `Set EPC Beta's DC capacity to 500 MW`
+- `Change Roswell project's AC capacity to 310 MW`
+
+**Fix Typos & Corrections:**
+- `Fix typo: change project name from 'Chralie' to 'Charlie'`
+- `Update EPC Alpha contact to john.smith@epcalpha.com`
+- `Change all 'Solar Project Alfa' to 'Solar Project Alpha'`
+
+**Delete Proposals:**
+- `Delete all EPC Beta proposals`
+- `Remove Solar Project Delta`
+- `Delete the proposal from EPC Gamma for Austin project`
+
+**Add Cost Data from Excel:**
+- Upload an Excel file with Schedule of Values, then say:
+- `Add cost data to EPC Alpha`
+- `Update costs for Solar Project Charlie from this Excel`
+            """)
 
         # Command input
         command_input = st.text_input("Command:", key="command_input", placeholder="What would you like to do?")
@@ -119,6 +157,29 @@ def main():
 
                 elif intent['action'] == 'add_cost_data' and not command_file:
                     response_msg = "📎 Please upload an Excel file with cost data, then send your command again."
+
+                elif intent['action'] == 'edit_proposal':
+                    # Edit proposal data
+                    success, msg = st.session_state.command_ai.edit_proposal_data(all_proposals, intent)
+
+                    if success:
+                        save_proposals()
+                        response_msg = f"✅ {msg}"
+                    else:
+                        response_msg = f"❌ {msg}"
+
+                elif intent['action'] == 'delete_proposal':
+                    # Delete proposal(s)
+                    success, msg, indices = st.session_state.command_ai.delete_proposal(all_proposals, intent)
+
+                    if success:
+                        # Delete proposals by index (in reverse order to avoid index shifting)
+                        for idx in sorted(indices, reverse=True):
+                            del st.session_state.data_manager.proposals[idx]
+                        save_proposals()
+                        response_msg = f"✅ {msg}"
+                    else:
+                        response_msg = f"❌ {msg}"
 
                 elif intent['action'] == 'question':
                     response_msg = "💡 For questions, please use the 'Ask AI' tab in the main area where I can provide detailed answers!"

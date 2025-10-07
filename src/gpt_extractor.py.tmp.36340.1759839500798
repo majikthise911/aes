@@ -424,7 +424,7 @@ Return empty arrays [] if sections not found. No explanatory text, only JSON.
             scope_summary = f"""
 
 SCOPE ANALYSIS RESULTS:
-{scope_analysis.get('final_assessment', 'No scope analysis available')}
+{scope_analysis.get('chain3_validation', {}).get('final_assessment', 'No scope analysis available')}
 """
 
         try:
@@ -724,7 +724,6 @@ Scope of Work:
             "initial_analysis": chain1_analysis,
             "significance_evaluation": chain2_evaluation,
             "final_assessment": chain3_validation,
-            "proposal_count": len(proposals_data),  # Track how many proposals were analyzed
             "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
 

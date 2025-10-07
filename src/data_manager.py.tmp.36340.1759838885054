@@ -196,13 +196,3 @@ class DataManager:
 
         # Clear proposals list
         self.proposals = []
-
-    def update_comments(self, filename: str, comment: str) -> bool:
-        """Update comment for a specific proposal by filename."""
-        for proposal in self.proposals:
-            if proposal.get('metadata', {}).get('filename') == filename:
-                if 'metadata' not in proposal:
-                    proposal['metadata'] = {}
-                proposal['metadata']['comments'] = comment
-                return True
-        return False
