@@ -1658,6 +1658,209 @@ def show_cost_comparison(proposals):
             use_container_width=True
         )
 
+    st.divider()
+
+    # Detailed Schedule of Values (SOV) Section
+    st.subheader("💰 Detailed Schedule of Values (SOV)")
+
+    # Check if any proposals have detailed SOV data
+    proposals_with_sov = [p for p in proposals if p.get('detailed_sov')]
+
+    if not proposals_with_sov:
+        st.info("No detailed SOV data available. Upload proposals with detailed cost breakdowns to see line-item analysis.")
+    else:
+        st.write(f"**{len(proposals_with_sov)} proposal(s) with detailed SOV data**")
+
+        # Category selector
+        sov_categories = [
+            "All Categories",
+            "Procurement",
+            "Design",
+            "Contractor General",
+            "Civil Works",
+            "PV Mechanical",
+            "DC Electrical",
+            "AC Electrical",
+            "Controls & Communications",
+            "Testing & Commissioning",
+            "Substation",
+            "Transmission"
+        ]
+
+        selected_category = st.selectbox("Select SOV Category to View:", sov_categories)
+
+        # Build comparison table
+        show_detailed_sov_comparison(proposals_with_sov, selected_category)
+
+def show_detailed_sov_comparison(proposals, selected_category):
+    """Display detailed SOV comparison table across EPCs."""
+    import pandas as pd
+
+    # Build comparison data
+    comparison_data = []
+
+    # Map display names to data keys
+    category_map = {
+        "Procurement": "procurement",
+        "Design": "design",
+        "Contractor General": "contractor_general",
+        "Civil Works": "civil_works",
+        "PV Mechanical": "pv_mechanical",
+        "DC Electrical": "dc_electrical",
+        "AC Electrical": "ac_electrical",
+        "Controls & Communications": "controls_communications",
+        "Testing & Commissioning": "testing_commissioning",
+        "Substation": "substation",
+        "Transmission": "transmission"
+    }
+
+    if selected_category == "All Categories":
+        # Show category-level summary
+        for proposal in proposals:
+            epc_name = proposal.get('epc_contractor', {}).get('company_name', 'Unknown')
+            detailed_sov = proposal.get('detailed_sov', {})
+
+            for category_display, category_key in category_map.items():
+                category_data = detailed_sov.get(category_key, {})
+                if not category_data:
+                    continue
+
+                # Calculate category total
+                total_cost = 0
+                total_unit_cost = 0
+                item_count = 0
+
+                for item_name, item_data in category_data.items():
+                    if isinstance(item_data, dict):
+                        cost = item_data.get('cost')
+                        unit_cost = item_data.get('unit_cost')
+                        if cost and cost > 0:
+                            total_cost += cost
+                            if unit_cost:
+                                total_unit_cost += unit_cost
+                            item_count += 1
+                    elif item_name == 'electrical' and isinstance(item_data, dict):
+                        # Handle substation electrical subcategory
+                        for sub_item_name, sub_item_data in item_data.items():
+                            if isinstance(sub_item_data, dict):
+                                cost = sub_item_data.get('cost')
+                                unit_cost = sub_item_data.get('unit_cost')
+                                if cost and cost > 0:
+                                    total_cost += cost
+                                    if unit_cost:
+                                        total_unit_cost += unit_cost
+                                    item_count += 1
+
+                if total_cost > 0:
+                    comparison_data.append({
+                        'EPC': epc_name,
+                        'Category': category_display,
+                        'Total Cost': total_cost,
+                        'Unit Cost ($/W)': total_unit_cost,
+                        'Line Items': item_count
+                    })
+
+        if comparison_data:
+            df = pd.DataFrame(comparison_data)
+            # Pivot for better comparison
+            pivot_df = df.pivot_table(
+                index='Category',
+                columns='EPC',
+                values='Total Cost',
+                aggfunc='sum'
+            ).fillna(0)
+
+            st.dataframe(
+                pivot_df.style.format("${:,.0f}"),
+                use_container_width=True
+            )
+
+            # Show breakdown chart
+            st.write("### Cost Breakdown by Category")
+            chart_data = df.groupby('Category')['Total Cost'].sum().sort_values(ascending=False)
+            st.bar_chart(chart_data)
+
+    else:
+        # Show line-item detail for selected category
+        category_key = category_map.get(selected_category)
+        if not category_key:
+            st.warning("Invalid category selected")
+            return
+
+        for proposal in proposals:
+            epc_name = proposal.get('epc_contractor', {}).get('company_name', 'Unknown')
+            detailed_sov = proposal.get('detailed_sov', {})
+            category_data = detailed_sov.get(category_key, {})
+
+            if not category_data:
+                continue
+
+            for item_name, item_data in category_data.items():
+                if isinstance(item_data, dict) and 'cost' in item_data:
+                    cost = item_data.get('cost')
+                    unit_cost = item_data.get('unit_cost')
+
+                    if cost and cost > 0:
+                        comparison_data.append({
+                            'EPC': epc_name,
+                            'Line Item': item_name.replace('_', ' ').title(),
+                            'Cost': cost,
+                            'Unit Cost ($/W)': unit_cost if unit_cost else 0
+                        })
+                elif item_name == 'electrical' and isinstance(item_data, dict):
+                    # Handle substation electrical subcategory
+                    for sub_item_name, sub_item_data in item_data.items():
+                        if isinstance(sub_item_data, dict):
+                            cost = sub_item_data.get('cost')
+                            unit_cost = sub_item_data.get('unit_cost')
+
+                            if cost and cost > 0:
+                                comparison_data.append({
+                                    'EPC': epc_name,
+                                    'Line Item': f"Electrical - {sub_item_name.replace('_', ' ').title()}",
+                                    'Cost': cost,
+                                    'Unit Cost ($/W)': unit_cost if unit_cost else 0
+                                })
+
+        if comparison_data:
+            df = pd.DataFrame(comparison_data)
+
+            # Create pivot table
+            pivot_df = df.pivot_table(
+                index='Line Item',
+                columns='EPC',
+                values='Cost',
+                aggfunc='sum'
+            ).fillna(0)
+
+            # Add delta columns
+            epc_columns = pivot_df.columns.tolist()
+            if len(epc_columns) > 1:
+                pivot_df['Lowest'] = pivot_df.min(axis=1)
+                pivot_df['Highest'] = pivot_df.max(axis=1)
+                pivot_df['Spread'] = pivot_df['Highest'] - pivot_df['Lowest']
+
+            st.dataframe(
+                pivot_df.style.format("${:,.0f}"),
+                use_container_width=True
+            )
+
+            # Summary metrics
+            st.write("### Summary")
+            col1, col2, col3 = st.columns(3)
+
+            total_by_epc = df.groupby('EPC')['Cost'].sum()
+            with col1:
+                st.metric("Lowest Category Total", f"${total_by_epc.min():,.0f}")
+            with col2:
+                st.metric("Highest Category Total", f"${total_by_epc.max():,.0f}")
+            with col3:
+                st.metric("Cost Spread", f"${total_by_epc.max() - total_by_epc.min():,.0f}")
+
+        else:
+            st.info(f"No cost data available for {selected_category} category")
+
+
 def show_ai_analysis(proposals):
     """Consolidated AI features: Scope analysis, recommendation report, chatbot."""
     st.subheader("🤖 AI-Powered Analysis")
