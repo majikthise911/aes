@@ -1862,10 +1862,42 @@ def show_detailed_sov_comparison(proposals, selected_category):
                 use_container_width=True
             )
 
-            # Show breakdown chart
+            # Show breakdown chart with grouped bars by EPC
             st.write("### Cost Breakdown by Category")
-            chart_data = df.groupby('Category')['Total Cost'].sum().sort_values(ascending=False)
-            st.bar_chart(chart_data)
+
+            # Create plotly grouped bar chart
+            import plotly.express as px
+
+            # Sort categories by total cost (descending)
+            category_totals = df.groupby('Category')['Total Cost'].sum().sort_values(ascending=False)
+            df['Category'] = pd.Categorical(df['Category'], categories=category_totals.index, ordered=True)
+            df_sorted = df.sort_values('Category')
+
+            fig = px.bar(
+                df_sorted,
+                x='Category',
+                y='Total Cost',
+                color='EPC',
+                barmode='group',
+                title='SOV Category Costs by EPC',
+                labels={'Total Cost': 'Total Cost ($)', 'Category': 'SOV Category'},
+                text='Total Cost'
+            )
+
+            # Format text on bars
+            fig.update_traces(texttemplate='$%{text:,.0f}', textposition='outside')
+
+            # Update layout
+            fig.update_layout(
+                xaxis_title="SOV Category",
+                yaxis_title="Total Cost ($)",
+                yaxis=dict(tickformat="$,.0f"),
+                legend_title="EPC Contractor",
+                height=500,
+                showlegend=True
+            )
+
+            st.plotly_chart(fig, use_container_width=True)
 
     else:
         # Show line-item detail for selected category
