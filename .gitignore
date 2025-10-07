@@ -3,4 +3,4 @@ __pycache__/
 *.pyc
 *.pyo
 data/proposals/*.pdf
-data/proposals.json
+data/proposals_backup.json

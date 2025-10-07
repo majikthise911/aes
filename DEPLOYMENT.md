@@ -61,11 +61,21 @@ aes/
 │   ├── chatbot.py        # AI chatbot
 │   └── command_ai.py     # Natural language commands
 ├── data/
-│   ├── proposals.json    # Proposal data storage
-│   └── proposals/        # PDF storage
+│   ├── proposals.json    # Demo data (10 anonymized proposals) - COMMITTED
+│   └── proposals/        # PDF storage (NOT committed)
 └── Screenshot 2025-10-07 090943.png  # Logo
 
 ```
+
+## Demo Data
+
+The deployed app includes 10 anonymized demo proposals:
+- 4 projects: Solar Project Alpha, Beta, Charlie, Delta
+- Multiple EPCs: EPC Alpha, Beta, Gamma, Delta
+- Includes PV + BESS (battery storage) configurations
+- All cost and technical data is synthetic for demonstration
+
+This demo data allows users to explore the app's features immediately after deployment.
 
 ## Environment Variables
 
