@@ -3435,9 +3435,7 @@
       "batteries": {
         "manufacturer": "Tesla",
         "model": "Megapack 2XL",
-        "capacity_kwh": 800000.0,
-        "power_mw": 200.0,
-        "duration_hours": 4.0
+        "capacity_kwh": 3916
       }
     },
     "costs": {
@@ -3940,11 +3938,9 @@
         "type": "Genius Tracker MAX"
       },
       "batteries": {
-        "manufacturer": "Tesla",
-        "model": "Megapack 2XL",
-        "capacity_kwh": 800000.0,
-        "power_mw": 200.0,
-        "duration_hours": 4.0
+        "manufacturer": "BYD",
+        "model": "Battery-Box Premium HVS",
+        "capacity_kwh": 5120
       }
     },
     "costs": {
@@ -4447,11 +4443,9 @@
         "type": "DuraTrack HZ v3"
       },
       "batteries": {
-        "manufacturer": "Tesla",
-        "model": "Megapack 2XL",
-        "capacity_kwh": 800000.0,
-        "power_mw": 200.0,
-        "duration_hours": 4.0
+        "manufacturer": "LG Energy Solution",
+        "model": "RESU",
+        "capacity_kwh": 4800
       }
     },
     "costs": {

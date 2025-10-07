@@ -1644,8 +1644,8 @@ def show_cost_comparison(proposals):
 
     st.divider()
 
-    # Detailed comparison table
-    st.subheader("📋 Detailed EPC Comparison")
+    # High-level comparison table
+    st.subheader("📋 High-Level EPC Summary")
     df = st.session_state.data_manager.create_epc_ranking_dataframe(proposals)
     if not df.empty:
         st.dataframe(
@@ -1706,78 +1706,74 @@ def show_cost_comparison(proposals):
         show_detailed_sov_comparison(proposals_with_sov, selected_category)
 
 def show_bid_assumptions_comparison(proposals):
-    """Display bid assumptions comparison table."""
+    """Display bid assumptions comparison table - items as rows, EPCs as columns."""
     import pandas as pd
 
-    comparison_data = []
+    # Build data dictionary: {item_name: {epc_name: value}}
+    comparison_dict = {}
+    epc_columns = []
 
     for proposal in proposals:
         epc_name = proposal.get('epc_contractor', {}).get('company_name', 'Unknown')
         project_name = proposal.get('project_info', {}).get('project_name', 'Unknown')
         bid_assumptions = proposal.get('bid_assumptions', {})
         capacity = proposal.get('capacity', {})
+        equipment = proposal.get('equipment', {})
 
-        comparison_data.append({
-            'EPC': epc_name,
-            'Project': project_name,
+        # Create column name as "EPC - Project"
+        col_name = f"{epc_name}"
+        epc_columns.append(col_name)
+
+        # Add all assumption items
+        items = {
             'Pricing Type': bid_assumptions.get('pricing_type', 'N/A'),
+            'Bidder': epc_name,
+            'Project Name': project_name,
             'Bid Date': bid_assumptions.get('bid_date', 'N/A'),
-            'MWAC': capacity.get('ac_mw', 0),
-            'MWDC': capacity.get('dc_mw', 0),
+            'State': proposal.get('project_info', {}).get('location', {}).get('state', 'N/A'),
+            'MWAC (Total)': capacity.get('ac_mw', 'N/A'),
+            'MWAC (PV)': capacity.get('ac_mw', 'N/A'),
+            'MWDC (PV)': capacity.get('dc_mw', 'N/A'),
             'Storage (MWh)': capacity.get('storage_mwh') if capacity.get('storage_mwh') else 'N/A',
             'PV Design Basis': bid_assumptions.get('pv_design_basis', 'N/A'),
             'HV Design Basis': bid_assumptions.get('hv_design_basis', 'N/A'),
             'Work Schedule': bid_assumptions.get('work_schedule', 'N/A'),
             'Labor Rate': bid_assumptions.get('labor_rate', 'N/A'),
-            'Sales Tax': bid_assumptions.get('sales_tax_exemption', 'N/A'),
-            'Module Type': bid_assumptions.get('module_type', 'N/A'),
-            'Inverter Type': bid_assumptions.get('inverter_type', 'N/A'),
-            'Racking Type': bid_assumptions.get('racking_type', 'N/A'),
+            'Sales Tax Exemption': bid_assumptions.get('sales_tax_exemption', 'N/A'),
+            'Module Type': equipment.get('modules', {}).get('manufacturer', 'N/A') + ' ' + equipment.get('modules', {}).get('model', ''),
+            'Inverter Type (PV)': equipment.get('inverters', {}).get('manufacturer', 'N/A') + ' ' + equipment.get('inverters', {}).get('model', ''),
+            'Racking Type': equipment.get('racking', {}).get('manufacturer', 'N/A') + ' ' + equipment.get('racking', {}).get('type', ''),
+            'Battery Type': equipment.get('batteries', {}).get('manufacturer', 'N/A') + ' ' + equipment.get('batteries', {}).get('model', '') if equipment.get('batteries', {}).get('manufacturer') else 'N/A',
+            'Battery Capacity (kWh)': equipment.get('batteries', {}).get('capacity_kwh', 'N/A') if equipment.get('batteries', {}).get('capacity_kwh') else 'N/A',
             'Pile Size': bid_assumptions.get('pile_size', 'N/A'),
-            'Galvanized': bid_assumptions.get('pile_galvanized', 'N/A'),
-            'Pre-drill %': bid_assumptions.get('predrill_percentage', 'N/A'),
+            'Galvanized (Y/N and mil thickness)': bid_assumptions.get('pile_galvanized', 'N/A'),
+            'Pre-drill (%)': bid_assumptions.get('predrill_percentage', 'N/A'),
             'Pre-drill $/Pile': f"${bid_assumptions.get('predrill_cost_per_pile'):,.2f}" if bid_assumptions.get('predrill_cost_per_pile') else 'N/A',
-            'Pile Refusal %': bid_assumptions.get('pile_refusal_percentage', 'N/A'),
+            'Pile Refusal % Assumed': bid_assumptions.get('pile_refusal_percentage', 'N/A'),
             'Racking Spares': bid_assumptions.get('racking_spares', 'N/A'),
-            'Domestic Content Steel': bid_assumptions.get('domestic_content_steel', 'N/A'),
-            'Domestic Content Tracker': bid_assumptions.get('domestic_content_tracker', 'N/A')
-        })
+            'IRS Domestic Content Steel': bid_assumptions.get('domestic_content_steel', 'N/A'),
+            'IRS Domestic Content Tracker': bid_assumptions.get('domestic_content_tracker', 'N/A')
+        }
 
-    if comparison_data:
-        df = pd.DataFrame(comparison_data)
+        # Add each item to comparison dict
+        for item_name, value in items.items():
+            if item_name not in comparison_dict:
+                comparison_dict[item_name] = {}
+            comparison_dict[item_name][col_name] = value
 
-        # Show in expandable sections
-        st.write(f"**{len(comparison_data)} proposal(s) with bid assumptions**")
+    if comparison_dict:
+        # Convert to DataFrame with items as rows, EPCs as columns
+        df = pd.DataFrame(comparison_dict).T
+        df.columns.name = 'CATEGORY'
+        df.index.name = 'Assumption/Item'
 
-        # General Info
-        with st.expander("📊 General Information", expanded=True):
-            general_df = df[['EPC', 'Project', 'Pricing Type', 'Bid Date', 'MWAC', 'MWDC', 'Storage (MWh)', 'Work Schedule', 'Labor Rate', 'Sales Tax']].copy()
-            st.dataframe(general_df, use_container_width=True, hide_index=True)
+        st.write(f"**{len(proposals)} proposal(s) comparison**")
+        st.dataframe(df, use_container_width=True, height=800)
 
-        # Design Basis
-        with st.expander("📐 Design Basis"):
-            design_df = df[['EPC', 'Project', 'PV Design Basis', 'HV Design Basis']].copy()
-            st.dataframe(design_df, use_container_width=True, hide_index=True)
-
-        # Equipment Specifications
-        with st.expander("⚡ Equipment Specifications"):
-            equip_df = df[['EPC', 'Project', 'Module Type', 'Inverter Type', 'Racking Type']].copy()
-            st.dataframe(equip_df, use_container_width=True, hide_index=True)
-
-        # Pile & Foundation Details
-        with st.expander("🔩 Pile & Foundation Details"):
-            pile_df = df[['EPC', 'Project', 'Pile Size', 'Galvanized', 'Pre-drill %', 'Pre-drill $/Pile', 'Pile Refusal %', 'Racking Spares']].copy()
-            st.dataframe(pile_df, use_container_width=True, hide_index=True)
-
-        # Domestic Content Requirements
-        with st.expander("🇺🇸 Domestic Content / IRA Compliance"):
-            domestic_df = df[['EPC', 'Project', 'Domestic Content Steel', 'Domestic Content Tracker']].copy()
-            st.dataframe(domestic_df, use_container_width=True, hide_index=True)
-
-        # Download full comparison
+        # Download button
         st.download_button(
-            label="📥 Download Full Bid Assumptions Comparison (CSV)",
-            data=df.to_csv(index=False).encode('utf-8'),
+            label="📥 Download Bid Assumptions Comparison (CSV)",
+            data=df.to_csv().encode('utf-8'),
             file_name=f"bid_assumptions_comparison_{pd.Timestamp.now().strftime('%Y%m%d')}.csv",
             mime="text/csv"
         )
