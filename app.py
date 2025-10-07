@@ -66,7 +66,110 @@ def main():
             st.image(logo_path, use_container_width=True)
             st.divider()
 
-        # Command Chat at the top
+        # Manage Proposals section
+        st.header("📁 Manage Proposals")
+
+        # Create tabs for upload methods
+        upload_tab, existing_tab = st.tabs(["Upload New", "Load Existing"])
+
+        with upload_tab:
+            # File upload section
+            uploaded_files = st.file_uploader(
+                "Upload EPC Proposals",
+                type=['pdf', 'xlsx', 'xls'],
+                accept_multiple_files=True,
+                help="Upload PDF proposals and Excel schedule of values"
+            )
+
+            if uploaded_files:
+                process_uploaded_files(uploaded_files)
+
+        with existing_tab:
+            st.write("Load previously stored PDFs from data folder")
+
+            # Get existing PDFs
+            existing_pdfs = get_existing_pdfs()
+
+            if not existing_pdfs:
+                st.info("No PDFs found in data/proposals folder")
+            else:
+                st.write(f"**{len(existing_pdfs)} PDF(s) available:**")
+
+                # Show PDFs with checkboxes
+                if 'selected_pdfs' not in st.session_state:
+                    st.session_state.selected_pdfs = set()
+
+                for pdf in existing_pdfs:
+                    col1, col2 = st.columns([3, 1])
+                    with col1:
+                        is_checked = st.checkbox(
+                            pdf['filename'],
+                            key=f"pdf_{pdf['filename']}",
+                            help=f"{pdf['size_mb']:.1f} MB • Modified: {pdf['modified'].strftime('%Y-%m-%d %H:%M')}"
+                        )
+                        if is_checked:
+                            st.session_state.selected_pdfs.add(pdf['filename'])
+                        elif pdf['filename'] in st.session_state.selected_pdfs:
+                            st.session_state.selected_pdfs.remove(pdf['filename'])
+
+                st.divider()
+
+                # Process selected PDFs
+                if st.session_state.selected_pdfs:
+                    if st.button(f"📥 Process {len(st.session_state.selected_pdfs)} Selected PDF(s)", type="primary", use_container_width=True):
+                        progress_bar = st.progress(0)
+                        status_text = st.empty()
+                        start_time = time.time()
+
+                        selected_pdf_list = [pdf for pdf in existing_pdfs if pdf['filename'] in st.session_state.selected_pdfs]
+                        total = len(selected_pdf_list)
+                        success_count = 0
+
+                        for idx, pdf in enumerate(selected_pdf_list):
+                            elapsed = time.time() - start_time
+                            avg_time = elapsed / (idx + 1) if idx > 0 else 0
+                            remaining = (total - idx - 1) * avg_time
+
+                            status_text.text(f"Processing {idx + 1}/{total}: {pdf['filename']} (Est. {int(remaining)}s remaining)")
+
+                            success, message = process_existing_pdf(pdf)
+
+                            if success:
+                                success_count += 1
+                                st.success(f"✅ {pdf['filename']}: {message}")
+                            else:
+                                st.warning(f"⚠️ {pdf['filename']}: {message}")
+
+                            progress_bar.progress((idx + 1) / total)
+
+                        elapsed = time.time() - start_time
+                        status_text.empty()
+                        progress_bar.empty()
+
+                        # Save and refresh
+                        save_proposals()
+                        st.session_state.selected_pdfs.clear()
+                        st.success(f"✅ Processed {success_count}/{total} PDF(s) in {int(elapsed)}s!")
+                        st.rerun()
+
+        st.divider()
+
+        # Filters section
+        st.header("🔍 Filters")
+        apply_filters()
+
+        st.divider()
+
+        # Actions section
+        st.header("⚙️ Actions")
+        if st.button("Clear All Data", type="secondary"):
+            st.session_state.data_manager.clear_all_proposals()
+            save_proposals()
+            st.rerun()
+
+        st.divider()
+
+        # AI Assistant at the bottom
         st.header("💬 AI Assistant")
 
         # Initialize command AI
@@ -189,108 +292,6 @@ def main():
 
                 st.session_state.command_messages.append({"role": "assistant", "content": response_msg})
                 st.rerun()
-
-        st.divider()
-
-        st.header("📁 Manage Proposals")
-
-        # Create tabs for upload methods
-        upload_tab, existing_tab = st.tabs(["Upload New", "Load Existing"])
-
-        with upload_tab:
-            # File upload section
-            uploaded_files = st.file_uploader(
-                "Upload EPC Proposals",
-                type=['pdf', 'xlsx', 'xls'],
-                accept_multiple_files=True,
-                help="Upload PDF proposals and Excel schedule of values"
-            )
-
-            if uploaded_files:
-                process_uploaded_files(uploaded_files)
-
-        with existing_tab:
-            st.write("Load previously stored PDFs from data folder")
-
-            # Get existing PDFs
-            existing_pdfs = get_existing_pdfs()
-
-            if not existing_pdfs:
-                st.info("No PDFs found in data/proposals folder")
-            else:
-                st.write(f"**{len(existing_pdfs)} PDF(s) available:**")
-
-                # Show PDFs with checkboxes
-                if 'selected_pdfs' not in st.session_state:
-                    st.session_state.selected_pdfs = set()
-
-                for pdf in existing_pdfs:
-                    col1, col2 = st.columns([3, 1])
-                    with col1:
-                        is_checked = st.checkbox(
-                            pdf['filename'],
-                            key=f"pdf_{pdf['filename']}",
-                            help=f"{pdf['size_mb']:.1f} MB • Modified: {pdf['modified'].strftime('%Y-%m-%d %H:%M')}"
-                        )
-                        if is_checked:
-                            st.session_state.selected_pdfs.add(pdf['filename'])
-                        elif pdf['filename'] in st.session_state.selected_pdfs:
-                            st.session_state.selected_pdfs.remove(pdf['filename'])
-
-                st.divider()
-
-                # Process selected PDFs
-                if st.session_state.selected_pdfs:
-                    if st.button(f"📥 Process {len(st.session_state.selected_pdfs)} Selected PDF(s)", type="primary", use_container_width=True):
-                        progress_bar = st.progress(0)
-                        status_text = st.empty()
-                        start_time = time.time()
-
-                        selected_pdf_list = [pdf for pdf in existing_pdfs if pdf['filename'] in st.session_state.selected_pdfs]
-                        total = len(selected_pdf_list)
-                        success_count = 0
-
-                        for idx, pdf in enumerate(selected_pdf_list):
-                            elapsed = time.time() - start_time
-                            avg_time = elapsed / (idx + 1) if idx > 0 else 0
-                            remaining = (total - idx - 1) * avg_time
-
-                            status_text.text(f"Processing {idx + 1}/{total}: {pdf['filename']} (Est. {int(remaining)}s remaining)")
-
-                            success, message = process_existing_pdf(pdf)
-
-                            if success:
-                                success_count += 1
-                                st.success(f"✅ {pdf['filename']}: {message}")
-                            else:
-                                st.warning(f"⚠️ {pdf['filename']}: {message}")
-
-                            progress_bar.progress((idx + 1) / total)
-
-                        elapsed = time.time() - start_time
-                        status_text.empty()
-                        progress_bar.empty()
-
-                        # Save and refresh
-                        save_proposals()
-                        st.session_state.selected_pdfs.clear()
-                        st.success(f"✅ Processed {success_count}/{total} PDF(s) in {int(elapsed)}s!")
-                        st.rerun()
-
-        st.divider()
-
-        # Filters section
-        st.header("🔍 Filters")
-        apply_filters()
-
-        st.divider()
-
-        # Actions section
-        st.header("⚙️ Actions")
-        if st.button("Clear All Data", type="secondary"):
-            st.session_state.data_manager.clear_all_proposals()
-            save_proposals()
-            st.rerun()
 
     # Main content area
     # Use filtered proposals if available, otherwise all proposals
