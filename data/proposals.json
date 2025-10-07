@@ -119,6 +119,353 @@
       "uploaded_at": "2025-09-30T11:11:39.478677",
       "file_size": 4216901.0,
       "comments": ""
+    },
+    "detailed_sov": {
+      "procurement": {
+        "pv_modules": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "power_conversion_system": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "racking_system": {
+          "cost": 75807139.84427164,
+          "unit_cost": 0.10478941507790394
+        },
+        "pv_pile_supply": {
+          "cost": 35487747.09010145,
+          "unit_cost": 0.049055277215887795
+        },
+        "battery_storage": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "gsu_transformer": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "mv_transformer": {
+          "cost": null,
+          "unit_cost": null
+        }
+      },
+      "design": {
+        "thirty_percent_design": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "supplemental_geotech": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "detailed_design_ifc": {
+          "cost": 2547771.1860194746,
+          "unit_cost": 0.0035218246313443074
+        },
+        "civil_design": {
+          "cost": 1212408.5198921226,
+          "unit_cost": 0.0016759315797423944
+        },
+        "electrical_design": {
+          "cost": 811295.8114102667,
+          "unit_cost": 0.001121467103329311
+        },
+        "structural_design": {
+          "cost": 524066.8547170853,
+          "unit_cost": 0.0007244259482726019
+        }
+      },
+      "contractor_general": {
+        "mobilization": {
+          "cost": 59609585.63433698,
+          "unit_cost": 0.08239927828025569
+        },
+        "general_conditions": {
+          "cost": 70042677.78960355,
+          "unit_cost": 0.09682110749911474
+        },
+        "permitting": {
+          "cost": 10582.120377505764,
+          "unit_cost": 1.4627833300672806e-05
+        },
+        "taxes": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "bonding_insurance": {
+          "cost": 50391.04895406495,
+          "unit_cost": 6.965634841132324e-05
+        }
+      },
+      "civil_works": {
+        "site_clearing": {
+          "cost": 20604054.129372958,
+          "unit_cost": 0.028481311719263006
+        },
+        "laydown_areas": {
+          "cost": 3136822.339581752,
+          "unit_cost": 0.004336079409450409
+        },
+        "survey_staking": {
+          "cost": 2244631.509178808,
+          "unit_cost": 0.003102789834776413
+        },
+        "site_grading": {
+          "cost": 3046675.786004846,
+          "unit_cost": 0.0042114683947093385
+        },
+        "water_dust_control": {
+          "cost": 15011532.353009772,
+          "unit_cost": 0.020750679921790933
+        },
+        "erosion_control": {
+          "cost": 17904663.596210085,
+          "unit_cost": 0.02474990125293945
+        },
+        "onsite_roads": {
+          "cost": 33418201.60618484,
+          "unit_cost": 0.046194511578478946
+        },
+        "offsite_roads": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "seeding_reclamation": {
+          "cost": 6335615.581391767,
+          "unit_cost": 0.00875782218266431
+        },
+        "fencing_gates": {
+          "cost": 8933675.311157873,
+          "unit_cost": 0.012349161467841416
+        },
+        "buildings": {
+          "cost": 850609.847060406,
+          "unit_cost": 0.0011758115200767693
+        },
+        "foundations": {
+          "cost": null,
+          "unit_cost": null
+        }
+      },
+      "pv_mechanical": {
+        "pile_installation": {
+          "cost": 30114433.219598394,
+          "unit_cost": 0.04162765999306823
+        },
+        "racking_installation": {
+          "cost": 30159863.05925962,
+          "unit_cost": 0.04169045838296874
+        },
+        "module_installation": {
+          "cost": 25568086.789272662,
+          "unit_cost": 0.03534317301527137
+        }
+      },
+      "dc_electrical": {
+        "string_wiring": {
+          "cost": 6207985.007888671,
+          "unit_cost": 0.008581396411016396
+        },
+        "combiner_boxes": {
+          "cost": 24837044.967701733,
+          "unit_cost": 0.03433264227849287
+        },
+        "wire_management": {
+          "cost": 3747046.788477122,
+          "unit_cost": 0.005179602370445145
+        },
+        "dc_homerun_cabling": {
+          "cost": 44367809.83640545,
+          "unit_cost": 0.06133032918265313
+        }
+      },
+      "ac_electrical": {
+        "inverter_transformer_install": {
+          "cost": 8202477.570141008,
+          "unit_cost": 0.011338415201132978
+        },
+        "mv_underground_cable": {
+          "cost": 27777046.369682103,
+          "unit_cost": 0.038396652975567346
+        },
+        "mv_overhead_cable": {
+          "cost": 28398422.27955504,
+          "unit_cost": 0.03925559077842927
+        },
+        "lv_cable_equipment": {
+          "cost": null,
+          "unit_cost": null
+        }
+      },
+      "controls_communications": {
+        "scada_das": {
+          "cost": 6881428.190625225,
+          "unit_cost": 0.009512307633259245
+        }
+      },
+      "testing_commissioning": {
+        "contractor_testing": {
+          "cost": 4450456.2819603,
+          "unit_cost": 0.006151936500630864
+        }
+      },
+      "substation": {
+        "engineering": {
+          "cost": 1151264.0519331738,
+          "unit_cost": 0.0015914106092133626
+        },
+        "general": {
+          "cost": 2596279.271341286,
+          "unit_cost": 0.003588878129179258
+        },
+        "civil": {
+          "cost": 3274561.6597316945,
+          "unit_cost": 0.004526478662362354
+        },
+        "electrical": {
+          "grounding": {
+            "cost": 390225.2778352949,
+            "unit_cost": 0.0005394146078717025
+          },
+          "conduit_cable_trench": {
+            "cost": 665823.978731659,
+            "unit_cost": 0.0009203790753676028
+          },
+          "control_cable": {
+            "cost": 824335.3365066642,
+            "unit_cost": 0.001139491846256588
+          },
+          "structural_steel": {
+            "cost": 1192942.624585604,
+            "unit_cost": 0.0016490235630657578
+          },
+          "insulators_bus": {
+            "cost": 939514.6701778601,
+            "unit_cost": 0.0012987060710546942
+          },
+          "lighting": {
+            "cost": 150454.95949092155,
+            "unit_cost": 0.00020797628340828064
+          },
+          "hv_mv_switches": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "arresters": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "meters": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "circuit_breakers": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "transformers": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "grounding_reactors": {
+            "cost": 1453131.8811555367,
+            "unit_cost": 0.002008687310590434
+          },
+          "capacitor_banks": {
+            "cost": 1923550.1664411032,
+            "unit_cost": 0.0026589539880866432
+          },
+          "station_service": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "auxiliary_power": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "control_enclosures": {
+            "cost": null,
+            "unit_cost": null
+          }
+        },
+        "controls": {
+          "cost": 2303980.771020312,
+          "unit_cost": 0.0031848292633375277
+        }
+      },
+      "transmission": {
+        "engineering": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "underground": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "overhead": {
+          "cost": null,
+          "unit_cost": null
+        }
+      }
+    },
+    "schedule": {
+      "total_duration_months": 16,
+      "total_duration_days": 480,
+      "commercial_operation_date": "12/31/2027",
+      "notice_to_proceed_date": "3/1/2026",
+      "mobilization_date": "2/15/2026",
+      "substantial_completion_date": "10/15/2027",
+      "work_schedule": "10 hours, 6 days/week",
+      "milestones": [
+        {
+          "name": "Notice to Proceed",
+          "date": "Month 0",
+          "description": "Project kickoff"
+        },
+        {
+          "name": "Mobilization Complete",
+          "date": "Month 1",
+          "description": "Site mobilization"
+        },
+        {
+          "name": "30% Design Complete",
+          "date": "Month 2",
+          "description": "Design milestone"
+        },
+        {
+          "name": "IFC Design Complete",
+          "date": "Month 4",
+          "description": "Issued for construction"
+        },
+        {
+          "name": "Civil Work Complete",
+          "date": "Month 10",
+          "description": "Site work finished"
+        },
+        {
+          "name": "Mechanical Complete",
+          "date": "Month 13",
+          "description": "Equipment installation"
+        },
+        {
+          "name": "Substantial Completion",
+          "date": "Month 15",
+          "description": "Testing complete"
+        },
+        {
+          "name": "Commercial Operation",
+          "date": "Month 16",
+          "description": "COD achieved"
+        }
+      ],
+      "critical_path_items": [
+        "Equipment procurement and delivery",
+        "Pile installation",
+        "Electrical collection system",
+        "Substation commissioning"
+      ]
     }
   },
   {
@@ -244,6 +591,353 @@
       "uploaded_at": "2025-09-30T11:13:57.945385",
       "file_size": 432638.0,
       "comments": ""
+    },
+    "detailed_sov": {
+      "procurement": {
+        "pv_modules": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "power_conversion_system": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "racking_system": {
+          "cost": 64864282.369827464,
+          "unit_cost": 0.10478941507790394
+        },
+        "pv_pile_supply": {
+          "cost": 30365045.46471562,
+          "unit_cost": 0.049055277215887795
+        },
+        "battery_storage": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "gsu_transformer": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "mv_transformer": {
+          "cost": null,
+          "unit_cost": null
+        }
+      },
+      "design": {
+        "thirty_percent_design": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "supplemental_geotech": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "detailed_design_ifc": {
+          "cost": 2179997.1607313612,
+          "unit_cost": 0.0035218246313443074
+        },
+        "civil_design": {
+          "cost": 1037395.8012849338,
+          "unit_cost": 0.0016759315797423944
+        },
+        "electrical_design": {
+          "cost": 694184.2246637717,
+          "unit_cost": 0.001121467103329311
+        },
+        "structural_design": {
+          "cost": 448417.1347826554,
+          "unit_cost": 0.0007244259482726019
+        }
+      },
+      "contractor_general": {
+        "mobilization": {
+          "cost": 51004865.80125498,
+          "unit_cost": 0.08239927828025569
+        },
+        "general_conditions": {
+          "cost": 59931927.776417725,
+          "unit_cost": 0.09682110749911474
+        },
+        "permitting": {
+          "cost": 9054.577783149365,
+          "unit_cost": 1.4627833300672806e-05
+        },
+        "taxes": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "bonding_insurance": {
+          "cost": 43117.03666676797,
+          "unit_cost": 6.965634841132324e-05
+        }
+      },
+      "civil_works": {
+        "site_clearing": {
+          "cost": 17629832.5956674,
+          "unit_cost": 0.028481311719263006
+        },
+        "laydown_areas": {
+          "cost": 2684018.0278083477,
+          "unit_cost": 0.004336079409450409
+        },
+        "survey_staking": {
+          "cost": 1920616.083480798,
+          "unit_cost": 0.003102789834776413
+        },
+        "site_grading": {
+          "cost": 2606884.2443957147,
+          "unit_cost": 0.0042114683947093385
+        },
+        "water_dust_control": {
+          "cost": 12844598.48174848,
+          "unit_cost": 0.020750679921790933
+        },
+        "erosion_control": {
+          "cost": 15320102.534235109,
+          "unit_cost": 0.02474990125293945
+        },
+        "onsite_roads": {
+          "cost": 28594241.51509118,
+          "unit_cost": 0.046194511578478946
+        },
+        "offsite_roads": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "seeding_reclamation": {
+          "cost": 5421061.378945138,
+          "unit_cost": 0.00875782218266431
+        },
+        "fencing_gates": {
+          "cost": 7644087.8678934695,
+          "unit_cost": 0.012349161467841416
+        },
+        "buildings": {
+          "cost": 727823.2290470877,
+          "unit_cost": 0.0011758115200767693
+        },
+        "foundations": {
+          "cost": null,
+          "unit_cost": null
+        }
+      },
+      "pv_mechanical": {
+        "pile_installation": {
+          "cost": 25767376.315424297,
+          "unit_cost": 0.04162765999306823
+        },
+        "racking_installation": {
+          "cost": 25806248.299697217,
+          "unit_cost": 0.04169045838296874
+        },
+        "module_installation": {
+          "cost": 21877300.799931947,
+          "unit_cost": 0.03534317301527137
+        }
+      },
+      "dc_electrical": {
+        "string_wiring": {
+          "cost": 5311854.441765679,
+          "unit_cost": 0.008581396411016396
+        },
+        "combiner_boxes": {
+          "cost": 21251785.799155764,
+          "unit_cost": 0.03433264227849287
+        },
+        "wire_management": {
+          "cost": 3206155.797989801,
+          "unit_cost": 0.005179602370445145
+        },
+        "dc_homerun_cabling": {
+          "cost": 37963259.8099779,
+          "unit_cost": 0.06133032918265313
+        }
+      },
+      "ac_electrical": {
+        "inverter_transformer_install": {
+          "cost": 7018439.454842547,
+          "unit_cost": 0.011338415201132978
+        },
+        "mv_underground_cable": {
+          "cost": 23767394.243129447,
+          "unit_cost": 0.038396652975567346
+        },
+        "mv_overhead_cable": {
+          "cost": 24299073.746651202,
+          "unit_cost": 0.03925559077842927
+        },
+        "lv_cable_equipment": {
+          "cost": null,
+          "unit_cost": null
+        }
+      },
+      "controls_communications": {
+        "scada_das": {
+          "cost": 5888085.240801161,
+          "unit_cost": 0.009512307633259245
+        }
+      },
+      "testing_commissioning": {
+        "contractor_testing": {
+          "cost": 3808027.2325359224,
+          "unit_cost": 0.006151936500630864
+        }
+      },
+      "substation": {
+        "engineering": {
+          "cost": 985077.6153833215,
+          "unit_cost": 0.0015914106092133626
+        },
+        "general": {
+          "cost": 2221503.041971536,
+          "unit_cost": 0.003588878129179258
+        },
+        "civil": {
+          "cost": 2801874.5011430164,
+          "unit_cost": 0.004526478662362354
+        },
+        "electrical": {
+          "grounding": {
+            "cost": 333895.7604963066,
+            "unit_cost": 0.0005394146078717025
+          },
+          "conduit_cable_trench": {
+            "cost": 569711.4368616538,
+            "unit_cost": 0.0009203790753676028
+          },
+          "control_cable": {
+            "cost": 705341.477655491,
+            "unit_cost": 0.001139491846256588
+          },
+          "structural_steel": {
+            "cost": 1020739.8328321294,
+            "unit_cost": 0.0016490235630657578
+          },
+          "insulators_bus": {
+            "cost": 803894.5273783077,
+            "unit_cost": 0.0012987060710546942
+          },
+          "lighting": {
+            "cost": 128736.59389350431,
+            "unit_cost": 0.00020797628340828064
+          },
+          "hv_mv_switches": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "arresters": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "meters": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "circuit_breakers": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "transformers": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "grounding_reactors": {
+            "cost": 1243370.4378439726,
+            "unit_cost": 0.002008687310590434
+          },
+          "capacitor_banks": {
+            "cost": 1645883.2427245642,
+            "unit_cost": 0.0026589539880866432
+          },
+          "station_service": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "auxiliary_power": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "control_enclosures": {
+            "cost": null,
+            "unit_cost": null
+          }
+        },
+        "controls": {
+          "cost": 1971398.2035612592,
+          "unit_cost": 0.0031848292633375277
+        }
+      },
+      "transmission": {
+        "engineering": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "underground": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "overhead": {
+          "cost": null,
+          "unit_cost": null
+        }
+      }
+    },
+    "schedule": {
+      "total_duration_months": 13,
+      "total_duration_days": 390,
+      "commercial_operation_date": "12/31/2027",
+      "notice_to_proceed_date": "1/1/2026",
+      "mobilization_date": "3/15/2026",
+      "substantial_completion_date": "11/15/2027",
+      "work_schedule": "10 hours, 5 days/week",
+      "milestones": [
+        {
+          "name": "Notice to Proceed",
+          "date": "Month 0",
+          "description": "Project kickoff"
+        },
+        {
+          "name": "Mobilization Complete",
+          "date": "Month 1",
+          "description": "Site mobilization"
+        },
+        {
+          "name": "30% Design Complete",
+          "date": "Month 2",
+          "description": "Design milestone"
+        },
+        {
+          "name": "IFC Design Complete",
+          "date": "Month 4",
+          "description": "Issued for construction"
+        },
+        {
+          "name": "Civil Work Complete",
+          "date": "Month 7",
+          "description": "Site work finished"
+        },
+        {
+          "name": "Mechanical Complete",
+          "date": "Month 10",
+          "description": "Equipment installation"
+        },
+        {
+          "name": "Substantial Completion",
+          "date": "Month 12",
+          "description": "Testing complete"
+        },
+        {
+          "name": "Commercial Operation",
+          "date": "Month 13",
+          "description": "COD achieved"
+        }
+      ],
+      "critical_path_items": [
+        "Equipment procurement and delivery",
+        "Pile installation",
+        "Electrical collection system",
+        "Substation commissioning"
+      ]
     }
   },
   {
@@ -351,6 +1045,353 @@
       "uploaded_at": "2025-09-30T11:16:30.946589",
       "file_size": 13236453.0,
       "comments": ""
+    },
+    "detailed_sov": {
+      "procurement": {
+        "pv_modules": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "power_conversion_system": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "racking_system": {
+          "cost": 54824739.47686269,
+          "unit_cost": 0.10478941507790394
+        },
+        "pv_pile_supply": {
+          "cost": 25665214.290268775,
+          "unit_cost": 0.049055277215887795
+        },
+        "battery_storage": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "gsu_transformer": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "mv_transformer": {
+          "cost": null,
+          "unit_cost": null
+        }
+      },
+      "design": {
+        "thirty_percent_design": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "supplemental_geotech": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "detailed_design_ifc": {
+          "cost": 1842582.2660915249,
+          "unit_cost": 0.0035218246313443074
+        },
+        "civil_design": {
+          "cost": 876830.0898722947,
+          "unit_cost": 0.0016759315797423944
+        },
+        "electrical_design": {
+          "cost": 586740.0035222257,
+          "unit_cost": 0.001121467103329311
+        },
+        "structural_design": {
+          "cost": 379012.1726970044,
+          "unit_cost": 0.0007244259482726019
+        }
+      },
+      "contractor_general": {
+        "mobilization": {
+          "cost": 43110451.19812964,
+          "unit_cost": 0.08239927828025569
+        },
+        "general_conditions": {
+          "cost": 50655803.26556833,
+          "unit_cost": 0.09682110749911474
+        },
+        "permitting": {
+          "cost": 7653.131274987592,
+          "unit_cost": 1.4627833300672806e-05
+        },
+        "taxes": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "bonding_insurance": {
+          "cost": 36443.48192726607,
+          "unit_cost": 6.965634841132324e-05
+        }
+      },
+      "civil_works": {
+        "site_clearing": {
+          "cost": 14901128.074882885,
+          "unit_cost": 0.028481311719263006
+        },
+        "laydown_areas": {
+          "cost": 2268591.9546108264,
+          "unit_cost": 0.004336079409450409
+        },
+        "survey_staking": {
+          "cost": 1623347.5892255863,
+          "unit_cost": 0.003102789834776413
+        },
+        "site_grading": {
+          "cost": 2203396.7589505804,
+          "unit_cost": 0.0042114683947093385
+        },
+        "water_dust_control": {
+          "cost": 10856541.377143731,
+          "unit_cost": 0.020750679921790933
+        },
+        "erosion_control": {
+          "cost": 12948892.664986372,
+          "unit_cost": 0.02474990125293945
+        },
+        "onsite_roads": {
+          "cost": 24168491.260956123,
+          "unit_cost": 0.046194511578478946
+        },
+        "offsite_roads": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "seeding_reclamation": {
+          "cost": 4582002.096226071,
+          "unit_cost": 0.00875782218266431
+        },
+        "fencing_gates": {
+          "cost": 6460953.711105106,
+          "unit_cost": 0.012349161467841416
+        },
+        "buildings": {
+          "cost": 615172.4409777307,
+          "unit_cost": 0.0011758115200767693
+        },
+        "foundations": {
+          "cost": null,
+          "unit_cost": null
+        }
+      },
+      "pv_mechanical": {
+        "pile_installation": {
+          "cost": 21779161.68779741,
+          "unit_cost": 0.04162765999306823
+        },
+        "racking_installation": {
+          "cost": 21812017.156675655,
+          "unit_cost": 0.04169045838296874
+        },
+        "module_installation": {
+          "cost": 18491183.020798434,
+          "unit_cost": 0.03534317301527137
+        }
+      },
+      "dc_electrical": {
+        "string_wiring": {
+          "cost": 4489697.9550071275,
+          "unit_cost": 0.008581396411016396
+        },
+        "combiner_boxes": {
+          "cost": 17962483.77826467,
+          "unit_cost": 0.03433264227849287
+        },
+        "wire_management": {
+          "cost": 2709914.4540723176,
+          "unit_cost": 0.005179602370445145
+        },
+        "dc_homerun_cabling": {
+          "cost": 32087394.675974213,
+          "unit_cost": 0.06133032918265313
+        }
+      },
+      "ac_electrical": {
+        "inverter_transformer_install": {
+          "cost": 5932141.705538464,
+          "unit_cost": 0.011338415201132978
+        },
+        "mv_underground_cable": {
+          "cost": 20088732.193074968,
+          "unit_cost": 0.038396652975567346
+        },
+        "mv_overhead_cable": {
+          "cost": 20538119.57856352,
+          "unit_cost": 0.03925559077842927
+        },
+        "lv_cable_equipment": {
+          "cost": null,
+          "unit_cost": null
+        }
+      },
+      "controls_communications": {
+        "scada_das": {
+          "cost": 4976741.090018516,
+          "unit_cost": 0.009512307633259245
+        }
+      },
+      "testing_commissioning": {
+        "contractor_testing": {
+          "cost": 3218629.626613962,
+          "unit_cost": 0.006151936500630864
+        }
+      },
+      "substation": {
+        "engineering": {
+          "cost": 832609.5912070352,
+          "unit_cost": 0.0015914106092133626
+        },
+        "general": {
+          "cost": 1877663.9634851073,
+          "unit_cost": 0.003588878129179258
+        },
+        "civil": {
+          "cost": 2368206.8768787505,
+          "unit_cost": 0.004526478662362354
+        },
+        "electrical": {
+          "grounding": {
+            "cost": 282216.1505968364,
+            "unit_cost": 0.0005394146078717025
+          },
+          "conduit_cable_trench": {
+            "cost": 481532.82456506975,
+            "unit_cost": 0.0009203790753676028
+          },
+          "control_cable": {
+            "cost": 596170.3628232173,
+            "unit_cost": 0.001139491846256588
+          },
+          "structural_steel": {
+            "cost": 862752.0935113173,
+            "unit_cost": 0.0016490235630657578
+          },
+          "insulators_bus": {
+            "cost": 679469.600528452,
+            "unit_cost": 0.0012987060710546942
+          },
+          "lighting": {
+            "cost": 108811.04304999065,
+            "unit_cost": 0.00020797628340828064
+          },
+          "hv_mv_switches": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "arresters": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "meters": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "circuit_breakers": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "transformers": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "grounding_reactors": {
+            "cost": 1050924.4508305476,
+            "unit_cost": 0.002008687310590434
+          },
+          "capacitor_banks": {
+            "cost": 1391137.2591348104,
+            "unit_cost": 0.0026589539880866432
+          },
+          "station_service": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "auxiliary_power": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "control_enclosures": {
+            "cost": null,
+            "unit_cost": null
+          }
+        },
+        "controls": {
+          "cost": 1666269.7707679681,
+          "unit_cost": 0.0031848292633375277
+        }
+      },
+      "transmission": {
+        "engineering": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "underground": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "overhead": {
+          "cost": null,
+          "unit_cost": null
+        }
+      }
+    },
+    "schedule": {
+      "total_duration_months": 15,
+      "total_duration_days": 450,
+      "commercial_operation_date": "12/31/2027",
+      "notice_to_proceed_date": "5/1/2026",
+      "mobilization_date": "1/15/2026",
+      "substantial_completion_date": "11/15/2027",
+      "work_schedule": "10 hours, 6 days/week",
+      "milestones": [
+        {
+          "name": "Notice to Proceed",
+          "date": "Month 0",
+          "description": "Project kickoff"
+        },
+        {
+          "name": "Mobilization Complete",
+          "date": "Month 1",
+          "description": "Site mobilization"
+        },
+        {
+          "name": "30% Design Complete",
+          "date": "Month 2",
+          "description": "Design milestone"
+        },
+        {
+          "name": "IFC Design Complete",
+          "date": "Month 4",
+          "description": "Issued for construction"
+        },
+        {
+          "name": "Civil Work Complete",
+          "date": "Month 9",
+          "description": "Site work finished"
+        },
+        {
+          "name": "Mechanical Complete",
+          "date": "Month 12",
+          "description": "Equipment installation"
+        },
+        {
+          "name": "Substantial Completion",
+          "date": "Month 14",
+          "description": "Testing complete"
+        },
+        {
+          "name": "Commercial Operation",
+          "date": "Month 15",
+          "description": "COD achieved"
+        }
+      ],
+      "critical_path_items": [
+        "Equipment procurement and delivery",
+        "Pile installation",
+        "Electrical collection system",
+        "Substation commissioning"
+      ]
     }
   },
   {
@@ -451,6 +1492,353 @@
       "uploaded_at": "2025-09-30T11:18:09.872545",
       "file_size": 6406264.0,
       "comments": ""
+    },
+    "detailed_sov": {
+      "procurement": {
+        "pv_modules": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "power_conversion_system": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "racking_system": {
+          "cost": 58001223.27877637,
+          "unit_cost": 0.10478941507790394
+        },
+        "pv_pile_supply": {
+          "cost": 27152227.96773618,
+          "unit_cost": 0.049055277215887795
+        },
+        "battery_storage": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "gsu_transformer": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "mv_transformer": {
+          "cost": null,
+          "unit_cost": null
+        }
+      },
+      "design": {
+        "thirty_percent_design": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "supplemental_geotech": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "detailed_design_ifc": {
+          "cost": 1949339.4121861851,
+          "unit_cost": 0.0035218246313443074
+        },
+        "civil_design": {
+          "cost": 927632.6400364462,
+          "unit_cost": 0.0016759315797423944
+        },
+        "electrical_design": {
+          "cost": 620735.0600406369,
+          "unit_cost": 0.001121467103329311
+        },
+        "structural_design": {
+          "cost": 400971.71210910194,
+          "unit_cost": 0.0007244259482726019
+        }
+      },
+      "contractor_general": {
+        "mobilization": {
+          "cost": 45608222.299838945,
+          "unit_cost": 0.08239927828025569
+        },
+        "general_conditions": {
+          "cost": 53590743.587791115,
+          "unit_cost": 0.09682110749911474
+        },
+        "permitting": {
+          "cost": 8096.545101681223,
+          "unit_cost": 1.4627833300672806e-05
+        },
+        "taxes": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "bonding_insurance": {
+          "cost": 38554.97632070771,
+          "unit_cost": 6.965634841132324e-05
+        }
+      },
+      "civil_works": {
+        "site_clearing": {
+          "cost": 15764482.69200938,
+          "unit_cost": 0.028481311719263006
+        },
+        "laydown_areas": {
+          "cost": 2400031.623375949,
+          "unit_cost": 0.004336079409450409
+        },
+        "survey_staking": {
+          "cost": 1717402.5244839082,
+          "unit_cost": 0.003102789834776413
+        },
+        "site_grading": {
+          "cost": 2331059.0913352035,
+          "unit_cost": 0.0042114683947093385
+        },
+        "water_dust_control": {
+          "cost": 11485557.185670398,
+          "unit_cost": 0.020750679921790933
+        },
+        "erosion_control": {
+          "cost": 13699136.956077015,
+          "unit_cost": 0.02474990125293945
+        },
+        "onsite_roads": {
+          "cost": 25568786.487885904,
+          "unit_cost": 0.046194511578478946
+        },
+        "offsite_roads": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "seeding_reclamation": {
+          "cost": 4847478.149151758,
+          "unit_cost": 0.00875782218266431
+        },
+        "fencing_gates": {
+          "cost": 6835294.109328077,
+          "unit_cost": 0.012349161467841416
+        },
+        "buildings": {
+          "cost": 650814.8409744352,
+          "unit_cost": 0.0011758115200767693
+        },
+        "foundations": {
+          "cost": null,
+          "unit_cost": null
+        }
+      },
+      "pv_mechanical": {
+        "pile_installation": {
+          "cost": 23041021.844009247,
+          "unit_cost": 0.04162765999306823
+        },
+        "racking_installation": {
+          "cost": 23075780.921836518,
+          "unit_cost": 0.04169045838296874
+        },
+        "module_installation": {
+          "cost": 19562541.38755503,
+          "unit_cost": 0.03534317301527137
+        }
+      },
+      "dc_electrical": {
+        "string_wiring": {
+          "cost": 4749826.009707392,
+          "unit_cost": 0.008581396411016396
+        },
+        "combiner_boxes": {
+          "cost": 19003209.904977497,
+          "unit_cost": 0.03433264227849287
+        },
+        "wire_management": {
+          "cost": 2866923.8525677766,
+          "unit_cost": 0.005179602370445145
+        },
+        "dc_homerun_cabling": {
+          "cost": 33946502.26875827,
+          "unit_cost": 0.06133032918265313
+        }
+      },
+      "ac_electrical": {
+        "inverter_transformer_install": {
+          "cost": 6275843.3303542435,
+          "unit_cost": 0.011338415201132978
+        },
+        "mv_underground_cable": {
+          "cost": 21252650.76380004,
+          "unit_cost": 0.038396652975567346
+        },
+        "mv_overhead_cable": {
+          "cost": 21728075.14945329,
+          "unit_cost": 0.03925559077842927
+        },
+        "lv_cable_equipment": {
+          "cost": null,
+          "unit_cost": null
+        }
+      },
+      "controls_communications": {
+        "scada_das": {
+          "cost": 5265087.876699256,
+          "unit_cost": 0.009512307633259245
+        }
+      },
+      "testing_commissioning": {
+        "contractor_testing": {
+          "cost": 3405113.4105927884,
+          "unit_cost": 0.006151936500630864
+        }
+      },
+      "substation": {
+        "engineering": {
+          "cost": 880850.0553665279,
+          "unit_cost": 0.0015914106092133626
+        },
+        "general": {
+          "cost": 1986453.703707486,
+          "unit_cost": 0.003588878129179258
+        },
+        "civil": {
+          "cost": 2505418.1223085737,
+          "unit_cost": 0.004526478662362354
+        },
+        "electrical": {
+          "grounding": {
+            "cost": 298567.43725251866,
+            "unit_cost": 0.0005394146078717025
+          },
+          "conduit_cable_trench": {
+            "cost": 509432.29534990044,
+            "unit_cost": 0.0009203790753676028
+          },
+          "control_cable": {
+            "cost": 630711.803763181,
+            "unit_cost": 0.001139491846256588
+          },
+          "structural_steel": {
+            "cost": 912738.9803849406,
+            "unit_cost": 0.0016490235630657578
+          },
+          "insulators_bus": {
+            "cost": 718837.3057025413,
+            "unit_cost": 0.0012987060710546942
+          },
+          "lighting": {
+            "cost": 115115.43261965735,
+            "unit_cost": 0.00020797628340828064
+          },
+          "hv_mv_switches": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "arresters": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "meters": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "circuit_breakers": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "transformers": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "grounding_reactors": {
+            "cost": 1111813.8326488975,
+            "unit_cost": 0.002008687310590434
+          },
+          "capacitor_banks": {
+            "cost": 1471738.188788935,
+            "unit_cost": 0.0026589539880866432
+          },
+          "station_service": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "auxiliary_power": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "control_enclosures": {
+            "cost": null,
+            "unit_cost": null
+          }
+        },
+        "controls": {
+          "cost": 1762811.568995693,
+          "unit_cost": 0.0031848292633375277
+        }
+      },
+      "transmission": {
+        "engineering": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "underground": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "overhead": {
+          "cost": null,
+          "unit_cost": null
+        }
+      }
+    },
+    "schedule": {
+      "total_duration_months": 15,
+      "total_duration_days": 450,
+      "commercial_operation_date": "12/31/2027",
+      "notice_to_proceed_date": "5/1/2026",
+      "mobilization_date": "2/15/2026",
+      "substantial_completion_date": "11/15/2027",
+      "work_schedule": "10 hours, 6 days/week",
+      "milestones": [
+        {
+          "name": "Notice to Proceed",
+          "date": "Month 0",
+          "description": "Project kickoff"
+        },
+        {
+          "name": "Mobilization Complete",
+          "date": "Month 1",
+          "description": "Site mobilization"
+        },
+        {
+          "name": "30% Design Complete",
+          "date": "Month 2",
+          "description": "Design milestone"
+        },
+        {
+          "name": "IFC Design Complete",
+          "date": "Month 4",
+          "description": "Issued for construction"
+        },
+        {
+          "name": "Civil Work Complete",
+          "date": "Month 9",
+          "description": "Site work finished"
+        },
+        {
+          "name": "Mechanical Complete",
+          "date": "Month 12",
+          "description": "Equipment installation"
+        },
+        {
+          "name": "Substantial Completion",
+          "date": "Month 14",
+          "description": "Testing complete"
+        },
+        {
+          "name": "Commercial Operation",
+          "date": "Month 15",
+          "description": "COD achieved"
+        }
+      ],
+      "critical_path_items": [
+        "Equipment procurement and delivery",
+        "Pile installation",
+        "Electrical collection system",
+        "Substation commissioning"
+      ]
     }
   },
   {
@@ -562,6 +1950,353 @@
       "uploaded_at": "2025-10-06T14:22:15.123456",
       "file_size": 3847291.0,
       "comments": ""
+    },
+    "detailed_sov": {
+      "procurement": {
+        "pv_modules": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "power_conversion_system": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "racking_system": {
+          "cost": 47876017.939634554,
+          "unit_cost": 0.10478941507790394
+        },
+        "pv_pile_supply": {
+          "cost": 22412295.462052003,
+          "unit_cost": 0.049055277215887795
+        },
+        "battery_storage": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "gsu_transformer": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "mv_transformer": {
+          "cost": null,
+          "unit_cost": null
+        }
+      },
+      "design": {
+        "thirty_percent_design": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "supplemental_geotech": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "detailed_design_ifc": {
+          "cost": 1609045.523396957,
+          "unit_cost": 0.0035218246313443074
+        },
+        "civil_design": {
+          "cost": 765696.9009484035,
+          "unit_cost": 0.0016759315797423944
+        },
+        "electrical_design": {
+          "cost": 512374.0705851648,
+          "unit_cost": 0.001121467103329311
+        },
+        "structural_design": {
+          "cost": 330974.5518633885,
+          "unit_cost": 0.0007244259482726019
+        }
+      },
+      "contractor_general": {
+        "mobilization": {
+          "cost": 37646448.567592956,
+          "unit_cost": 0.08239927828025569
+        },
+        "general_conditions": {
+          "cost": 44235470.50164165,
+          "unit_cost": 0.09682110749911474
+        },
+        "permitting": {
+          "cost": 6683.1407447054835,
+          "unit_cost": 1.4627833300672806e-05
+        },
+        "taxes": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "bonding_insurance": {
+          "cost": 31824.479444519216,
+          "unit_cost": 6.965634841132324e-05
+        }
+      },
+      "civil_works": {
+        "site_clearing": {
+          "cost": 13012495.487278316,
+          "unit_cost": 0.028481311719263006
+        },
+        "laydown_areas": {
+          "cost": 1981060.9252871135,
+          "unit_cost": 0.004336079409450409
+        },
+        "survey_staking": {
+          "cost": 1417597.585426303,
+          "unit_cost": 0.003102789834776413
+        },
+        "site_grading": {
+          "cost": 1924128.8470539798,
+          "unit_cost": 0.0042114683947093385
+        },
+        "water_dust_control": {
+          "cost": 9480536.974623878,
+          "unit_cost": 0.020750679921790933
+        },
+        "erosion_control": {
+          "cost": 11307694.727649722,
+          "unit_cost": 0.02474990125293945
+        },
+        "onsite_roads": {
+          "cost": 21105273.499233965,
+          "unit_cost": 0.046194511578478946
+        },
+        "offsite_roads": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "seeding_reclamation": {
+          "cost": 4001259.589221411,
+          "unit_cost": 0.00875782218266431
+        },
+        "fencing_gates": {
+          "cost": 5642064.854873751,
+          "unit_cost": 0.012349161467841416
+        },
+        "buildings": {
+          "cost": 537202.8595347551,
+          "unit_cost": 0.0011758115200767693
+        },
+        "foundations": {
+          "cost": null,
+          "unit_cost": null
+        }
+      },
+      "pv_mechanical": {
+        "pile_installation": {
+          "cost": 19018777.756622694,
+          "unit_cost": 0.04162765999306823
+        },
+        "racking_installation": {
+          "cost": 19047468.98310985,
+          "unit_cost": 0.04169045838296874
+        },
+        "module_installation": {
+          "cost": 16147531.542806914,
+          "unit_cost": 0.03534317301527137
+        }
+      },
+      "dc_electrical": {
+        "string_wiring": {
+          "cost": 3920654.4689222868,
+          "unit_cost": 0.008581396411016396
+        },
+        "combiner_boxes": {
+          "cost": 15685841.899376875,
+          "unit_cost": 0.03433264227849287
+        },
+        "wire_management": {
+          "cost": 2366448.32708771,
+          "unit_cost": 0.005179602370445145
+        },
+        "dc_homerun_cabling": {
+          "cost": 28020501.288317014,
+          "unit_cost": 0.06133032918265313
+        }
+      },
+      "ac_electrical": {
+        "inverter_transformer_install": {
+          "cost": 5180276.740479022,
+          "unit_cost": 0.011338415201132978
+        },
+        "mv_underground_cable": {
+          "cost": 17542600.51278602,
+          "unit_cost": 0.038396652975567346
+        },
+        "mv_overhead_cable": {
+          "cost": 17935030.622528266,
+          "unit_cost": 0.03925559077842927
+        },
+        "lv_cable_equipment": {
+          "cost": null,
+          "unit_cost": null
+        }
+      },
+      "controls_communications": {
+        "scada_das": {
+          "cost": 4345967.67773419,
+          "unit_cost": 0.009512307633259245
+        }
+      },
+      "testing_commissioning": {
+        "contractor_testing": {
+          "cost": 2810686.766871752,
+          "unit_cost": 0.006151936500630864
+        }
+      },
+      "substation": {
+        "engineering": {
+          "cost": 727081.097068642,
+          "unit_cost": 0.0015914106092133626
+        },
+        "general": {
+          "cost": 1639680.8166932762,
+          "unit_cost": 0.003588878129179258
+        },
+        "civil": {
+          "cost": 2068050.227034131,
+          "unit_cost": 0.004526478662362354
+        },
+        "electrical": {
+          "grounding": {
+            "cost": 246446.87084251197,
+            "unit_cost": 0.0005394146078717025
+          },
+          "conduit_cable_trench": {
+            "cost": 420501.29863598256,
+            "unit_cost": 0.0009203790753676028
+          },
+          "control_cable": {
+            "cost": 520609.1858885766,
+            "unit_cost": 0.001139491846256588
+          },
+          "structural_steel": {
+            "cost": 753403.209947524,
+            "unit_cost": 0.0016490235630657578
+          },
+          "insulators_bus": {
+            "cost": 593350.7225887509,
+            "unit_cost": 0.0012987060710546942
+          },
+          "lighting": {
+            "cost": 95019.86692139604,
+            "unit_cost": 0.00020797628340828064
+          },
+          "hv_mv_switches": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "arresters": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "meters": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "circuit_breakers": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "transformers": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "grounding_reactors": {
+            "cost": 917725.7993610273,
+            "unit_cost": 0.002008687310590434
+          },
+          "capacitor_banks": {
+            "cost": 1214818.5839157496,
+            "unit_cost": 0.0026589539880866432
+          },
+          "station_service": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "auxiliary_power": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "control_enclosures": {
+            "cost": null,
+            "unit_cost": null
+          }
+        },
+        "controls": {
+          "cost": 1455079.6264380722,
+          "unit_cost": 0.0031848292633375277
+        }
+      },
+      "transmission": {
+        "engineering": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "underground": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "overhead": {
+          "cost": null,
+          "unit_cost": null
+        }
+      }
+    },
+    "schedule": {
+      "total_duration_months": 12,
+      "total_duration_days": 360,
+      "commercial_operation_date": "12/31/2027",
+      "notice_to_proceed_date": "3/1/2026",
+      "mobilization_date": "2/15/2026",
+      "substantial_completion_date": "11/15/2027",
+      "work_schedule": "5-10s",
+      "milestones": [
+        {
+          "name": "Notice to Proceed",
+          "date": "Month 0",
+          "description": "Project kickoff"
+        },
+        {
+          "name": "Mobilization Complete",
+          "date": "Month 1",
+          "description": "Site mobilization"
+        },
+        {
+          "name": "30% Design Complete",
+          "date": "Month 2",
+          "description": "Design milestone"
+        },
+        {
+          "name": "IFC Design Complete",
+          "date": "Month 4",
+          "description": "Issued for construction"
+        },
+        {
+          "name": "Civil Work Complete",
+          "date": "Month 6",
+          "description": "Site work finished"
+        },
+        {
+          "name": "Mechanical Complete",
+          "date": "Month 9",
+          "description": "Equipment installation"
+        },
+        {
+          "name": "Substantial Completion",
+          "date": "Month 11",
+          "description": "Testing complete"
+        },
+        {
+          "name": "Commercial Operation",
+          "date": "Month 12",
+          "description": "COD achieved"
+        }
+      ],
+      "critical_path_items": [
+        "Equipment procurement and delivery",
+        "Pile installation",
+        "Electrical collection system",
+        "Substation commissioning"
+      ]
     }
   },
   {
@@ -677,6 +2412,353 @@
       "uploaded_at": "2025-10-06T14:25:33.789012",
       "file_size": 4129876.0,
       "comments": ""
+    },
+    "detailed_sov": {
+      "procurement": {
+        "pv_modules": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "power_conversion_system": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "racking_system": {
+          "cost": 44122538.13316721,
+          "unit_cost": 0.10478941507790394
+        },
+        "pv_pile_supply": {
+          "cost": 20655171.497827128,
+          "unit_cost": 0.049055277215887795
+        },
+        "battery_storage": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "gsu_transformer": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "mv_transformer": {
+          "cost": null,
+          "unit_cost": null
+        }
+      },
+      "design": {
+        "thirty_percent_design": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "supplemental_geotech": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "detailed_design_ifc": {
+          "cost": 1482896.3543626354,
+          "unit_cost": 0.0035218246313443074
+        },
+        "civil_design": {
+          "cost": 705666.2639140487,
+          "unit_cost": 0.0016759315797423944
+        },
+        "electrical_design": {
+          "cost": 472203.9434512879,
+          "unit_cost": 0.001121467103329311
+        },
+        "structural_design": {
+          "cost": 305026.14699729887,
+          "unit_cost": 0.0007244259482726019
+        }
+      },
+      "contractor_general": {
+        "mobilization": {
+          "cost": 34694966.99989367,
+          "unit_cost": 0.08239927828025569
+        },
+        "general_conditions": {
+          "cost": 40767409.61431295,
+          "unit_cost": 0.09682110749911474
+        },
+        "permitting": {
+          "cost": 6159.182510320574,
+          "unit_cost": 1.4627833300672806e-05
+        },
+        "taxes": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "bonding_insurance": {
+          "cost": 29329.44025606891,
+          "unit_cost": 6.965634841132324e-05
+        }
+      },
+      "civil_works": {
+        "site_clearing": {
+          "cost": 11992315.841075698,
+          "unit_cost": 0.028481311719263006
+        },
+        "laydown_areas": {
+          "cost": 1825745.748744604,
+          "unit_cost": 0.004336079409450409
+        },
+        "survey_staking": {
+          "cost": 1306457.9347288809,
+          "unit_cost": 0.003102789834776413
+        },
+        "site_grading": {
+          "cost": 1773277.1454449478,
+          "unit_cost": 0.0042114683947093385
+        },
+        "water_dust_control": {
+          "cost": 8737262.875813365,
+          "unit_cost": 0.020750679921790933
+        },
+        "erosion_control": {
+          "cost": 10421171.461001985,
+          "unit_cost": 0.02474990125293945
+        },
+        "onsite_roads": {
+          "cost": 19450620.056894023,
+          "unit_cost": 0.046194511578478946
+        },
+        "offsite_roads": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "seeding_reclamation": {
+          "cost": 3687560.8374264524,
+          "unit_cost": 0.00875782218266431
+        },
+        "fencing_gates": {
+          "cost": 5199726.970251649,
+          "unit_cost": 0.012349161467841416
+        },
+        "buildings": {
+          "cost": 495086.1553472304,
+          "unit_cost": 0.0011758115200767693
+        },
+        "foundations": {
+          "cost": null,
+          "unit_cost": null
+        }
+      },
+      "pv_mechanical": {
+        "pile_installation": {
+          "cost": 17527705.580503475,
+          "unit_cost": 0.04162765999306823
+        },
+        "racking_installation": {
+          "cost": 17554147.414834037,
+          "unit_cost": 0.04169045838296874
+        },
+        "module_installation": {
+          "cost": 14881565.06985085,
+          "unit_cost": 0.03534317301527137
+        }
+      },
+      "dc_electrical": {
+        "string_wiring": {
+          "cost": 3613275.1585587794,
+          "unit_cost": 0.008581396411016396
+        },
+        "combiner_boxes": {
+          "cost": 14456071.894465728,
+          "unit_cost": 0.03433264227849287
+        },
+        "wire_management": {
+          "cost": 2180918.7782440335,
+          "unit_cost": 0.005179602370445145
+        },
+        "dc_homerun_cabling": {
+          "cost": 25823693.98731296,
+          "unit_cost": 0.06133032918265313
+        }
+      },
+      "ac_electrical": {
+        "inverter_transformer_install": {
+          "cost": 4774143.044025467,
+          "unit_cost": 0.011338415201132978
+        },
+        "mv_underground_cable": {
+          "cost": 16167260.632583596,
+          "unit_cost": 0.038396652975567346
+        },
+        "mv_overhead_cable": {
+          "cost": 16528924.221722052,
+          "unit_cost": 0.03925559077842927
+        },
+        "lv_cable_equipment": {
+          "cost": null,
+          "unit_cost": null
+        }
+      },
+      "controls_communications": {
+        "scada_das": {
+          "cost": 4005243.81179983,
+          "unit_cost": 0.009512307633259245
+        }
+      },
+      "testing_commissioning": {
+        "contractor_testing": {
+          "cost": 2590328.9243490067,
+          "unit_cost": 0.006151936500630864
+        }
+      },
+      "substation": {
+        "engineering": {
+          "cost": 670077.9390584605,
+          "unit_cost": 0.0015914106092133626
+        },
+        "general": {
+          "cost": 1511129.8406645234,
+          "unit_cost": 0.003588878129179258
+        },
+        "civil": {
+          "cost": 1905915.0892346553,
+          "unit_cost": 0.004526478662362354
+        },
+        "electrical": {
+          "grounding": {
+            "cost": 227125.43616845904,
+            "unit_cost": 0.0005394146078717025
+          },
+          "conduit_cable_trench": {
+            "cost": 387533.9968229215,
+            "unit_cost": 0.0009203790753676028
+          },
+          "control_cable": {
+            "cost": 479793.42571491224,
+            "unit_cost": 0.001139491846256588
+          },
+          "structural_steel": {
+            "cost": 694336.3982876382,
+            "unit_cost": 0.0016490235630657578
+          },
+          "insulators_bus": {
+            "cost": 546832.0259377928,
+            "unit_cost": 0.0012987060710546942
+          },
+          "lighting": {
+            "cost": 87570.30935475859,
+            "unit_cost": 0.00020797628340828064
+          },
+          "hv_mv_switches": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "arresters": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "meters": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "circuit_breakers": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "transformers": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "grounding_reactors": {
+            "cost": 845776.0966911229,
+            "unit_cost": 0.002008687310590434
+          },
+          "capacitor_banks": {
+            "cost": 1119576.8069367548,
+            "unit_cost": 0.0026589539880866432
+          },
+          "station_service": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "auxiliary_power": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "control_enclosures": {
+            "cost": null,
+            "unit_cost": null
+          }
+        },
+        "controls": {
+          "cost": 1341001.3837253274,
+          "unit_cost": 0.0031848292633375277
+        }
+      },
+      "transmission": {
+        "engineering": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "underground": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "overhead": {
+          "cost": null,
+          "unit_cost": null
+        }
+      }
+    },
+    "schedule": {
+      "total_duration_months": 16,
+      "total_duration_days": 480,
+      "commercial_operation_date": "12/31/2027",
+      "notice_to_proceed_date": "5/1/2026",
+      "mobilization_date": "1/15/2026",
+      "substantial_completion_date": "10/15/2027",
+      "work_schedule": "5-10s",
+      "milestones": [
+        {
+          "name": "Notice to Proceed",
+          "date": "Month 0",
+          "description": "Project kickoff"
+        },
+        {
+          "name": "Mobilization Complete",
+          "date": "Month 1",
+          "description": "Site mobilization"
+        },
+        {
+          "name": "30% Design Complete",
+          "date": "Month 2",
+          "description": "Design milestone"
+        },
+        {
+          "name": "IFC Design Complete",
+          "date": "Month 4",
+          "description": "Issued for construction"
+        },
+        {
+          "name": "Civil Work Complete",
+          "date": "Month 10",
+          "description": "Site work finished"
+        },
+        {
+          "name": "Mechanical Complete",
+          "date": "Month 13",
+          "description": "Equipment installation"
+        },
+        {
+          "name": "Substantial Completion",
+          "date": "Month 15",
+          "description": "Testing complete"
+        },
+        {
+          "name": "Commercial Operation",
+          "date": "Month 16",
+          "description": "COD achieved"
+        }
+      ],
+      "critical_path_items": [
+        "Equipment procurement and delivery",
+        "Pile installation",
+        "Electrical collection system",
+        "Substation commissioning"
+      ]
     }
   },
   {
@@ -787,6 +2869,353 @@
       "uploaded_at": "2025-10-06T14:28:47.456789",
       "file_size": 5842193.0,
       "comments": ""
+    },
+    "detailed_sov": {
+      "procurement": {
+        "pv_modules": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "power_conversion_system": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "racking_system": {
+          "cost": 46683750.6541701,
+          "unit_cost": 0.10478941507790394
+        },
+        "pv_pile_supply": {
+          "cost": 21854157.00731961,
+          "unit_cost": 0.049055277215887795
+        },
+        "battery_storage": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "gsu_transformer": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "mv_transformer": {
+          "cost": null,
+          "unit_cost": null
+        }
+      },
+      "design": {
+        "thirty_percent_design": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "supplemental_geotech": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "detailed_design_ifc": {
+          "cost": 1568975.0993949422,
+          "unit_cost": 0.0035218246313443074
+        },
+        "civil_design": {
+          "cost": 746628.5781247851,
+          "unit_cost": 0.0016759315797423944
+        },
+        "electrical_design": {
+          "cost": 499614.3034080116,
+          "unit_cost": 0.001121467103329311
+        },
+        "structural_design": {
+          "cost": 322732.2178621454,
+          "unit_cost": 0.0007244259482726019
+        }
+      },
+      "contractor_general": {
+        "mobilization": {
+          "cost": 36708930.55810322,
+          "unit_cost": 0.08239927828025569
+        },
+        "general_conditions": {
+          "cost": 43133864.59108464,
+          "unit_cost": 0.09682110749911474
+        },
+        "permitting": {
+          "cost": 6516.708981643786,
+          "unit_cost": 1.4627833300672806e-05
+        },
+        "taxes": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "bonding_insurance": {
+          "cost": 31031.947246739575,
+          "unit_cost": 6.965634841132324e-05
+        }
+      },
+      "civil_works": {
+        "site_clearing": {
+          "cost": 12688442.373853192,
+          "unit_cost": 0.028481311719263006
+        },
+        "laydown_areas": {
+          "cost": 1931726.1177283505,
+          "unit_cost": 0.004336079409450409
+        },
+        "survey_staking": {
+          "cost": 1382294.8326537511,
+          "unit_cost": 0.003102789834776413
+        },
+        "site_grading": {
+          "cost": 1876211.831895087,
+          "unit_cost": 0.0042114683947093385
+        },
+        "water_dust_control": {
+          "cost": 9244441.021578405,
+          "unit_cost": 0.020750679921790933
+        },
+        "erosion_control": {
+          "cost": 11026096.652496638,
+          "unit_cost": 0.02474990125293945
+        },
+        "onsite_roads": {
+          "cost": 20579684.10757562,
+          "unit_cost": 0.046194511578478946
+        },
+        "offsite_roads": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "seeding_reclamation": {
+          "cost": 3901615.3181608003,
+          "unit_cost": 0.00875782218266431
+        },
+        "fencing_gates": {
+          "cost": 5501559.239778185,
+          "unit_cost": 0.012349161467841416
+        },
+        "buildings": {
+          "cost": 523824.7754198896,
+          "unit_cost": 0.0011758115200767693
+        },
+        "foundations": {
+          "cost": null,
+          "unit_cost": null
+        }
+      },
+      "pv_mechanical": {
+        "pile_installation": {
+          "cost": 18545148.839586798,
+          "unit_cost": 0.04162765999306823
+        },
+        "racking_installation": {
+          "cost": 18573125.56198208,
+          "unit_cost": 0.04169045838296874
+        },
+        "module_installation": {
+          "cost": 15745405.918579591,
+          "unit_cost": 0.03534317301527137
+        }
+      },
+      "dc_electrical": {
+        "string_wiring": {
+          "cost": 3823017.525373641,
+          "unit_cost": 0.008581396411016396
+        },
+        "combiner_boxes": {
+          "cost": 15295213.836592391,
+          "unit_cost": 0.03433264227849287
+        },
+        "wire_management": {
+          "cost": 2307516.130038945,
+          "unit_cost": 0.005179602370445145
+        },
+        "dc_homerun_cabling": {
+          "cost": 27322700.417524084,
+          "unit_cost": 0.06133032918265313
+        }
+      },
+      "ac_electrical": {
+        "inverter_transformer_install": {
+          "cost": 5051271.1390709635,
+          "unit_cost": 0.011338415201132978
+        },
+        "mv_underground_cable": {
+          "cost": 17105733.170983735,
+          "unit_cost": 0.038396652975567346
+        },
+        "mv_overhead_cable": {
+          "cost": 17488390.50508982,
+          "unit_cost": 0.03925559077842927
+        },
+        "lv_cable_equipment": {
+          "cost": null,
+          "unit_cost": null
+        }
+      },
+      "controls_communications": {
+        "scada_das": {
+          "cost": 4237739.063308035,
+          "unit_cost": 0.009512307633259245
+        }
+      },
+      "testing_commissioning": {
+        "contractor_testing": {
+          "cost": 2740691.599645139,
+          "unit_cost": 0.006151936500630864
+        }
+      },
+      "substation": {
+        "engineering": {
+          "cost": 708974.4323287391,
+          "unit_cost": 0.0015914106092133626
+        },
+        "general": {
+          "cost": 1598847.4750646565,
+          "unit_cost": 0.003588878129179258
+        },
+        "civil": {
+          "cost": 2016549.1052512163,
+          "unit_cost": 0.004526478662362354
+        },
+        "electrical": {
+          "grounding": {
+            "cost": 240309.54876862746,
+            "unit_cost": 0.0005394146078717025
+          },
+          "conduit_cable_trench": {
+            "cost": 410029.45984414447,
+            "unit_cost": 0.0009203790753676028
+          },
+          "control_cable": {
+            "cost": 507644.3377754804,
+            "unit_cost": 0.001139491846256588
+          },
+          "structural_steel": {
+            "cost": 734641.0396868953,
+            "unit_cost": 0.0016490235630657578
+          },
+          "insulators_bus": {
+            "cost": 578574.375561702,
+            "unit_cost": 0.0012987060710546942
+          },
+          "lighting": {
+            "cost": 92653.56571935352,
+            "unit_cost": 0.00020797628340828064
+          },
+          "hv_mv_switches": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "arresters": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "meters": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "circuit_breakers": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "transformers": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "grounding_reactors": {
+            "cost": 894871.4665511333,
+            "unit_cost": 0.002008687310590434
+          },
+          "capacitor_banks": {
+            "cost": 1184565.6824066218,
+            "unit_cost": 0.0026589539880866432
+          },
+          "station_service": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "auxiliary_power": {
+            "cost": null,
+            "unit_cost": null
+          },
+          "control_enclosures": {
+            "cost": null,
+            "unit_cost": null
+          }
+        },
+        "controls": {
+          "cost": 1418843.4499345175,
+          "unit_cost": 0.0031848292633375277
+        }
+      },
+      "transmission": {
+        "engineering": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "underground": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "overhead": {
+          "cost": null,
+          "unit_cost": null
+        }
+      }
+    },
+    "schedule": {
+      "total_duration_months": 16,
+      "total_duration_days": 480,
+      "commercial_operation_date": "12/31/2027",
+      "notice_to_proceed_date": "6/1/2026",
+      "mobilization_date": "2/15/2026",
+      "substantial_completion_date": "10/15/2027",
+      "work_schedule": "10 hours, 5 days/week",
+      "milestones": [
+        {
+          "name": "Notice to Proceed",
+          "date": "Month 0",
+          "description": "Project kickoff"
+        },
+        {
+          "name": "Mobilization Complete",
+          "date": "Month 1",
+          "description": "Site mobilization"
+        },
+        {
+          "name": "30% Design Complete",
+          "date": "Month 2",
+          "description": "Design milestone"
+        },
+        {
+          "name": "IFC Design Complete",
+          "date": "Month 4",
+          "description": "Issued for construction"
+        },
+        {
+          "name": "Civil Work Complete",
+          "date": "Month 10",
+          "description": "Site work finished"
+        },
+        {
+          "name": "Mechanical Complete",
+          "date": "Month 13",
+          "description": "Equipment installation"
+        },
+        {
+          "name": "Substantial Completion",
+          "date": "Month 15",
+          "description": "Testing complete"
+        },
+        {
+          "name": "Commercial Operation",
+          "date": "Month 16",
+          "description": "COD achieved"
+        }
+      ],
+      "critical_path_items": [
+        "Equipment procurement and delivery",
+        "Pile installation",
+        "Electrical collection system",
+        "Substation commissioning"
+      ]
     }
   },
   {
@@ -923,6 +3352,353 @@
       "uploaded_at": "2025-10-06T14:31:12.234567",
       "file_size": 4523187.0,
       "comments": ""
+    },
+    "detailed_sov": {
+      "procurement": {
+        "pv_modules": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "power_conversion_system": {
+          "cost": 21838968.962603845,
+          "unit_cost": 0.05870690581345119
+        },
+        "racking_system": {
+          "cost": 48687995.203890756,
+          "unit_cost": 0.13088170753734074
+        },
+        "pv_pile_supply": {
+          "cost": 22792407.993088406,
+          "unit_cost": 0.061269913959915066
+        },
+        "battery_storage": {
+          "cost": 32089913.57770361,
+          "unit_cost": 0.086263208542214
+        },
+        "gsu_transformer": {
+          "cost": 7576785.15029113,
+          "unit_cost": 0.02036770201691164
+        },
+        "mv_transformer": {
+          "cost": 3743823.2507320875,
+          "unit_cost": 0.010064040996591634
+        }
+      },
+      "design": {
+        "thirty_percent_design": {
+          "cost": 757678.515029113,
+          "unit_cost": 0.002036770201691164
+        },
+        "supplemental_geotech": {
+          "cost": 579401.2173752041,
+          "unit_cost": 0.0015575301542344196
+        },
+        "detailed_design_ifc": {
+          "cost": 2337621.336391099,
+          "unit_cost": 0.006283928323631986
+        },
+        "civil_design": {
+          "cost": 1112404.4576978406,
+          "unit_cost": 0.0029903345637038725
+        },
+        "electrical_design": {
+          "cost": 1069663.7859234537,
+          "unit_cost": 0.0028754402847404673
+        },
+        "structural_design": {
+          "cost": 668539.8662021585,
+          "unit_cost": 0.0017971501779627916
+        }
+      },
+      "contractor_general": {
+        "mobilization": {
+          "cost": 62896674.5508489,
+          "unit_cost": 0.16907708212593792
+        },
+        "general_conditions": {
+          "cost": 73905085.27650274,
+          "unit_cost": 0.19866958407662028
+        },
+        "permitting": {
+          "cost": 111423.31103369308,
+          "unit_cost": 0.0002995250296604653
+        },
+        "taxes": {
+          "cost": 10696637.859234536,
+          "unit_cost": 0.028754402847404666
+        },
+        "bonding_insurance": {
+          "cost": 3119852.7089434066,
+          "unit_cost": 0.008386700830493029
+        }
+      },
+      "civil_works": {
+        "site_clearing": {
+          "cost": 18904553.443917938,
+          "unit_cost": 0.05081869205354284
+        },
+        "laydown_areas": {
+          "cost": 2878085.3122571185,
+          "unit_cost": 0.007736788473809458
+        },
+        "survey_staking": {
+          "cost": 2059485.7721073332,
+          "unit_cost": 0.005536252075557347
+        },
+        "site_grading": {
+          "cost": 2795374.389000022,
+          "unit_cost": 0.007514447282258124
+        },
+        "water_dust_control": {
+          "cost": 13773324.11673357,
+          "unit_cost": 0.03702506482992895
+        },
+        "erosion_control": {
+          "cost": 16427818.900329517,
+          "unit_cost": 0.04416080349550945
+        },
+        "onsite_roads": {
+          "cost": 30661741.339687105,
+          "unit_cost": 0.08242403585937394
+        },
+        "offsite_roads": {
+          "cost": 2228466.220673862,
+          "unit_cost": 0.0059905005932093065
+        },
+        "seeding_reclamation": {
+          "cost": 5813029.931220866,
+          "unit_cost": 0.01562642454629265
+        },
+        "fencing_gates": {
+          "cost": 8196791.821160586,
+          "unit_cost": 0.02203438661602308
+        },
+        "buildings": {
+          "cost": 780448.3143320923,
+          "unit_cost": 0.0020979793396023985
+        },
+        "foundations": {
+          "cost": 1203371.7591638854,
+          "unit_cost": 0.0032348703203330252
+        }
+      },
+      "pv_mechanical": {
+        "pile_installation": {
+          "cost": 19341336.227375016,
+          "unit_cost": 0.05199283932090058
+        },
+        "racking_installation": {
+          "cost": 19370514.057063393,
+          "unit_cost": 0.052071274346944606
+        },
+        "module_installation": {
+          "cost": 16421393.677772919,
+          "unit_cost": 0.04414353139186269
+        }
+      },
+      "dc_electrical": {
+        "string_wiring": {
+          "cost": 3987148.768715209,
+          "unit_cost": 0.01071814185138497
+        },
+        "combiner_boxes": {
+          "cost": 15951873.777990306,
+          "unit_cost": 0.04288138112362985
+        },
+        "wire_management": {
+          "cost": 2406583.2907151175,
+          "unit_cost": 0.006469309921277197
+        },
+        "dc_homerun_cabling": {
+          "cost": 28495728.990166873,
+          "unit_cost": 0.07660142201657762
+        }
+      },
+      "ac_electrical": {
+        "inverter_transformer_install": {
+          "cost": 7525906.048567924,
+          "unit_cost": 0.020230930238085816
+        },
+        "mv_underground_cable": {
+          "cost": 28524367.62462543,
+          "unit_cost": 0.07667840759307912
+        },
+        "mv_overhead_cable": {
+          "cost": 26056012.488409065,
+          "unit_cost": 0.07004304432368028
+        },
+        "lv_cable_equipment": {
+          "cost": 2228466.220673862,
+          "unit_cost": 0.0059905005932093065
+        }
+      },
+      "controls_communications": {
+        "scada_das": {
+          "cost": 7576586.210654677,
+          "unit_cost": 0.02036716723294268
+        }
+      },
+      "testing_commissioning": {
+        "contractor_testing": {
+          "cost": 5308375.455384666,
+          "unit_cost": 0.014269826492969533
+        }
+      },
+      "substation": {
+        "engineering": {
+          "cost": 1337079.732404317,
+          "unit_cost": 0.003594300355925583
+        },
+        "general": {
+          "cost": 2382128.2904919917,
+          "unit_cost": 0.006403570673365569
+        },
+        "civil": {
+          "cost": 3743823.2507320875,
+          "unit_cost": 0.010064040996591634
+        },
+        "electrical": {
+          "grounding": {
+            "cost": 490262.5685482496,
+            "unit_cost": 0.0013179101305060474
+          },
+          "conduit_cable_trench": {
+            "cost": 757678.515029113,
+            "unit_cost": 0.002036770201691164
+          },
+          "control_cable": {
+            "cost": 846817.1638560675,
+            "unit_cost": 0.002276390225419536
+          },
+          "structural_steel": {
+            "cost": 1604495.6788851805,
+            "unit_cost": 0.0043131604271107
+          },
+          "insulators_bus": {
+            "cost": 1069663.7859234537,
+            "unit_cost": 0.0028754402847404673
+          },
+          "lighting": {
+            "cost": 222846.62206738617,
+            "unit_cost": 0.0005990500593209306
+          },
+          "hv_mv_switches": {
+            "cost": 668539.8662021585,
+            "unit_cost": 0.0017971501779627916
+          },
+          "arresters": {
+            "cost": 75767.8515029113,
+            "unit_cost": 0.0002036770201691164
+          },
+          "meters": {
+            "cost": 374382.3250732088,
+            "unit_cost": 0.0010064040996591633
+          },
+          "circuit_breakers": {
+            "cost": 1069663.7859234537,
+            "unit_cost": 0.0028754402847404673
+          },
+          "transformers": {
+            "cost": 7576785.15029113,
+            "unit_cost": 0.02036770201691164
+          },
+          "grounding_reactors": {
+            "cost": 1426218.3812312714,
+            "unit_cost": 0.0038339203796539556
+          },
+          "capacitor_banks": {
+            "cost": 1961050.2741929984,
+            "unit_cost": 0.00527164052202419
+          },
+          "station_service": {
+            "cost": 106966.37859234537,
+            "unit_cost": 0.00028754402847404667
+          },
+          "auxiliary_power": {
+            "cost": 311985.27089434065,
+            "unit_cost": 0.0008386700830493028
+          },
+          "control_enclosures": {
+            "cost": 2495882.167154725,
+            "unit_cost": 0.0067093606643944224
+          }
+        },
+        "controls": {
+          "cost": 2495882.167154725,
+          "unit_cost": 0.0067093606643944224
+        }
+      },
+      "transmission": {
+        "engineering": {
+          "cost": 401123.9197212951,
+          "unit_cost": 0.001078290106777675
+        },
+        "underground": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "overhead": {
+          "cost": 4902625.685482495,
+          "unit_cost": 0.013179101305060472
+        }
+      }
+    },
+    "schedule": {
+      "total_duration_months": 19,
+      "total_duration_days": 570,
+      "commercial_operation_date": "12/31/2027",
+      "notice_to_proceed_date": "6/1/2026",
+      "mobilization_date": "2/15/2026",
+      "substantial_completion_date": "12/15/2027",
+      "work_schedule": "10 hours, 5 days/week",
+      "milestones": [
+        {
+          "name": "Notice to Proceed",
+          "date": "Month 0",
+          "description": "Project kickoff"
+        },
+        {
+          "name": "Mobilization Complete",
+          "date": "Month 1",
+          "description": "Site mobilization"
+        },
+        {
+          "name": "30% Design Complete",
+          "date": "Month 2",
+          "description": "Design milestone"
+        },
+        {
+          "name": "IFC Design Complete",
+          "date": "Month 4",
+          "description": "Issued for construction"
+        },
+        {
+          "name": "Civil Work Complete",
+          "date": "Month 13",
+          "description": "Site work finished"
+        },
+        {
+          "name": "Mechanical Complete",
+          "date": "Month 16",
+          "description": "Equipment installation"
+        },
+        {
+          "name": "Substantial Completion",
+          "date": "Month 18",
+          "description": "Testing complete"
+        },
+        {
+          "name": "Commercial Operation",
+          "date": "Month 19",
+          "description": "COD achieved"
+        }
+      ],
+      "critical_path_items": [
+        "Equipment procurement and delivery",
+        "Pile installation",
+        "Electrical collection system",
+        "Substation commissioning"
+      ]
     }
   },
   {
@@ -1059,6 +3835,353 @@
       "uploaded_at": "2025-10-06T14:34:28.876543",
       "file_size": 3987654.0,
       "comments": ""
+    },
+    "detailed_sov": {
+      "procurement": {
+        "pv_modules": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "power_conversion_system": {
+          "cost": 19803882.434647687,
+          "unit_cost": 0.0528103531590605
+        },
+        "racking_system": {
+          "cost": 44150954.86639589,
+          "unit_cost": 0.11773587964372237
+        },
+        "pv_pile_supply": {
+          "cost": 20668474.27964976,
+          "unit_cost": 0.055115931412399365
+        },
+        "battery_storage": {
+          "cost": 29099582.352951705,
+          "unit_cost": 0.07759888627453788
+        },
+        "gsu_transformer": {
+          "cost": 6870734.722224709,
+          "unit_cost": 0.01832195925926589
+        },
+        "mv_transformer": {
+          "cost": 3394951.2745110327,
+          "unit_cost": 0.009053203398696088
+        }
+      },
+      "design": {
+        "thirty_percent_design": {
+          "cost": 687073.4722224709,
+          "unit_cost": 0.001832195925926589
+        },
+        "supplemental_geotech": {
+          "cost": 525409.1258171836,
+          "unit_cost": 0.0014010910021791563
+        },
+        "detailed_design_ifc": {
+          "cost": 2119787.715339733,
+          "unit_cost": 0.005652767240905954
+        },
+        "civil_design": {
+          "cost": 1008743.9172494451,
+          "unit_cost": 0.0026899837793318538
+        },
+        "electrical_design": {
+          "cost": 969986.0784317235,
+          "unit_cost": 0.002586629542484596
+        },
+        "structural_design": {
+          "cost": 606241.2990198273,
+          "unit_cost": 0.0016166434640528728
+        }
+      },
+      "contractor_general": {
+        "mobilization": {
+          "cost": 57035583.98147003,
+          "unit_cost": 0.15209489061725343
+        },
+        "general_conditions": {
+          "cost": 67018164.760648444,
+          "unit_cost": 0.17871510602839585
+        },
+        "permitting": {
+          "cost": 101040.21650330455,
+          "unit_cost": 0.00026944057734214547
+        },
+        "taxes": {
+          "cost": 9699860.784317236,
+          "unit_cost": 0.025866295424845965
+        },
+        "bonding_insurance": {
+          "cost": 2829126.0620925273,
+          "unit_cost": 0.007544336165580073
+        }
+      },
+      "civil_works": {
+        "site_clearing": {
+          "cost": 17142913.40969182,
+          "unit_cost": 0.04571443575917819
+        },
+        "laydown_areas": {
+          "cost": 2609888.0060879267,
+          "unit_cost": 0.006959701349567805
+        },
+        "survey_staking": {
+          "cost": 1867570.496413233,
+          "unit_cost": 0.004980187990435288
+        },
+        "site_grading": {
+          "cost": 2534884.5843124045,
+          "unit_cost": 0.006759692224833079
+        },
+        "water_dust_control": {
+          "cost": 12489842.904633522,
+          "unit_cost": 0.03330624774568939
+        },
+        "erosion_control": {
+          "cost": 14896975.892813377,
+          "unit_cost": 0.039725269047502336
+        },
+        "onsite_roads": {
+          "cost": 27804495.79705533,
+          "unit_cost": 0.07414532212548088
+        },
+        "offsite_roads": {
+          "cost": 2020804.3300660907,
+          "unit_cost": 0.005388811546842908
+        },
+        "seeding_reclamation": {
+          "cost": 5271336.8265742725,
+          "unit_cost": 0.01405689820419806
+        },
+        "fencing_gates": {
+          "cost": 7432965.441065935,
+          "unit_cost": 0.019821241176175827
+        },
+        "buildings": {
+          "cost": 707721.4446257872,
+          "unit_cost": 0.0018872571856687658
+        },
+        "foundations": {
+          "cost": 1091234.338235689,
+          "unit_cost": 0.0029099582352951707
+        }
+      },
+      "pv_mechanical": {
+        "pile_installation": {
+          "cost": 17538994.14536547,
+          "unit_cost": 0.046770651054307916
+        },
+        "racking_installation": {
+          "cost": 17565453.009327237,
+          "unit_cost": 0.046841208024872634
+        },
+        "module_installation": {
+          "cost": 14891149.411153678,
+          "unit_cost": 0.039709731763076475
+        }
+      },
+      "dc_electrical": {
+        "string_wiring": {
+          "cost": 3615602.256695172,
+          "unit_cost": 0.009641606017853792
+        },
+        "combiner_boxes": {
+          "cost": 14465382.200625356,
+          "unit_cost": 0.03857435253500095
+        },
+        "wire_management": {
+          "cost": 2182323.3798317243,
+          "unit_cost": 0.005819529012884598
+        },
+        "dc_homerun_cabling": {
+          "cost": 25840325.510658283,
+          "unit_cost": 0.06890753469508876
+        }
+      },
+      "ac_electrical": {
+        "inverter_transformer_install": {
+          "cost": 6824596.841327848,
+          "unit_cost": 0.018198924910207595
+        },
+        "mv_underground_cable": {
+          "cost": 25866295.424845964,
+          "unit_cost": 0.06897678779958924
+        },
+        "mv_overhead_cable": {
+          "cost": 23627956.47174369,
+          "unit_cost": 0.06300788392464984
+        },
+        "lv_cable_equipment": {
+          "cost": 2020804.3300660907,
+          "unit_cost": 0.005388811546842908
+        }
+      },
+      "controls_communications": {
+        "scada_das": {
+          "cost": 6870554.320980554,
+          "unit_cost": 0.018321478189281478
+        }
+      },
+      "testing_commissioning": {
+        "contractor_testing": {
+          "cost": 4813709.091185647,
+          "unit_cost": 0.012836557576495058
+        }
+      },
+      "substation": {
+        "engineering": {
+          "cost": 1212482.5980396545,
+          "unit_cost": 0.0032332869281057456
+        },
+        "general": {
+          "cost": 2160147.2436694647,
+          "unit_cost": 0.005760392649785239
+        },
+        "civil": {
+          "cost": 3394951.2745110327,
+          "unit_cost": 0.009053203398696088
+        },
+        "electrical": {
+          "grounding": {
+            "cost": 444576.95261453994,
+            "unit_cost": 0.0011855385403054398
+          },
+          "conduit_cable_trench": {
+            "cost": 687073.4722224709,
+            "unit_cost": 0.001832195925926589
+          },
+          "control_cable": {
+            "cost": 767905.6454251145,
+            "unit_cost": 0.0020477483878003056
+          },
+          "structural_steel": {
+            "cost": 1454979.1176475855,
+            "unit_cost": 0.0038799443137268945
+          },
+          "insulators_bus": {
+            "cost": 969986.0784317235,
+            "unit_cost": 0.002586629542484596
+          },
+          "lighting": {
+            "cost": 202080.4330066091,
+            "unit_cost": 0.0005388811546842909
+          },
+          "hv_mv_switches": {
+            "cost": 606241.2990198273,
+            "unit_cost": 0.0016166434640528728
+          },
+          "arresters": {
+            "cost": 68707.34722224709,
+            "unit_cost": 0.0001832195925926589
+          },
+          "meters": {
+            "cost": 339495.12745110324,
+            "unit_cost": 0.0009053203398696086
+          },
+          "circuit_breakers": {
+            "cost": 969986.0784317235,
+            "unit_cost": 0.002586629542484596
+          },
+          "transformers": {
+            "cost": 6870734.722224709,
+            "unit_cost": 0.01832195925926589
+          },
+          "grounding_reactors": {
+            "cost": 1293314.7712422982,
+            "unit_cost": 0.003448839389979462
+          },
+          "capacitor_banks": {
+            "cost": 1778307.8104581598,
+            "unit_cost": 0.004742154161221759
+          },
+          "station_service": {
+            "cost": 96998.60784317236,
+            "unit_cost": 0.0002586629542484596
+          },
+          "auxiliary_power": {
+            "cost": 282912.6062092527,
+            "unit_cost": 0.0007544336165580072
+          },
+          "control_enclosures": {
+            "cost": 2263300.849674022,
+            "unit_cost": 0.006035468932464058
+          }
+        },
+        "controls": {
+          "cost": 2263300.849674022,
+          "unit_cost": 0.006035468932464058
+        }
+      },
+      "transmission": {
+        "engineering": {
+          "cost": 363744.77941189636,
+          "unit_cost": 0.0009699860784317236
+        },
+        "underground": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "overhead": {
+          "cost": 4445769.5261454,
+          "unit_cost": 0.011855385403054398
+        }
+      }
+    },
+    "schedule": {
+      "total_duration_months": 20,
+      "total_duration_days": 600,
+      "commercial_operation_date": "12/31/2027",
+      "notice_to_proceed_date": "6/1/2026",
+      "mobilization_date": "2/15/2026",
+      "substantial_completion_date": "12/15/2027",
+      "work_schedule": "5-10s",
+      "milestones": [
+        {
+          "name": "Notice to Proceed",
+          "date": "Month 0",
+          "description": "Project kickoff"
+        },
+        {
+          "name": "Mobilization Complete",
+          "date": "Month 1",
+          "description": "Site mobilization"
+        },
+        {
+          "name": "30% Design Complete",
+          "date": "Month 2",
+          "description": "Design milestone"
+        },
+        {
+          "name": "IFC Design Complete",
+          "date": "Month 4",
+          "description": "Issued for construction"
+        },
+        {
+          "name": "Civil Work Complete",
+          "date": "Month 14",
+          "description": "Site work finished"
+        },
+        {
+          "name": "Mechanical Complete",
+          "date": "Month 17",
+          "description": "Equipment installation"
+        },
+        {
+          "name": "Substantial Completion",
+          "date": "Month 19",
+          "description": "Testing complete"
+        },
+        {
+          "name": "Commercial Operation",
+          "date": "Month 20",
+          "description": "COD achieved"
+        }
+      ],
+      "critical_path_items": [
+        "Equipment procurement and delivery",
+        "Pile installation",
+        "Electrical collection system",
+        "Substation commissioning"
+      ]
     }
   },
   {
@@ -1193,6 +4316,353 @@
       "uploaded_at": "2025-10-06T14:37:55.345678",
       "file_size": 5123847.0,
       "comments": ""
+    },
+    "detailed_sov": {
+      "procurement": {
+        "pv_modules": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "power_conversion_system": {
+          "cost": 21101124.01861364,
+          "unit_cost": 0.0558230794143218
+        },
+        "racking_system": {
+          "cost": 47043037.00299193,
+          "unit_cost": 0.12445247884389399
+        },
+        "pv_pile_supply": {
+          "cost": 22022350.440103214,
+          "unit_cost": 0.0582601863494794
+        },
+        "battery_storage": {
+          "cost": 31005733.25184045,
+          "unit_cost": 0.08202574934349326
+        },
+        "gsu_transformer": {
+          "cost": 7320798.128906773,
+          "unit_cost": 0.019367190817213685
+        },
+        "mv_transformer": {
+          "cost": 3617335.5460480526,
+          "unit_cost": 0.00956967075674088
+        }
+      },
+      "design": {
+        "thirty_percent_design": {
+          "cost": 732079.8128906774,
+          "unit_cost": 0.0019367190817213688
+        },
+        "supplemental_geotech": {
+          "cost": 559825.7392693415,
+          "unit_cost": 0.0014810204742575171
+        },
+        "detailed_design_ifc": {
+          "cost": 2258643.1535394597,
+          "unit_cost": 0.005975246437935079
+        },
+        "civil_design": {
+          "cost": 1074821.0898112892,
+          "unit_cost": 0.002843442036537802
+        },
+        "electrical_design": {
+          "cost": 1033524.4417280151,
+          "unit_cost": 0.002734191644783109
+        },
+        "structural_design": {
+          "cost": 645952.7760800094,
+          "unit_cost": 0.0017088697779894428
+        }
+      },
+      "contractor_general": {
+        "mobilization": {
+          "cost": 60771666.11338062,
+          "unit_cost": 0.1607716034745519
+        },
+        "general_conditions": {
+          "cost": 71408149.93125781,
+          "unit_cost": 0.1889104495535921
+        },
+        "permitting": {
+          "cost": 107658.7960133349,
+          "unit_cost": 0.0002848116296649071
+        },
+        "taxes": {
+          "cost": 10335244.41728015,
+          "unit_cost": 0.027341916447831086
+        },
+        "bonding_insurance": {
+          "cost": 3014446.288373377,
+          "unit_cost": 0.0079747256306174
+        }
+      },
+      "civil_works": {
+        "site_clearing": {
+          "cost": 18265849.794452045,
+          "unit_cost": 0.04832235395357684
+        },
+        "laydown_areas": {
+          "cost": 2780847.1734210905,
+          "unit_cost": 0.007356738554024049
+        },
+        "survey_staking": {
+          "cost": 1989904.595140086,
+          "unit_cost": 0.005264297870740968
+        },
+        "site_grading": {
+          "cost": 2700930.696945914,
+          "unit_cost": 0.007145319304089719
+        },
+        "water_dust_control": {
+          "cost": 13307982.663166225,
+          "unit_cost": 0.03520630334170959
+        },
+        "erosion_control": {
+          "cost": 15872793.471374942,
+          "unit_cost": 0.041991517120039526
+        },
+        "onsite_roads": {
+          "cost": 29625812.818511803,
+          "unit_cost": 0.07837516618653916
+        },
+        "offsite_roads": {
+          "cost": 2153175.920266698,
+          "unit_cost": 0.005696232593298143
+        },
+        "seeding_reclamation": {
+          "cost": 5616632.621835082,
+          "unit_cost": 0.014858816459881168
+        },
+        "fencing_gates": {
+          "cost": 7919857.43783233,
+          "unit_cost": 0.020952003803789233
+        },
+        "buildings": {
+          "cost": 754080.3184911864,
+          "unit_cost": 0.001994921477489911
+        },
+        "foundations": {
+          "cost": 1162714.9969440168,
+          "unit_cost": 0.0030759656003809966
+        }
+      },
+      "pv_mechanical": {
+        "pile_installation": {
+          "cost": 18687875.56401585,
+          "unit_cost": 0.04943882424342817
+        },
+        "racking_installation": {
+          "cost": 18716067.60018307,
+          "unit_cost": 0.04951340634969066
+        },
+        "module_installation": {
+          "cost": 15866585.329486642,
+          "unit_cost": 0.04197509346425037
+        }
+      },
+      "dc_electrical": {
+        "string_wiring": {
+          "cost": 3852440.1400720305,
+          "unit_cost": 0.010191640582201138
+        },
+        "combiner_boxes": {
+          "cost": 15412928.490123713,
+          "unit_cost": 0.040774943095565376
+        },
+        "wire_management": {
+          "cost": 2325275.179678096,
+          "unit_cost": 0.006151521639360042
+        },
+        "dc_homerun_cabling": {
+          "cost": 27532980.72138583,
+          "unit_cost": 0.07283857333699954
+        }
+      },
+      "ac_electrical": {
+        "inverter_transformer_install": {
+          "cost": 7271638.013461056,
+          "unit_cost": 0.019237137601748826
+        },
+        "mv_underground_cable": {
+          "cost": 27560651.779413734,
+          "unit_cost": 0.07291177719421622
+        },
+        "mv_overhead_cable": {
+          "cost": 25175691.759530388,
+          "unit_cost": 0.0666023591521968
+        },
+        "lv_cable_equipment": {
+          "cost": 2153175.920266698,
+          "unit_cost": 0.005696232593298143
+        }
+      },
+      "controls_communications": {
+        "scada_das": {
+          "cost": 7320605.910586019,
+          "unit_cost": 0.019366682303137615
+        }
+      },
+      "testing_commissioning": {
+        "contractor_testing": {
+          "cost": 5129028.252810031,
+          "unit_cost": 0.01356885781166675
+        }
+      },
+      "substation": {
+        "engineering": {
+          "cost": 1291905.5521600188,
+          "unit_cost": 0.0034177395559788857
+        },
+        "general": {
+          "cost": 2301646.4088571374,
+          "unit_cost": 0.00608901166364322
+        },
+        "civil": {
+          "cost": 3617335.5460480526,
+          "unit_cost": 0.00956967075674088
+        },
+        "electrical": {
+          "grounding": {
+            "cost": 473698.70245867356,
+            "unit_cost": 0.0012531711705255914
+          },
+          "conduit_cable_trench": {
+            "cost": 732079.8128906774,
+            "unit_cost": 0.0019367190817213688
+          },
+          "control_cable": {
+            "cost": 818206.8497013453,
+            "unit_cost": 0.0021645683854532947
+          },
+          "structural_steel": {
+            "cost": 1550286.6625920227,
+            "unit_cost": 0.004101287467174663
+          },
+          "insulators_bus": {
+            "cost": 1033524.4417280151,
+            "unit_cost": 0.002734191644783109
+          },
+          "lighting": {
+            "cost": 215317.5920266698,
+            "unit_cost": 0.0005696232593298142
+          },
+          "hv_mv_switches": {
+            "cost": 645952.7760800094,
+            "unit_cost": 0.0017088697779894428
+          },
+          "arresters": {
+            "cost": 73207.98128906773,
+            "unit_cost": 0.00019367190817213685
+          },
+          "meters": {
+            "cost": 361733.55460480525,
+            "unit_cost": 0.000956967075674088
+          },
+          "circuit_breakers": {
+            "cost": 1033524.4417280151,
+            "unit_cost": 0.002734191644783109
+          },
+          "transformers": {
+            "cost": 7320798.128906773,
+            "unit_cost": 0.019367190817213685
+          },
+          "grounding_reactors": {
+            "cost": 1378032.5889706868,
+            "unit_cost": 0.0036455888597108116
+          },
+          "capacitor_banks": {
+            "cost": 1894794.8098346943,
+            "unit_cost": 0.005012684682102366
+          },
+          "station_service": {
+            "cost": 103352.44417280151,
+            "unit_cost": 0.00027341916447831086
+          },
+          "auxiliary_power": {
+            "cost": 301444.6288373377,
+            "unit_cost": 0.0007974725630617399
+          },
+          "control_enclosures": {
+            "cost": 2411557.0306987017,
+            "unit_cost": 0.0063797805044939196
+          }
+        },
+        "controls": {
+          "cost": 2411557.0306987017,
+          "unit_cost": 0.0063797805044939196
+        }
+      },
+      "transmission": {
+        "engineering": {
+          "cost": 387571.66564800567,
+          "unit_cost": 0.0010253218667936658
+        },
+        "underground": {
+          "cost": null,
+          "unit_cost": null
+        },
+        "overhead": {
+          "cost": 4736987.024586736,
+          "unit_cost": 0.012531711705255915
+        }
+      }
+    },
+    "schedule": {
+      "total_duration_months": 20,
+      "total_duration_days": 600,
+      "commercial_operation_date": "12/31/2027",
+      "notice_to_proceed_date": "5/1/2026",
+      "mobilization_date": "2/15/2026",
+      "substantial_completion_date": "12/15/2027",
+      "work_schedule": "5-10s",
+      "milestones": [
+        {
+          "name": "Notice to Proceed",
+          "date": "Month 0",
+          "description": "Project kickoff"
+        },
+        {
+          "name": "Mobilization Complete",
+          "date": "Month 1",
+          "description": "Site mobilization"
+        },
+        {
+          "name": "30% Design Complete",
+          "date": "Month 2",
+          "description": "Design milestone"
+        },
+        {
+          "name": "IFC Design Complete",
+          "date": "Month 4",
+          "description": "Issued for construction"
+        },
+        {
+          "name": "Civil Work Complete",
+          "date": "Month 14",
+          "description": "Site work finished"
+        },
+        {
+          "name": "Mechanical Complete",
+          "date": "Month 17",
+          "description": "Equipment installation"
+        },
+        {
+          "name": "Substantial Completion",
+          "date": "Month 19",
+          "description": "Testing complete"
+        },
+        {
+          "name": "Commercial Operation",
+          "date": "Month 20",
+          "description": "COD achieved"
+        }
+      ],
+      "critical_path_items": [
+        "Equipment procurement and delivery",
+        "Pile installation",
+        "Electrical collection system",
+        "Substation commissioning"
+      ]
     }
   }
 ]
