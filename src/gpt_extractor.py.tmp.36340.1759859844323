@@ -276,10 +276,6 @@ class GPTExtractor:
         - Extract work schedule format (e.g., "10 hours/day, 6 days/week" or "5-10s")
         - Look for total project duration in months or days
         - Extract any milestones with dates or relative timing (e.g., "Month 3", "90 days after NTP")
-        - For bid_assumptions: Look for bid assumptions table, project basis info, or proposal clarifications
-        - Common bid assumption fields: pricing type (firm/indicative), design basis (30%/IFC), labor type (union/prevailing wage/open shop), module/inverter/racking specs, pile details, domestic content requirements
-        - Extract pile information: size (e.g., "W6x15"), galvanization, pre-drill %, refusal %, cost per pile
-        - Look for IRS domestic content assumptions for steel and tracker components
         - Be conservative - only extract information you're confident about
         - Return ONLY valid JSON, no additional text, no markdown, no code blocks
         - Start your response with { and end with }
@@ -361,7 +357,7 @@ class GPTExtractor:
                         merged['project_info'][key] = value
 
             # Merge other sections similarly
-            for section in ['technology', 'capacity', 'equipment', 'costs', 'detailed_sov', 'scope', 'schedule', 'bid_assumptions']:
+            for section in ['technology', 'capacity', 'equipment', 'costs', 'detailed_sov', 'scope', 'schedule']:
                 if result.get(section):
                     if not merged.get(section):
                         merged[section] = {}

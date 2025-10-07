@@ -407,6 +407,10 @@
         "overhead": {
           "cost": null,
           "unit_cost": null
+        },
+        "general": {
+          "cost": 242880.31331951698,
+          "unit_cost": 0.0003261759418795147
         }
       }
     },
@@ -466,6 +470,26 @@
         "Electrical collection system",
         "Substation commissioning"
       ]
+    },
+    "bid_assumptions": {
+      "pricing_type": "Firm - HV Indicative",
+      "bid_date": "3/5/2025",
+      "pv_design_basis": "30% Design - 3/26/24 Rev",
+      "hv_design_basis": "10% HV Design - 2/2/24 Rev",
+      "work_schedule": "10 hours, 6 days/week",
+      "labor_rate": "Prevailing Wage",
+      "sales_tax_exemption": "Tax Exempt",
+      "module_type": "Jinko JKM560N-72HL4-BDV",
+      "inverter_type": "Sungrow SG4400UD-MV",
+      "racking_type": "Nextracker Horizon single axis tracker",
+      "pile_size": "W6x15, W6x20",
+      "pile_galvanized": "Y, 5mil",
+      "predrill_percentage": "25%",
+      "predrill_cost_per_pile": 150.0,
+      "pile_refusal_percentage": "25%",
+      "racking_spares": "0.5%",
+      "domestic_content_steel": "Y - 100% Domestic Content for Piles",
+      "domestic_content_tracker": "Y - 19.3 pts + 9.4 pts (prod bonus)"
     }
   },
   {
@@ -879,6 +903,10 @@
         "overhead": {
           "cost": null,
           "unit_cost": null
+        },
+        "general": {
+          "cost": 207820.22983049904,
+          "unit_cost": 0.000279092028003956
         }
       }
     },
@@ -938,6 +966,26 @@
         "Electrical collection system",
         "Substation commissioning"
       ]
+    },
+    "bid_assumptions": {
+      "pricing_type": "Firm",
+      "bid_date": "03/05/2025",
+      "pv_design_basis": "30% Design - 3/26/24 Rev",
+      "hv_design_basis": "10% HV Design - 2/2/24 Rev",
+      "work_schedule": "10 hours, 5 days/week",
+      "labor_rate": "Prevailing Wage",
+      "sales_tax_exemption": "Tax Exempt",
+      "module_type": "Jinko JKM560N-72HL4-BDV",
+      "inverter_type": "Sungrow SG4400UD-MV",
+      "racking_type": "NEXTracker NX Horizon XTR",
+      "pile_size": "W6x12 up to W6x25",
+      "pile_galvanized": "Black Steel",
+      "predrill_percentage": "90%",
+      "predrill_cost_per_pile": 72.7,
+      "pile_refusal_percentage": "73%",
+      "racking_spares": "0.5%",
+      "domestic_content_steel": "Y - 100% Domestic Content for Piles",
+      "domestic_content_tracker": "Yes"
     }
   },
   {
@@ -1333,6 +1381,10 @@
         "overhead": {
           "cost": null,
           "unit_cost": null
+        },
+        "general": {
+          "cost": 175654.29759196372,
+          "unit_cost": 0.0002358948124662164
         }
       }
     },
@@ -1392,6 +1444,26 @@
         "Electrical collection system",
         "Substation commissioning"
       ]
+    },
+    "bid_assumptions": {
+      "pricing_type": "Firm",
+      "bid_date": "March 5, 2025",
+      "pv_design_basis": "30% Design - 3/26/24 Rev",
+      "hv_design_basis": "10% HV Design - 2/2/24 Rev",
+      "work_schedule": "10 hours, 6 days/week",
+      "labor_rate": "Prevailing Wage",
+      "sales_tax_exemption": "Tax Exempt",
+      "module_type": "Jinko JKM560N-72HL4BDV",
+      "inverter_type": "Sungrow SG400UD-MV-US",
+      "racking_type": "ATI/NXT Single axis tracker 1P",
+      "pile_size": "W6x12 up to W6x25",
+      "pile_galvanized": "Black Steel",
+      "predrill_percentage": "93%",
+      "predrill_cost_per_pile": 78.12,
+      "pile_refusal_percentage": "73%",
+      "racking_spares": "0.5%",
+      "domestic_content_steel": "Y - 100% Domestic Content for Piles",
+      "domestic_content_tracker": "Yes"
     }
   },
   {
@@ -1780,6 +1852,10 @@
         "overhead": {
           "cost": null,
           "unit_cost": null
+        },
+        "general": {
+          "cost": 185831.51022190918,
+          "unit_cost": 0.000249562292839208
         }
       }
     },
@@ -1839,6 +1915,26 @@
         "Electrical collection system",
         "Substation commissioning"
       ]
+    },
+    "bid_assumptions": {
+      "pricing_type": "Firm - HV Indicative",
+      "bid_date": "July 25th, 2025",
+      "pv_design_basis": "30% Design - 3/26/24 Rev",
+      "hv_design_basis": "10% HV Design - 2/2/24 Rev",
+      "work_schedule": "10 hours, 6 days/week",
+      "labor_rate": "Prevailing Wage",
+      "sales_tax_exemption": "8.75%",
+      "module_type": "Longi LR5-78HBD-545M",
+      "inverter_type": "SMA SC4400 UP-US",
+      "racking_type": "NexTracker Horizon 60 HailPro",
+      "pile_size": "Not specified",
+      "pile_galvanized": "Yes",
+      "predrill_percentage": "66%",
+      "predrill_cost_per_pile": null,
+      "pile_refusal_percentage": "4%",
+      "racking_spares": "0.5%",
+      "domestic_content_steel": "Y - 100% Domestic Content for Piles",
+      "domestic_content_tracker": "Y - IRA Compliant"
     }
   },
   {
@@ -2238,6 +2334,10 @@
         "overhead": {
           "cost": null,
           "unit_cost": null
+        },
+        "general": {
+          "cost": 153391.1220177493,
+          "unit_cost": 0.00020599649686006276
         }
       }
     },
@@ -2297,6 +2397,26 @@
         "Electrical collection system",
         "Substation commissioning"
       ]
+    },
+    "bid_assumptions": {
+      "pricing_type": "Firm - HV Indicative",
+      "bid_date": "April 12, 2025",
+      "pv_design_basis": "30% Design - 3/26/24 Rev",
+      "hv_design_basis": "10% HV Design - 2/2/24 Rev",
+      "work_schedule": "5-10s",
+      "labor_rate": "Prevailing Wage",
+      "sales_tax_exemption": "Tax Exempt",
+      "module_type": "Trina Solar TSM-575DE21",
+      "inverter_type": "Power Electronics FS3450",
+      "racking_type": "GameChange Solar Genius Tracker",
+      "pile_size": "W6x15, W6x20",
+      "pile_galvanized": "Y, 5mil",
+      "predrill_percentage": "25%",
+      "predrill_cost_per_pile": 150.0,
+      "pile_refusal_percentage": "25%",
+      "racking_spares": "Construction Spares Only",
+      "domestic_content_steel": "Y - 100% Domestic Content for Piles",
+      "domestic_content_tracker": "Y - IRA Compliant"
     }
   },
   {
@@ -2700,6 +2820,10 @@
         "overhead": {
           "cost": null,
           "unit_cost": null
+        },
+        "general": {
+          "cost": 141365.25805155776,
+          "unit_cost": 0.00018984637150623387
         }
       }
     },
@@ -2759,6 +2883,26 @@
         "Electrical collection system",
         "Substation commissioning"
       ]
+    },
+    "bid_assumptions": {
+      "pricing_type": "Firm",
+      "bid_date": "April 10, 2025",
+      "pv_design_basis": "30% Design - 3/26/24 Rev",
+      "hv_design_basis": "10% HV Design - 2/2/24 Rev",
+      "work_schedule": "5-10s",
+      "labor_rate": "Prevailing Wage",
+      "sales_tax_exemption": "0%",
+      "module_type": "Longi LR5-72HBD-620M",
+      "inverter_type": "Sungrow SG3450UD-MV",
+      "racking_type": "Nextracker NX Horizon",
+      "pile_size": "W6x12 up to W6x25",
+      "pile_galvanized": "Black Steel",
+      "predrill_percentage": "90%",
+      "predrill_cost_per_pile": 72.7,
+      "pile_refusal_percentage": "73%",
+      "racking_spares": "Construction Spares Only",
+      "domestic_content_steel": "Y - 100% Domestic Content for Piles",
+      "domestic_content_tracker": "Yes"
     }
   },
   {
@@ -3157,6 +3301,10 @@
         "overhead": {
           "cost": null,
           "unit_cost": null
+        },
+        "general": {
+          "cost": 149571.1882694363,
+          "unit_cost": 0.00020086651958341862
         }
       }
     },
@@ -3216,6 +3364,26 @@
         "Electrical collection system",
         "Substation commissioning"
       ]
+    },
+    "bid_assumptions": {
+      "pricing_type": "Firm",
+      "bid_date": "April 15, 2025",
+      "pv_design_basis": "30% Design - 3/26/24 Rev",
+      "hv_design_basis": "10% HV Design - 2/2/24 Rev",
+      "work_schedule": "10 hours, 5 days/week",
+      "labor_rate": "Prevailing Wage",
+      "sales_tax_exemption": "0%",
+      "module_type": "Jinko JKM580N-72HL4-BDV",
+      "inverter_type": "SMA SC3450 UP-US",
+      "racking_type": "Array Technologies DuraTrack HZ v3",
+      "pile_size": "W6x12 up to W6x25",
+      "pile_galvanized": "Black Steel",
+      "predrill_percentage": "93%",
+      "predrill_cost_per_pile": 78.12,
+      "pile_refusal_percentage": "73%",
+      "racking_spares": "Excluded",
+      "domestic_content_steel": "Y - 100% Domestic Content for Piles",
+      "domestic_content_tracker": "Y - IRA Compliant"
     }
   },
   {
@@ -3640,6 +3808,10 @@
         "overhead": {
           "cost": 4902625.685482495,
           "unit_cost": 0.013179101305060472
+        },
+        "general": {
+          "cost": 222846.62206738617,
+          "unit_cost": 0.00029927171063829917
         }
       }
     },
@@ -3699,6 +3871,26 @@
         "Electrical collection system",
         "Substation commissioning"
       ]
+    },
+    "bid_assumptions": {
+      "pricing_type": "Firm - HV Indicative",
+      "bid_date": "May 3, 2025",
+      "pv_design_basis": "30% Design - 3/26/24 Rev",
+      "hv_design_basis": "30% HV Design - 1/31/25 Rev",
+      "work_schedule": "10 hours, 5 days/week",
+      "labor_rate": "Prevailing Wage",
+      "sales_tax_exemption": "Tax Exempt",
+      "module_type": "Canadian Solar CS7N-MB-AG 670W",
+      "inverter_type": "Sungrow SG3150U-MV",
+      "racking_type": "Nextracker NX Horizon XTR",
+      "pile_size": "W6x15, W6x20",
+      "pile_galvanized": "Y, 5mil",
+      "predrill_percentage": "25%",
+      "predrill_cost_per_pile": 150.0,
+      "pile_refusal_percentage": "25%",
+      "racking_spares": "Construction Spares Only",
+      "domestic_content_steel": "Y - 100% Domestic Content for Piles",
+      "domestic_content_tracker": "Y - IRA Compliant"
     }
   },
   {
@@ -4123,6 +4315,10 @@
         "overhead": {
           "cost": 4445769.5261454,
           "unit_cost": 0.011855385403054398
+        },
+        "general": {
+          "cost": 202080.4330066091,
+          "unit_cost": 0.0002713837719924182
         }
       }
     },
@@ -4182,6 +4378,26 @@
         "Electrical collection system",
         "Substation commissioning"
       ]
+    },
+    "bid_assumptions": {
+      "pricing_type": "Firm",
+      "bid_date": "May 1, 2025",
+      "pv_design_basis": "30% Design - 3/26/24 Rev",
+      "hv_design_basis": "30% HV Design - 1/31/25 Rev",
+      "work_schedule": "5-10s",
+      "labor_rate": "Prevailing Wage",
+      "sales_tax_exemption": "0%",
+      "module_type": "Longi LR5-78HBD-625M",
+      "inverter_type": "Power Electronics FS3150",
+      "racking_type": "GameChange Solar Genius Tracker MAX",
+      "pile_size": "W6x12 up to W6x25",
+      "pile_galvanized": "Black Steel",
+      "predrill_percentage": "90%",
+      "predrill_cost_per_pile": 72.7,
+      "pile_refusal_percentage": "73%",
+      "racking_spares": "0.5%",
+      "domestic_content_steel": "Y - 100% Domestic Content for Piles",
+      "domestic_content_tracker": "Yes"
     }
   },
   {
@@ -4604,6 +4820,10 @@
         "overhead": {
           "cost": 4736987.024586736,
           "unit_cost": 0.012531711705255915
+        },
+        "general": {
+          "cost": 215317.5920266698,
+          "unit_cost": 0.000289160605166613
         }
       }
     },
@@ -4663,6 +4883,26 @@
         "Electrical collection system",
         "Substation commissioning"
       ]
+    },
+    "bid_assumptions": {
+      "pricing_type": "Firm",
+      "bid_date": "May 5, 2025",
+      "pv_design_basis": "30% Design - 3/26/24 Rev",
+      "hv_design_basis": "30% HV Design - 1/31/25 Rev",
+      "work_schedule": "5-10s",
+      "labor_rate": "Prevailing Wage",
+      "sales_tax_exemption": "0%",
+      "module_type": "Trina Solar TSM-DEG21C.20 630W",
+      "inverter_type": "SMA SC3150 UP-US",
+      "racking_type": "Array Technologies DuraTrack HZ v3",
+      "pile_size": "W6x12 up to W6x25",
+      "pile_galvanized": "Black Steel",
+      "predrill_percentage": "93%",
+      "predrill_cost_per_pile": 78.12,
+      "pile_refusal_percentage": "73%",
+      "racking_spares": "Construction Spares Only",
+      "domestic_content_steel": "Y - 100% Domestic Content for Piles",
+      "domestic_content_tracker": "Y - 19.3 pts + 9.4 pts (prod bonus)"
     }
   }
 ]

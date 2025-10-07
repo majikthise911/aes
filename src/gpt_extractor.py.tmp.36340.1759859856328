@@ -361,7 +361,7 @@ class GPTExtractor:
                         merged['project_info'][key] = value
 
             # Merge other sections similarly
-            for section in ['technology', 'capacity', 'equipment', 'costs', 'detailed_sov', 'scope', 'schedule', 'bid_assumptions']:
+            for section in ['technology', 'capacity', 'equipment', 'costs', 'detailed_sov', 'scope', 'schedule']:
                 if result.get(section):
                     if not merged.get(section):
                         merged[section] = {}

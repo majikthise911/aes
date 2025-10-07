@@ -209,77 +209,25 @@ class GPTExtractor:
                 },
                 "transmission": {
                     "engineering": {"cost": float, "unit_cost": float},
-                    "general": {"cost": float, "unit_cost": float},
                     "underground": {"cost": float, "unit_cost": float},
                     "overhead": {"cost": float, "unit_cost": float}
                 }
-            },
-            "bid_assumptions": {
-                "pricing_type": "string (Firm, Indicative, etc.)",
-                "bid_date": "string",
-                "pv_design_basis": "string (e.g., '30% design', 'IFC')",
-                "hv_design_basis": "string",
-                "work_schedule": "string (e.g., '10 hours, 6 days/week')",
-                "labor_rate": "string (Open Shop, Prevailing Wage, Union)",
-                "sales_tax_exemption": "string or float",
-                "module_type": "string",
-                "inverter_type": "string",
-                "racking_type": "string",
-                "pile_size": "string",
-                "pile_galvanized": "string (Y/N, mil thickness)",
-                "predrill_percentage": "string or float",
-                "predrill_cost_per_pile": float,
-                "pile_refusal_percentage": "string or float",
-                "racking_spares": "string",
-                "domestic_content_steel": "string (Y/N, details)",
-                "domestic_content_tracker": "string (Y/N, details)"
             },
             "scope": {
                 "assumptions": ["list of key assumptions"],
                 "exclusions": ["list of key exclusions/items not included"],
                 "clarifications": ["list of clarifications and special conditions"],
                 "inclusions": ["list of key items included in scope"]
-            },
-            "schedule": {
-                "total_duration_months": float,
-                "total_duration_days": float,
-                "commercial_operation_date": "string (COD)",
-                "notice_to_proceed_date": "string (NTP)",
-                "mobilization_date": "string",
-                "substantial_completion_date": "string",
-                "work_schedule": "string (e.g., '5-10s' or '10 hours, 6 days')",
-                "milestones": [
-                    {
-                        "name": "string (milestone name)",
-                        "date": "string (date or relative timing)",
-                        "description": "string (optional)"
-                    }
-                ],
-                "critical_path_items": ["list of critical path activities if mentioned"]
             }
         }
 
         Important instructions:
         - If information is not available, use null for that field
         - For costs, look for dollar amounts and convert to numbers (remove $ and commas)
-        - For unit_cost ($/W), look for dollar per watt values
         - For locations, try to extract as much detail as possible
         - For scope section: carefully extract assumptions, exclusions, clarifications, and inclusions from the proposal
         - Look for sections titled "Assumptions", "Exclusions", "Clarifications", "Scope of Work", "Included", "Not Included", etc.
         - Extract the actual list items, not just section headers
-        - For detailed_sov: Look for Schedule of Values (SOV), cost breakdown tables, or detailed pricing sections
-        - Common SOV section names: "Procurement", "Civil Works", "Electrical", "Mechanical", "Substation", "Design", "General Conditions", "Mobilization", "Testing & Commissioning"
-        - Extract line-item costs like: site clearing, grading, fencing, pile installation, racking, DC cabling, MV cable, inverters, transformers, etc.
-        - If a category doesn't apply (e.g., battery_storage for PV-only project), set cost and unit_cost to null
-        - For schedule: Look for project schedule, timeline, Gantt charts, or milestone tables
-        - Common schedule terms: COD (Commercial Operation Date), NTP (Notice to Proceed), Substantial Completion, Mobilization
-        - Extract work schedule format (e.g., "10 hours/day, 6 days/week" or "5-10s")
-        - Look for total project duration in months or days
-        - Extract any milestones with dates or relative timing (e.g., "Month 3", "90 days after NTP")
-        - For bid_assumptions: Look for bid assumptions table, project basis info, or proposal clarifications
-        - Common bid assumption fields: pricing type (firm/indicative), design basis (30%/IFC), labor type (union/prevailing wage/open shop), module/inverter/racking specs, pile details, domestic content requirements
-        - Extract pile information: size (e.g., "W6x15"), galvanization, pre-drill %, refusal %, cost per pile
-        - Look for IRS domestic content assumptions for steel and tracker components
         - Be conservative - only extract information you're confident about
         - Return ONLY valid JSON, no additional text, no markdown, no code blocks
         - Start your response with { and end with }
@@ -292,11 +240,11 @@ class GPTExtractor:
             response = self.client.chat.completions.create(
                 model="gpt-4o",
                 messages=[
-                    {"role": "system", "content": "You are an expert at extracting structured data from technical documents, especially EPC proposals and Schedules of Values (SOV)."},
+                    {"role": "system", "content": "You are an expert at extracting structured data from technical documents."},
                     {"role": "user", "content": f"{prompt}\n\n{text}"}
                 ],
                 temperature=0.1,
-                max_tokens=6000  # Increased for detailed SOV extraction
+                max_tokens=3000  # Reduced for faster response
             )
 
             raw_response = response.choices[0].message.content
@@ -361,7 +309,7 @@ class GPTExtractor:
                         merged['project_info'][key] = value
 
             # Merge other sections similarly
-            for section in ['technology', 'capacity', 'equipment', 'costs', 'detailed_sov', 'scope', 'schedule', 'bid_assumptions']:
+            for section in ['technology', 'capacity', 'equipment', 'costs']:
                 if result.get(section):
                     if not merged.get(section):
                         merged[section] = {}

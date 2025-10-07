@@ -7,7 +7,8 @@
       "Bash(then mv proposals.json data/proposals.json)",
       "Bash(else echo \"No proposals.json found in root\")",
       "Bash(fi)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []
