@@ -888,6 +888,11 @@ def show_chatbot(proposals):
         from src.chatbot import ProposalChatbot
         st.session_state.chatbot = ProposalChatbot()
 
+    # Sync chatbot provider with extractor
+    if hasattr(st.session_state, 'gpt_extractor') and hasattr(st.session_state.chatbot, 'set_provider'):
+        if st.session_state.chatbot.provider_name != st.session_state.gpt_extractor.provider_name:
+            st.session_state.chatbot.set_provider(st.session_state.gpt_extractor.provider_name)
+
     if 'chat_messages' not in st.session_state:
         st.session_state.chat_messages = []
 
@@ -1984,6 +1989,46 @@ def show_ai_analysis(proposals):
     if not proposals:
         st.warning("No proposals available for analysis")
         return
+
+    # AI Provider Selection
+    from src.ai_provider import get_available_providers, provider_from_name
+
+    available_providers = get_available_providers()
+
+    if not available_providers:
+        st.error("No AI providers configured. Please add API keys to your Streamlit secrets.")
+        st.info("Supported providers: OPENAI_API_KEY, ANTHROPIC_API_KEY, GROK_API_KEY (or XAI_API_KEY)")
+        return
+
+    # Provider selection in sidebar or compact UI
+    col_provider, col_info = st.columns([2, 3])
+
+    with col_provider:
+        selected_provider = st.selectbox(
+            "AI Provider",
+            options=available_providers,
+            index=0,
+            key="ai_provider_select",
+            help="Select which AI provider to use for analysis. Different providers may have varying speeds and capabilities."
+        )
+
+    with col_info:
+        provider_info = {
+            "OpenAI (GPT-4o)": "Fast, reliable, best for detailed analysis",
+            "Anthropic (Claude)": "Excellent reasoning, nuanced analysis",
+            "Grok (xAI)": "Fast responses, good for quick insights"
+        }
+        st.caption(f"**{selected_provider}**: {provider_info.get(selected_provider, 'AI-powered analysis')}")
+
+    # Update the GPT extractor with selected provider
+    if st.session_state.gpt_extractor.provider_name != selected_provider:
+        try:
+            st.session_state.gpt_extractor.set_provider(selected_provider)
+            st.toast(f"Switched to {selected_provider}", icon="🔄")
+        except Exception as e:
+            st.error(f"Failed to switch provider: {str(e)}")
+
+    st.divider()
 
     # Sub-tabs for different AI features
     ai_tab1, ai_tab2, ai_tab3 = st.tabs(["🔍 Scope Analysis", "📝 Recommendation Report", "💬 Ask Questions"])

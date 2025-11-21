@@ -4,6 +4,7 @@ from typing import Dict, Optional, List
 import os
 from dotenv import load_dotenv
 from datetime import datetime
+from .ai_provider import AIClient, AIProvider, provider_from_name, get_available_providers
 
 # Load environment variables from the config/.env file
 env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config', '.env')
@@ -12,8 +13,24 @@ load_dotenv(env_path)
 class GPTExtractor:
     """Handles AI-powered data extraction from EPC proposal text."""
 
-    def __init__(self):
+    def __init__(self, provider: str = "OpenAI (GPT-4o)"):
+        """
+        Initialize the extractor with a specific AI provider.
+
+        Args:
+            provider: Provider name - "OpenAI (GPT-4o)", "Anthropic (Claude)", or "Grok (xAI)"
+        """
+        self.provider_name = provider
+        self.ai_provider = provider_from_name(provider)
+        self.ai_client = AIClient(self.ai_provider)
+        # Keep legacy client for backwards compatibility
         self.client = openai.OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+
+    def set_provider(self, provider: str):
+        """Change the AI provider."""
+        self.provider_name = provider
+        self.ai_provider = provider_from_name(provider)
+        self.ai_client = AIClient(self.ai_provider)
 
     def chunk_text(self, text: str, max_chunk_size: int = 50000) -> List[str]:
         """Split text into chunks if it's too large."""
@@ -546,7 +563,7 @@ Return empty arrays [] if sections not found. No explanatory text, only JSON.
         except:
             return None
 
-    def generate_epc_recommendation_report(self, proposals_data: List[Dict], scope_analysis: Dict = None) -> str:
+    def generate_epc_recommendation_report(self, proposals_data: List[Dict], scope_analysis: Dict = None, parallel: bool = True) -> str:
         """
         Generate a comprehensive EPC recommendation report using multi-chain reasoning.
 
@@ -554,6 +571,11 @@ Return empty arrays [] if sections not found. No explanatory text, only JSON.
         1. Initial analysis of cost, technical specs, and scope
         2. Deep evaluation considering trade-offs and risks
         3. Self-critique and final recommendation
+
+        Args:
+            proposals_data: List of proposal dictionaries
+            scope_analysis: Optional scope analysis results
+            parallel: If True, run Chain 1 and Chain 2 in parallel for faster results
         """
 
         if not proposals_data:
@@ -572,14 +594,26 @@ SCOPE ANALYSIS RESULTS:
 """
 
         try:
-            # CHAIN 1: Initial Comprehensive Analysis
-            chain1_result = self._chain1_initial_recommendation(summary, scope_summary)
+            if parallel:
+                # Run Chain 1 and a preliminary Chain 2 in parallel for speed
+                # Chain 2 will be refined after Chain 1 completes
+                chain1_task = lambda: self._chain1_initial_recommendation(summary, scope_summary)
+                chain2_preliminary_task = lambda: self._chain2_preliminary_evaluation(summary, scope_summary)
 
-            # CHAIN 2: Deep Evaluation
-            chain2_result = self._chain2_deep_evaluation(summary, scope_summary, chain1_result)
+                results = AIClient.run_parallel([chain1_task, chain2_preliminary_task], max_workers=2)
+                chain1_result = results[0]
+                chain2_preliminary = results[1]
 
-            # CHAIN 3: Self-Critique and Final Recommendation
-            chain3_result = self._chain3_final_recommendation(summary, scope_summary, chain1_result, chain2_result)
+                # Chain 2: Refine with Chain 1 context (quick refinement)
+                chain2_result = self._chain2_refine_evaluation(chain2_preliminary, chain1_result)
+
+                # Chain 3: Final synthesis
+                chain3_result = self._chain3_final_recommendation(summary, scope_summary, chain1_result, chain2_result)
+            else:
+                # Sequential execution (original behavior)
+                chain1_result = self._chain1_initial_recommendation(summary, scope_summary)
+                chain2_result = self._chain2_deep_evaluation(summary, scope_summary, chain1_result)
+                chain3_result = self._chain3_final_recommendation(summary, scope_summary, chain1_result, chain2_result)
 
             return chain3_result
 
@@ -621,17 +655,13 @@ PROPOSAL DATA:
 
 Provide objective, data-driven analysis. Be thorough and identify any red flags or concerns."""
 
-        response = self.client.chat.completions.create(
-            model="gpt-4o",
-            messages=[
-                {"role": "system", "content": "You are a senior EPC consultant with 20+ years of experience in renewable energy project evaluation. This is Chain 1: Initial Analysis."},
-                {"role": "user", "content": prompt}
-            ],
+        return self.ai_client.chat_completion(
+            messages=[{"role": "user", "content": prompt}],
+            model_tier="standard",
             temperature=0.2,
-            max_tokens=3000
+            max_tokens=3000,
+            system_prompt="You are a senior EPC consultant with 20+ years of experience in renewable energy project evaluation. This is Chain 1: Initial Analysis."
         )
-
-        return response.choices[0].message.content
 
     def _chain2_deep_evaluation(self, proposals_summary: str, scope_summary: str, chain1_analysis: str) -> str:
         """Chain 2: Deep evaluation considering trade-offs."""
@@ -676,17 +706,71 @@ PROPOSAL DATA:
 
 Challenge the initial analysis. Look for nuances and considerations that might have been missed."""
 
-        response = self.client.chat.completions.create(
-            model="gpt-4o",
-            messages=[
-                {"role": "system", "content": "You are a senior EPC consultant specializing in risk assessment and value engineering. This is Chain 2: Deep Evaluation."},
-                {"role": "user", "content": prompt}
-            ],
+        return self.ai_client.chat_completion(
+            messages=[{"role": "user", "content": prompt}],
+            model_tier="standard",
             temperature=0.3,
-            max_tokens=3000
+            max_tokens=3000,
+            system_prompt="You are a senior EPC consultant specializing in risk assessment and value engineering. This is Chain 2: Deep Evaluation."
         )
 
-        return response.choices[0].message.content
+    def _chain2_preliminary_evaluation(self, proposals_summary: str, scope_summary: str) -> str:
+        """Chain 2 Preliminary: Risk and trade-off analysis without Chain 1 context (for parallel execution)."""
+
+        prompt = f"""You are an expert EPC consultant conducting RISK AND TRADE-OFF EVALUATION.
+
+Analyze the proposals for:
+
+1. **RISK ASSESSMENT**
+   - Financial risks with each option
+   - Technical risks and mitigation strategies
+   - Scope-related risks (missing items, unclear terms)
+   - Execution risks
+
+2. **VALUE ENGINEERING PERSPECTIVE**
+   - Where can costs be optimized?
+   - Are premium costs justified?
+   - Hidden value in proposals
+
+3. **SCENARIO ANALYSIS**
+   - Best option if budget is primary concern
+   - Best option if quality/reliability is primary
+   - Best option if timeline is critical
+
+PROPOSAL DATA:
+{proposals_summary}
+{scope_summary}
+
+Focus on risk identification and value engineering insights."""
+
+        return self.ai_client.chat_completion(
+            messages=[{"role": "user", "content": prompt}],
+            model_tier="standard",
+            temperature=0.3,
+            max_tokens=2500,
+            system_prompt="You are a senior EPC consultant specializing in risk assessment and value engineering."
+        )
+
+    def _chain2_refine_evaluation(self, preliminary_evaluation: str, chain1_analysis: str) -> str:
+        """Refine Chain 2 preliminary results with Chain 1 context (fast refinement)."""
+
+        prompt = f"""Refine this risk evaluation based on the initial analysis findings.
+
+PRELIMINARY RISK EVALUATION:
+{preliminary_evaluation}
+
+INITIAL ANALYSIS FINDINGS:
+{chain1_analysis}
+
+Synthesize both analyses into a cohesive trade-off and risk assessment. Add any considerations from the initial analysis that affect the risk profile. Keep response concise."""
+
+        return self.ai_client.chat_completion(
+            messages=[{"role": "user", "content": prompt}],
+            model_tier="fast",
+            temperature=0.2,
+            max_tokens=2000,
+            system_prompt="You are synthesizing EPC analysis results. Be concise and focused."
+        )
 
     def _chain3_final_recommendation(self, proposals_summary: str, scope_summary: str,
                                      chain1_analysis: str, chain2_evaluation: str) -> str:
@@ -753,17 +837,13 @@ PROPOSAL DATA:
 
 Create a polished, executive-ready report that provides clear direction for EPC selection."""
 
-        response = self.client.chat.completions.create(
-            model="gpt-4o",
-            messages=[
-                {"role": "system", "content": "You are the lead EPC consultant synthesizing all analysis into a final executive recommendation. This is Chain 3: Final Recommendation."},
-                {"role": "user", "content": prompt}
-            ],
+        return self.ai_client.chat_completion(
+            messages=[{"role": "user", "content": prompt}],
+            model_tier="standard",
             temperature=0.2,
-            max_tokens=4000
+            max_tokens=4000,
+            system_prompt="You are the lead EPC consultant synthesizing all analysis into a final executive recommendation. This is Chain 3: Final Recommendation."
         )
-
-        return response.choices[0].message.content
 
     def _prepare_proposals_summary(self, proposals_data: List[Dict]) -> str:
         """Prepare a structured summary of proposals for GPT analysis."""
@@ -835,7 +915,7 @@ Scope of Work:
 
         return '\n'.join(summary)
 
-    def analyze_scope_comprehensiveness(self, proposals_data: List[Dict]) -> Dict:
+    def analyze_scope_comprehensiveness(self, proposals_data: List[Dict], parallel: bool = True) -> Dict:
         """
         Multi-chain reasoning analysis of scope comprehensiveness across proposals.
 
@@ -843,6 +923,10 @@ Scope of Work:
         1. Initial qualitative analysis of each proposal's scope
         2. Significance evaluation of inclusions/exclusions
         3. Self-critique and validation
+
+        Args:
+            proposals_data: List of proposal dictionaries
+            parallel: If True, run Chain 1 and preliminary Chain 2 in parallel
 
         Returns comprehensive analysis with scores and reasoning.
         """
@@ -855,11 +939,21 @@ Scope of Work:
         # Prepare scope data for analysis
         scope_summary = self._prepare_scope_summary(proposals_data)
 
-        # Chain 1: Initial qualitative analysis
-        chain1_analysis = self._chain1_initial_scope_analysis(scope_summary)
+        if parallel:
+            # Run Chain 1 and preliminary Chain 2 in parallel
+            chain1_task = lambda: self._chain1_initial_scope_analysis(scope_summary)
+            chain2_preliminary_task = lambda: self._chain2_preliminary_scope_evaluation(scope_summary)
 
-        # Chain 2: Significance evaluation
-        chain2_evaluation = self._chain2_significance_evaluation(scope_summary, chain1_analysis)
+            results = AIClient.run_parallel([chain1_task, chain2_preliminary_task], max_workers=2)
+            chain1_analysis = results[0]
+            chain2_preliminary = results[1]
+
+            # Refine Chain 2 with Chain 1 context
+            chain2_evaluation = self._chain2_refine_scope_evaluation(chain2_preliminary, chain1_analysis)
+        else:
+            # Sequential execution
+            chain1_analysis = self._chain1_initial_scope_analysis(scope_summary)
+            chain2_evaluation = self._chain2_significance_evaluation(scope_summary, chain1_analysis)
 
         # Chain 3: Self-critique and validation
         chain3_validation = self._chain3_self_critique(scope_summary, chain1_analysis, chain2_evaluation)
@@ -868,8 +962,9 @@ Scope of Work:
             "initial_analysis": chain1_analysis,
             "significance_evaluation": chain2_evaluation,
             "final_assessment": chain3_validation,
-            "proposal_count": len(proposals_data),  # Track how many proposals were analyzed
-            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            "proposal_count": len(proposals_data),
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "provider": self.provider_name
         }
 
     def _prepare_scope_summary(self, proposals_data: List[Dict]) -> str:
@@ -940,18 +1035,13 @@ SCOPE DATA:
 Provide your analysis in a structured format with clear assessments for each proposal."""
 
         try:
-            response = self.client.chat.completions.create(
-                model="gpt-4o",
-                messages=[
-                    {"role": "system", "content": "You are an expert EPC contract analyst with 15+ years of experience in renewable energy construction contracts."},
-                    {"role": "user", "content": prompt}
-                ],
+            return self.ai_client.chat_completion(
+                messages=[{"role": "user", "content": prompt}],
+                model_tier="standard",
                 temperature=0.3,
-                max_tokens=3000
+                max_tokens=3000,
+                system_prompt="You are an expert EPC contract analyst with 15+ years of experience in renewable energy construction contracts."
             )
-
-            return response.choices[0].message.content
-
         except Exception as e:
             return f"Error in Chain 1 analysis: {str(e)}"
 
@@ -986,20 +1076,70 @@ For each proposal, evaluate:
 Provide specific examples and clear reasoning."""
 
         try:
-            response = self.client.chat.completions.create(
-                model="gpt-4o",
-                messages=[
-                    {"role": "system", "content": "You are an expert at evaluating construction contract risk and scope comprehensiveness."},
-                    {"role": "user", "content": prompt}
-                ],
+            return self.ai_client.chat_completion(
+                messages=[{"role": "user", "content": prompt}],
+                model_tier="standard",
                 temperature=0.3,
-                max_tokens=3000
+                max_tokens=3000,
+                system_prompt="You are an expert at evaluating construction contract risk and scope comprehensiveness."
             )
-
-            return response.choices[0].message.content
-
         except Exception as e:
             return f"Error in Chain 2 evaluation: {str(e)}"
+
+    def _chain2_preliminary_scope_evaluation(self, scope_summary: str) -> str:
+        """Chain 2 Preliminary: Scope significance analysis without Chain 1 context (for parallel execution)."""
+
+        prompt = f"""You are an expert construction contract analyst. Evaluate the significance of scope items:
+
+For each proposal, evaluate:
+
+1. **Critical Exclusions**: Identify any exclusions that would require the owner to procure separately or incur additional costs. Rate severity (High/Medium/Low impact to owner).
+
+2. **Value of Inclusions**: Assess whether the inclusions demonstrate a turnkey approach vs. a limited scope requiring owner involvement.
+
+3. **Risk Transfer**: Analyze how assumptions and exclusions shift risk. Which proposal keeps more risk with the EPC (better for owner)?
+
+4. **Completeness Score**: Rate scope completeness on a scale of 1-10.
+
+SCOPE DATA:
+{scope_summary}
+
+Focus on identifying critical items and risk implications."""
+
+        try:
+            return self.ai_client.chat_completion(
+                messages=[{"role": "user", "content": prompt}],
+                model_tier="standard",
+                temperature=0.3,
+                max_tokens=2500,
+                system_prompt="You are an expert at evaluating construction contract risk and scope comprehensiveness."
+            )
+        except Exception as e:
+            return f"Error in preliminary scope evaluation: {str(e)}"
+
+    def _chain2_refine_scope_evaluation(self, preliminary_evaluation: str, chain1_analysis: str) -> str:
+        """Refine preliminary scope evaluation with Chain 1 context."""
+
+        prompt = f"""Refine this scope significance evaluation based on the initial qualitative analysis.
+
+PRELIMINARY SIGNIFICANCE EVALUATION:
+{preliminary_evaluation}
+
+INITIAL QUALITATIVE ANALYSIS:
+{chain1_analysis}
+
+Synthesize both analyses. Adjust completeness scores if needed based on the qualitative insights. Keep response concise and focused on key findings."""
+
+        try:
+            return self.ai_client.chat_completion(
+                messages=[{"role": "user", "content": prompt}],
+                model_tier="fast",
+                temperature=0.2,
+                max_tokens=2000,
+                system_prompt="You are synthesizing scope analysis results. Be concise and focused."
+            )
+        except Exception as e:
+            return f"Error refining scope evaluation: {str(e)}"
 
     def _chain3_self_critique(self, scope_summary: str, chain1_analysis: str, chain2_evaluation: str) -> str:
         """Chain 3: Self-critique and validation of previous analysis."""
@@ -1033,18 +1173,13 @@ Your task:
 Be critical and objective. If the previous analysis needs correction, say so clearly."""
 
         try:
-            response = self.client.chat.completions.create(
-                model="gpt-4o",
-                messages=[
-                    {"role": "system", "content": "You are a critical reviewer ensuring analytical rigor and accuracy. Challenge weak reasoning and validate conclusions."},
-                    {"role": "user", "content": prompt}
-                ],
+            return self.ai_client.chat_completion(
+                messages=[{"role": "user", "content": prompt}],
+                model_tier="standard",
                 temperature=0.3,
-                max_tokens=3000
+                max_tokens=3000,
+                system_prompt="You are a critical reviewer ensuring analytical rigor and accuracy. Challenge weak reasoning and validate conclusions."
             )
-
-            return response.choices[0].message.content
-
         except Exception as e:
             return f"Error in Chain 3 validation: {str(e)}"
 

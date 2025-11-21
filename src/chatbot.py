@@ -1,13 +1,25 @@
 import openai
 import os
-from typing import List, Dict
+from typing import List, Dict, Optional
+from .ai_provider import AIClient, AIProvider, provider_from_name
 
 class ProposalChatbot:
     """AI chatbot that can answer questions about uploaded proposals."""
 
-    def __init__(self):
+    def __init__(self, provider: str = "OpenAI (GPT-4o)"):
+        """Initialize chatbot with specified AI provider."""
+        self.provider_name = provider
+        self.ai_provider = provider_from_name(provider)
+        self.ai_client = AIClient(self.ai_provider)
+        # Keep legacy client for backwards compatibility
         self.client = openai.OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
         self.conversation_history = []
+
+    def set_provider(self, provider: str):
+        """Change the AI provider."""
+        self.provider_name = provider
+        self.ai_provider = provider_from_name(provider)
+        self.ai_client = AIClient(self.ai_provider)
 
     def prepare_context(self, proposals: List[Dict]) -> str:
         """Prepare context from proposals for the chatbot."""
@@ -184,14 +196,37 @@ You have access to detailed proposal information including costs, equipment spec
         messages.append({"role": "user", "content": user_message})
 
         try:
-            response = self.client.chat.completions.create(
-                model="gpt-4o-mini",  # Fast and cost-effective for chat
-                messages=messages,
-                temperature=0.3,
-                max_tokens=1500
-            )
+            # Build the full prompt with context and conversation history
+            full_context = f"Here is the proposal data I have:\n\n{context}"
+            history_text = ""
+            for msg in self.conversation_history[-10:]:
+                role = "User" if msg["role"] == "user" else "Assistant"
+                history_text += f"\n{role}: {msg['content']}"
 
-            assistant_message = response.choices[0].message.content
+            full_prompt = f"{full_context}\n\nConversation history:{history_text}\n\nUser question: {user_message}"
+
+            assistant_message = self.ai_client.chat_completion(
+                messages=[{"role": "user", "content": full_prompt}],
+                model_tier="fast",  # Fast and cost-effective for chat
+                temperature=0.3,
+                max_tokens=1500,
+                system_prompt="""You are an expert EPC proposal analyst assistant. You help users understand and compare EPC contractor proposals for renewable energy projects.
+
+Key guidelines:
+- Be concise and direct in your answers
+- Use specific numbers, costs, and details from the proposals
+- When comparing EPCs, provide pros/cons
+- If asked about scope items, reference specific assumptions, exclusions, or clarifications
+- Format responses clearly with bullet points when appropriate
+- If you don't have the information, say so clearly
+- When asked for cost breakdowns or comparisons, create markdown tables
+- You have access to detailed Schedule of Values (SOV) data including line-item costs for civil, electrical, mechanical, substation, and other categories
+- You can filter and aggregate costs by category (e.g., "show me all high voltage costs", "civil work costs", "electrical costs")
+- When creating tables, use proper markdown table format with | and alignment
+- For cost queries, show both absolute costs ($) and unit costs ($/W) when available
+
+You have access to detailed proposal information including costs, equipment specs, scope details, detailed SOV line items, and more."""
+            )
 
             # Update conversation history
             self.conversation_history.append({"role": "user", "content": user_message})
