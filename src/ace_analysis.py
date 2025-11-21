@@ -1,9 +1,97 @@
 """
 ACE Analysis module for processing ACE logs and generating clarification logs.
+Generates ACE logs from uploaded proposal scope data.
 """
 import pandas as pd
 from typing import Dict, List, Optional
 from io import BytesIO
+
+
+def generate_ace_log_from_proposals(proposals: List[Dict]) -> pd.DataFrame:
+    """
+    Generate ACE log from uploaded proposals.
+    Extracts assumptions, exclusions, clarifications from each proposal's scope data.
+    """
+    ace_items = []
+
+    for proposal in proposals:
+        epc_name = proposal.get('epc_contractor', {}).get('company_name', 'Unknown EPC')
+        scope = proposal.get('scope', {})
+
+        # Extract assumptions
+        for item in scope.get('assumptions', []):
+            if item and str(item).strip():
+                ace_items.append({
+                    'ACE Item': str(item).strip(),
+                    'Type': 'Assumption',
+                    'Scope': categorize_scope_item(str(item)),
+                    'EPC': epc_name,
+                    'Risk?': '',
+                    'AES SME': '',
+                    'Point Person': '',
+                    'Internal Note': '',
+                    'Response to EPC': ''
+                })
+
+        # Extract exclusions
+        for item in scope.get('exclusions', []):
+            if item and str(item).strip():
+                ace_items.append({
+                    'ACE Item': str(item).strip(),
+                    'Type': 'Exclusion',
+                    'Scope': categorize_scope_item(str(item)),
+                    'EPC': epc_name,
+                    'Risk?': '',
+                    'AES SME': '',
+                    'Point Person': '',
+                    'Internal Note': '',
+                    'Response to EPC': ''
+                })
+
+        # Extract clarifications
+        for item in scope.get('clarifications', []):
+            if item and str(item).strip():
+                ace_items.append({
+                    'ACE Item': str(item).strip(),
+                    'Type': 'Clarification',
+                    'Scope': categorize_scope_item(str(item)),
+                    'EPC': epc_name,
+                    'Risk?': '',
+                    'AES SME': '',
+                    'Point Person': '',
+                    'Internal Note': '',
+                    'Response to EPC': ''
+                })
+
+    if not ace_items:
+        return pd.DataFrame(columns=['ACE Item', 'Type', 'Scope', 'EPC', 'Risk?',
+                                     'AES SME', 'Point Person', 'Internal Note', 'Response to EPC'])
+
+    return pd.DataFrame(ace_items)
+
+
+def categorize_scope_item(item_text: str) -> str:
+    """Auto-categorize an ACE item based on keywords."""
+    text_lower = item_text.lower()
+
+    if any(kw in text_lower for kw in ['inverter', 'transformer', 'switchgear', 'medium voltage', 'mv ', 'hv ', 'high voltage', 'ac cable', 'ac electrical']):
+        return 'AC Electrical Systems'
+    elif any(kw in text_lower for kw in ['module', 'panel', 'dc cable', 'string', 'combiner', 'dc electrical']):
+        return 'DC Electrical Systems'
+    elif any(kw in text_lower for kw in ['grading', 'civil', 'road', 'fence', 'erosion', 'drainage', 'excavation', 'foundation', 'pile', 'concrete']):
+        return 'Civil Works'
+    elif any(kw in text_lower for kw in ['tracker', 'racking', 'torque tube', 'mechanical']):
+        return 'Mechanical'
+    elif any(kw in text_lower for kw in ['substation', 'relay', 'protection', 'metering']):
+        return 'Substation'
+    elif any(kw in text_lower for kw in ['interconnect', 'gen-tie', 'transmission', 'utility']):
+        return 'Interconnection'
+    elif any(kw in text_lower for kw in ['battery', 'bess', 'storage', 'energy storage']):
+        return 'Energy Storage'
+    elif any(kw in text_lower for kw in ['permit', 'insurance', 'bond', 'tax', 'general', 'overhead', 'mobilization']):
+        return 'General & Administrative'
+    else:
+        return 'Other'
 
 
 def get_risk_color(risk_value: str) -> str:
