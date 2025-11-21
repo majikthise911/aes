@@ -2185,3 +2185,308 @@ Columns (23):
                 st.info("Query returned 0 rows")
         else:
             st.info("💡 Enter a query and click Execute to view results")
+
+
+def show_ace_analysis(proposals):
+    """ACE Analysis tab - Review, edit, and generate clarification logs."""
+    from src.ace_analysis import (
+        calculate_ace_summary, filter_for_clarification,
+        generate_clarification_log, export_to_excel,
+        ACE_COLUMNS, SCOPE_CATEGORIES, RISK_OPTIONS
+    )
+
+    st.header("📋 ACE Analysis")
+
+    # Initialize session state for ACE data
+    if 'ace_data' not in st.session_state:
+        st.session_state.ace_data = None
+    if 'ace_project_name' not in st.session_state:
+        st.session_state.ace_project_name = "Project"
+    if 'ace_epc_name' not in st.session_state:
+        st.session_state.ace_epc_name = "EPC"
+
+    # Two-column layout: sidebar summary + main content
+    col_summary, col_main = st.columns([1, 3])
+
+    with col_summary:
+        st.markdown("### 📊 Summary")
+
+        if st.session_state.ace_data is not None and len(st.session_state.ace_data) > 0:
+            df = st.session_state.ace_data
+            summary = calculate_ace_summary(df)
+
+            # Total items
+            st.metric("Total ACE Items", summary['total_items'])
+
+            # Risk breakdown
+            st.markdown("**Risk Status:**")
+
+            # Color-coded risk display
+            col_r1, col_r2 = st.columns(2)
+            with col_r1:
+                st.markdown(f"🔴 **Yes:** {summary['risk_yes']}")
+                st.markdown(f"🟢 **No:** {summary['risk_no']}")
+            with col_r2:
+                st.markdown(f"🟡 **TBD:** {summary['risk_tbd']}")
+                st.markdown(f"⚪ **Blank:** {summary['risk_blank']}")
+
+            # Progress bar
+            if summary['total_items'] > 0:
+                resolved_pct = summary['risk_no'] / summary['total_items']
+                st.progress(resolved_pct)
+                st.caption(f"{resolved_pct:.0%} resolved")
+
+            # Needs clarification
+            st.divider()
+            st.metric("🚨 Needs Clarification",
+                     summary['needs_clarification'],
+                     help="Items with Risk = Yes or TBD")
+
+            # Top categories
+            if summary['categories']:
+                st.divider()
+                st.markdown("**📁 Top Categories:**")
+                sorted_cats = sorted(summary['categories'].items(),
+                                   key=lambda x: x[1], reverse=True)[:5]
+                for cat, count in sorted_cats:
+                    st.caption(f"• {cat}: {count}")
+        else:
+            st.info("Upload an ACE log to see summary")
+
+    with col_main:
+        # File upload and project info
+        with st.expander("📤 Upload ACE Log", expanded=st.session_state.ace_data is None):
+            col_upload, col_info = st.columns([2, 1])
+
+            with col_upload:
+                uploaded_ace = st.file_uploader(
+                    "Upload ACE Log Excel file",
+                    type=['xlsx', 'xls'],
+                    key="ace_file_upload",
+                    help="Upload a PRE ACE Log Excel file"
+                )
+
+            with col_info:
+                st.session_state.ace_project_name = st.text_input(
+                    "Project Name",
+                    value=st.session_state.ace_project_name
+                )
+                st.session_state.ace_epc_name = st.text_input(
+                    "EPC Name",
+                    value=st.session_state.ace_epc_name
+                )
+
+            if uploaded_ace:
+                try:
+                    df = pd.read_excel(uploaded_ace)
+
+                    # Standardize column names if needed
+                    column_mapping = {
+                        'ACE Item 2025.08.08 Change Log': 'Change Log'
+                    }
+                    df.rename(columns=column_mapping, inplace=True)
+
+                    st.session_state.ace_data = df
+                    st.success(f"✅ Loaded {len(df)} ACE items")
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"Error loading file: {e}")
+
+            # Load example button
+            if st.button("📂 Load Example ACE Log"):
+                try:
+                    example_path = "data/examples/Crescent PV - PRE ACE log.xlsx"
+                    df = pd.read_excel(example_path)
+                    df.rename(columns={'ACE Item 2025.08.08 Change Log': 'Change Log'}, inplace=True)
+                    st.session_state.ace_data = df
+                    st.session_state.ace_project_name = "Crescent PV"
+                    st.session_state.ace_epc_name = "Primoris"
+                    st.success("✅ Loaded example ACE log")
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"Could not load example: {e}")
+
+        # Main content tabs
+        if st.session_state.ace_data is not None:
+            tab_review, tab_clarification = st.tabs(["📝 ACE Review", "📄 Clarification Log"])
+
+            with tab_review:
+                st.markdown("### Edit ACE Items")
+                st.caption("Edit cells directly. Risk items are color-coded: 🔴 Yes, 🟡 TBD, 🟢 No")
+
+                df = st.session_state.ace_data.copy()
+
+                # Filters
+                col_f1, col_f2, col_f3 = st.columns(3)
+                with col_f1:
+                    scope_filter = st.multiselect(
+                        "Filter by Scope",
+                        options=df['Scope'].dropna().unique().tolist(),
+                        default=[]
+                    )
+                with col_f2:
+                    risk_filter = st.multiselect(
+                        "Filter by Risk",
+                        options=['Yes', 'TBD', 'No', '(Blank)'],
+                        default=[]
+                    )
+                with col_f3:
+                    search_term = st.text_input("Search", placeholder="Search ACE items...")
+
+                # Apply filters
+                filtered_df = df.copy()
+                if scope_filter:
+                    filtered_df = filtered_df[filtered_df['Scope'].isin(scope_filter)]
+                if risk_filter:
+                    def match_risk(val):
+                        if pd.isna(val) or str(val).strip() == '':
+                            return '(Blank)' in risk_filter
+                        return str(val).strip() in risk_filter
+                    filtered_df = filtered_df[filtered_df['Risk?'].apply(match_risk)]
+                if search_term:
+                    mask = filtered_df.apply(
+                        lambda row: search_term.lower() in str(row).lower(), axis=1
+                    )
+                    filtered_df = filtered_df[mask]
+
+                # Editable data editor
+                edited_df = st.data_editor(
+                    filtered_df,
+                    use_container_width=True,
+                    num_rows="dynamic",
+                    column_config={
+                        "ACE Item": st.column_config.TextColumn(
+                            "ACE Item", width="large"
+                        ),
+                        "Scope": st.column_config.SelectboxColumn(
+                            "Scope",
+                            options=SCOPE_CATEGORIES,
+                            width="medium"
+                        ),
+                        "Risk?": st.column_config.SelectboxColumn(
+                            "Risk?",
+                            options=RISK_OPTIONS,
+                            width="small"
+                        ),
+                        "Internal Note": st.column_config.TextColumn(
+                            "Internal Note", width="medium"
+                        ),
+                        "Response to EPC": st.column_config.TextColumn(
+                            "Response to EPC", width="medium"
+                        ),
+                    },
+                    hide_index=True,
+                    key="ace_editor"
+                )
+
+                # Update session state with edits
+                if not filtered_df.equals(edited_df):
+                    st.session_state.ace_data.update(edited_df)
+
+                # Action buttons
+                col_b1, col_b2, col_b3 = st.columns(3)
+                with col_b1:
+                    if st.button("💾 Save Changes", type="primary"):
+                        st.session_state.ace_data = edited_df
+                        st.success("Changes saved!")
+
+                with col_b2:
+                    excel_data = export_to_excel(
+                        st.session_state.ace_data,
+                        st.session_state.ace_project_name,
+                        st.session_state.ace_epc_name,
+                        "ace"
+                    )
+                    st.download_button(
+                        "📥 Download ACE Log",
+                        data=excel_data,
+                        file_name=f"{st.session_state.ace_project_name}_ACE_Log.xlsx",
+                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    )
+
+                with col_b3:
+                    if st.button("🗑️ Clear Data"):
+                        st.session_state.ace_data = None
+                        st.rerun()
+
+            with tab_clarification:
+                st.markdown("### Generate Clarification Log")
+                st.caption("Auto-filter Risk=Yes/TBD items and generate a clarification log for EPC negotiation")
+
+                df = st.session_state.ace_data
+
+                # Preview items needing clarification
+                clar_items = filter_for_clarification(df)
+
+                st.info(f"📋 **{len(clar_items)}** items need clarification (Risk = Yes or TBD)")
+
+                if len(clar_items) > 0:
+                    # Preview
+                    with st.expander("👀 Preview Items", expanded=True):
+                        preview_df = clar_items[['ACE Item', 'Scope', 'Risk?']].head(10)
+                        st.dataframe(preview_df, use_container_width=True, hide_index=True)
+                        if len(clar_items) > 10:
+                            st.caption(f"...and {len(clar_items) - 10} more items")
+
+                    # Generate button
+                    if st.button("🚀 Generate Clarification Log", type="primary"):
+                        clar_log = generate_clarification_log(
+                            df,
+                            st.session_state.ace_project_name,
+                            st.session_state.ace_epc_name
+                        )
+
+                        st.session_state.clarification_log = clar_log
+                        st.success(f"✅ Generated clarification log with {len(clar_log)} items")
+
+                    # Show generated log
+                    if 'clarification_log' in st.session_state and st.session_state.clarification_log is not None:
+                        st.divider()
+                        st.markdown("### Generated Clarification Log")
+
+                        # Editable clarification log
+                        edited_clar = st.data_editor(
+                            st.session_state.clarification_log,
+                            use_container_width=True,
+                            column_config={
+                                "No.": st.column_config.NumberColumn("No.", width="small"),
+                                "Proposal Section Reference": st.column_config.TextColumn(
+                                    "Section", width="medium"
+                                ),
+                                "Assumption/Exclusion": st.column_config.TextColumn(
+                                    "Item", width="large"
+                                ),
+                                "AES Position": st.column_config.TextColumn(
+                                    "AES Position", width="medium"
+                                ),
+                                "AES Response": st.column_config.TextColumn(
+                                    "AES Response", width="medium"
+                                ),
+                                "EPC Response": st.column_config.TextColumn(
+                                    "EPC Response", width="medium"
+                                ),
+                            },
+                            hide_index=True,
+                            key="clar_editor"
+                        )
+
+                        st.session_state.clarification_log = edited_clar
+
+                        # Download button
+                        excel_clar = export_to_excel(
+                            edited_clar,
+                            st.session_state.ace_project_name,
+                            st.session_state.ace_epc_name,
+                            "clarification"
+                        )
+                        st.download_button(
+                            "📥 Download Clarification Log",
+                            data=excel_clar,
+                            file_name=f"{st.session_state.ace_project_name}_Clarification_Log.xlsx",
+                            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                            type="primary"
+                        )
+                else:
+                    st.success("✅ No items require clarification - all risks resolved!")
+        else:
+            st.info("👆 Upload an ACE log file to begin analysis")
