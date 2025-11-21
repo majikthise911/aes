@@ -626,6 +626,9 @@ SCOPE ANALYSIS RESULTS:
                 if 'proceed_without_scope' in st.session_state:
                     del st.session_state.proceed_without_scope
 
+    # Check if we should auto-generate the report (scope done, no report yet)
+    should_auto_generate = scope_analysis_done and not st.session_state.generated_report
+
     with col2:
         # Debug info (can remove later)
         st.caption(f"📊 {len(proposals)} proposals | Project: {list(unique_projects)[0] if len(unique_projects) == 1 else 'Multiple'}")
@@ -647,13 +650,16 @@ SCOPE ANALYSIS RESULTS:
                 st.rerun()
         else:
             st.success("✅ Scope analysis complete")
+            if st.session_state.generated_report:
+                st.success("✅ Report already generated")
 
         # Show generate button if scope analysis is done OR user chose to proceed anyway
         if scope_analysis_done or st.session_state.get('proceed_without_scope', False):
-            if scope_analysis_done:
-                st.info("✅ Using existing scope analysis results")
+            if scope_analysis_done and not st.session_state.generated_report:
+                st.info("✅ Using existing scope analysis - generating report...")
 
-            if st.button("🚀 Generate AI Report", type="primary", use_container_width=True):
+            # Auto-generate or manual button
+            if should_auto_generate or st.button("🚀 Generate AI Report", type="primary", use_container_width=True, disabled=bool(st.session_state.generated_report)):
                 import time as time_module
                 # Generate report immediately when button is clicked
                 try:
@@ -666,48 +672,37 @@ SCOPE ANALYSIS RESULTS:
                     if scope_analysis_done:
                         scope_analysis = st.session_state.scope_ai_analysis
 
-                    # Create progress tracking
-                    progress_bar = st.progress(0)
-                    status_text = st.empty()
+                    with st.status("Generating Recommendation Report...", expanded=True) as status:
+                        st.write("🤖 Preparing proposal data...")
+                        st.write("⚙️ Running parallel recommendation analysis...")
+                        st.write("_(Chain 1 & 2 running in parallel, then Chain 3)_")
 
-                    # Prepare data summary
-                    status_text.text("🤖 Preparing data for analysis...")
-                    progress_bar.progress(10)
+                        chain3_result = st.session_state.gpt_extractor.generate_epc_recommendation_report(
+                            proposals, scope_analysis, parallel=True
+                        )
 
-                    # Use parallel report generation
-                    status_text.text("⚙️ Running parallel recommendation analysis...")
-                    progress_bar.progress(20)
+                        # Get timing and usage stats
+                        elapsed_time = time_module.time() - start_time
+                        usage_stats = st.session_state.gpt_extractor.get_usage_stats()
 
-                    chain3_result = st.session_state.gpt_extractor.generate_epc_recommendation_report(
-                        proposals, scope_analysis, parallel=True
-                    )
-                    progress_bar.progress(100)
+                        # Store results
+                        st.session_state.generated_report = chain3_result
+                        st.session_state.report_timestamp = pd.Timestamp.now().strftime("%Y-%m-%d %H:%M:%S")
+                        st.session_state.report_usage = {
+                            'elapsed_time': elapsed_time,
+                            'input_tokens': usage_stats.input_tokens,
+                            'output_tokens': usage_stats.output_tokens,
+                            'total_tokens': usage_stats.total_tokens,
+                            'provider': st.session_state.gpt_extractor.provider_name,
+                            'used_scope_analysis': scope_analysis_done
+                        }
 
-                    # Get timing and usage stats
-                    elapsed_time = time_module.time() - start_time
-                    usage_stats = st.session_state.gpt_extractor.get_usage_stats()
+                        # Clear the proceed flag
+                        if 'proceed_without_scope' in st.session_state:
+                            del st.session_state.proceed_without_scope
 
-                    # Store results
-                    st.session_state.generated_report = chain3_result
-                    st.session_state.report_timestamp = pd.Timestamp.now().strftime("%Y-%m-%d %H:%M:%S")
-                    st.session_state.report_usage = {
-                        'elapsed_time': elapsed_time,
-                        'input_tokens': usage_stats.input_tokens,
-                        'output_tokens': usage_stats.output_tokens,
-                        'total_tokens': usage_stats.total_tokens,
-                        'provider': st.session_state.gpt_extractor.provider_name,
-                        'used_scope_analysis': scope_analysis_done
-                    }
+                        status.update(label=f"✅ Complete in {elapsed_time:.1f}s | {usage_stats.total_tokens:,} tokens", state="complete")
 
-                    # Clear the proceed flag
-                    if 'proceed_without_scope' in st.session_state:
-                        del st.session_state.proceed_without_scope
-
-                    # Clean up progress indicators
-                    status_text.empty()
-                    progress_bar.empty()
-
-                    st.success(f"✅ Report generated in {elapsed_time:.1f}s | {usage_stats.total_tokens:,} tokens")
                     st.rerun()  # Rerun to display the report
                 except Exception as e:
                     st.error(f"❌ Error generating report: {str(e)}")
@@ -995,7 +990,8 @@ def show_scope_comparison(proposals):
     col1, col2 = st.columns([3, 1])
 
     with col1:
-        st.info("💡 This analysis uses GPT-4o with multi-chain reasoning. Analysis takes ~30-60 seconds and evaluates all proposals comprehensively.")
+        provider_name = st.session_state.gpt_extractor.provider_name if hasattr(st.session_state, 'gpt_extractor') else "AI"
+        st.info(f"💡 This analysis uses {provider_name} with multi-chain reasoning. Analysis takes ~30-60 seconds and evaluates all proposals comprehensively.")
 
     with col2:
         if st.button("🚀 Run AI Analysis", type="primary", use_container_width=True):
@@ -1005,44 +1001,31 @@ def show_scope_comparison(proposals):
                 st.session_state.gpt_extractor.reset_usage_stats()
                 start_time = time_module.time()
 
-                # Create progress tracking
-                progress_bar = st.progress(0)
-                status_text = st.empty()
-                timer_display = st.empty()
+                with st.status("Running AI Analysis...", expanded=True) as status:
+                    st.write("📋 Preparing scope data...")
 
-                # Prepare scope data
-                status_text.text("📋 Preparing scope data for analysis...")
-                progress_bar.progress(10)
+                    st.write("⚙️ Running parallel multi-chain analysis...")
+                    st.write("_(Chain 1 & 2 running in parallel, then Chain 3)_")
 
-                # Use the parallel analyze_scope_comprehensiveness method
-                status_text.text("⚙️ Running parallel multi-chain analysis...")
-                timer_display.text(f"⏱️ Elapsed: 0s")
-                progress_bar.progress(20)
+                    analysis_result = st.session_state.gpt_extractor.analyze_scope_comprehensiveness(proposals, parallel=True)
 
-                analysis_result = st.session_state.gpt_extractor.analyze_scope_comprehensiveness(proposals, parallel=True)
-                progress_bar.progress(100)
+                    # Get final timing and usage
+                    elapsed_time = time_module.time() - start_time
+                    usage_stats = st.session_state.gpt_extractor.get_usage_stats()
 
-                # Get final timing and usage
-                elapsed_time = time_module.time() - start_time
-                usage_stats = st.session_state.gpt_extractor.get_usage_stats()
+                    # Add timing and usage to results
+                    analysis_result['elapsed_time'] = elapsed_time
+                    analysis_result['usage_stats'] = {
+                        'input_tokens': usage_stats.input_tokens,
+                        'output_tokens': usage_stats.output_tokens,
+                        'total_tokens': usage_stats.total_tokens,
+                        'provider': st.session_state.gpt_extractor.provider_name
+                    }
 
-                # Add timing and usage to results
-                analysis_result['elapsed_time'] = elapsed_time
-                analysis_result['usage_stats'] = {
-                    'input_tokens': usage_stats.input_tokens,
-                    'output_tokens': usage_stats.output_tokens,
-                    'total_tokens': usage_stats.total_tokens,
-                    'provider': st.session_state.gpt_extractor.provider_name
-                }
+                    st.session_state.scope_ai_analysis = analysis_result
 
-                st.session_state.scope_ai_analysis = analysis_result
+                    status.update(label=f"✅ Complete in {elapsed_time:.1f}s | {usage_stats.total_tokens:,} tokens", state="complete")
 
-                # Clean up progress indicators
-                status_text.empty()
-                progress_bar.empty()
-                timer_display.empty()
-
-                st.success(f"✅ Analysis complete in {elapsed_time:.1f}s | {usage_stats.total_tokens:,} tokens used")
                 st.rerun()
             except Exception as e:
                 st.error(f"❌ Error running AI analysis: {str(e)}")
