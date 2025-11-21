@@ -2329,14 +2329,20 @@ def show_ace_analysis(proposals):
 
         with col_ai_btn:
             # Check if AI assessment has been run
-            has_ai_assessment = st.session_state.ace_data['Risk?'].notna().any() and (st.session_state.ace_data['Risk?'] != '').any()
+            risk_col = st.session_state.ace_data['Risk?']
+            has_ai_assessment = risk_col.notna().any() and (risk_col.astype(str).str.strip() != '').any()
             ai_btn_label = "🔄 Re-run AI Assessment" if has_ai_assessment else "🤖 Run AI Assessment"
 
             if st.button(ai_btn_label, type="primary", help="AI will assess risk and add internal notes"):
+                import time
+                import traceback
+                start_time = time.time()
+
                 with st.status(f"Running AI risk assessment with {selected_provider}...", expanded=True) as status:
                     try:
                         ai_provider = provider_from_name(selected_provider)
                         ai_client = AIClient(ai_provider)
+                        ai_client.reset_usage()  # Reset usage tracking
 
                         total_items = len(st.session_state.ace_data)
                         progress_bar = st.progress(0)
@@ -2352,13 +2358,32 @@ def show_ace_analysis(proposals):
                             progress_callback=update_progress
                         )
 
+                        elapsed = time.time() - start_time
+                        usage = ai_client.total_usage
+
                         status.update(label=f"✅ AI assessment complete!", state="complete")
-                        st.success(f"Assessed {total_items} items with {selected_provider}")
+
+                        # Store stats for display
+                        st.session_state.ace_ai_stats = {
+                            'elapsed': elapsed,
+                            'input_tokens': usage.input_tokens,
+                            'output_tokens': usage.output_tokens,
+                            'total_tokens': usage.total_tokens,
+                            'provider': selected_provider,
+                            'items': total_items
+                        }
+
                         st.rerun()
 
                     except Exception as e:
                         status.update(label="❌ AI assessment failed", state="error")
                         st.error(f"Error: {str(e)}")
+                        st.code(traceback.format_exc())
+
+        # Show AI stats if available
+        if 'ace_ai_stats' in st.session_state and st.session_state.ace_ai_stats:
+            stats = st.session_state.ace_ai_stats
+            st.success(f"✅ Last assessment: {stats['items']} items in {stats['elapsed']:.1f}s | {stats['total_tokens']:,} tokens ({stats['provider']})")
 
         with col_regen:
             if st.button("🔄 Reset ACE Log", help="Re-extract from proposals (will reset all edits)"):
