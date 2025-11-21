@@ -650,9 +650,17 @@ SCOPE ANALYSIS RESULTS:
 
         # Show generate button if scope analysis is done OR user chose to proceed anyway
         if scope_analysis_done or st.session_state.get('proceed_without_scope', False):
+            if scope_analysis_done:
+                st.info("✅ Using existing scope analysis results")
+
             if st.button("🚀 Generate AI Report", type="primary", use_container_width=True):
+                import time as time_module
                 # Generate report immediately when button is clicked
                 try:
+                    # Reset usage stats and start timer
+                    st.session_state.gpt_extractor.reset_usage_stats()
+                    start_time = time_module.time()
+
                     # Get scope analysis if available
                     scope_analysis = None
                     if scope_analysis_done:
@@ -665,41 +673,31 @@ SCOPE ANALYSIS RESULTS:
                     # Prepare data summary
                     status_text.text("🤖 Preparing data for analysis...")
                     progress_bar.progress(10)
-                    summary = st.session_state.gpt_extractor._prepare_proposals_summary(proposals)
 
-                    # Get scope summary if available
-                    scope_summary = ""
-                    if scope_analysis:
-                        scope_summary = f"""
-
-SCOPE ANALYSIS RESULTS:
-{scope_analysis.get('final_assessment', 'No scope analysis available')}
-"""
-
-                    # Chain 1: Initial Analysis
-                    status_text.text("⚙️ Chain 1: Running initial analysis...")
+                    # Use parallel report generation
+                    status_text.text("⚙️ Running parallel recommendation analysis...")
                     progress_bar.progress(20)
-                    chain1_result = st.session_state.gpt_extractor._chain1_initial_recommendation(summary, scope_summary)
-                    progress_bar.progress(40)
 
-                    # Chain 2: Deep Evaluation
-                    status_text.text("⚙️ Chain 2: Conducting deep evaluation...")
-                    progress_bar.progress(50)
-                    chain2_result = st.session_state.gpt_extractor._chain2_deep_evaluation(summary, scope_summary, chain1_result)
-                    progress_bar.progress(70)
-
-                    # Chain 3: Final Recommendation
-                    status_text.text("⚙️ Chain 3: Generating final recommendation...")
-                    progress_bar.progress(80)
-                    chain3_result = st.session_state.gpt_extractor._chain3_final_recommendation(summary, scope_summary, chain1_result, chain2_result)
+                    chain3_result = st.session_state.gpt_extractor.generate_epc_recommendation_report(
+                        proposals, scope_analysis, parallel=True
+                    )
                     progress_bar.progress(100)
 
-                    # Store results - save all chains for detailed report
+                    # Get timing and usage stats
+                    elapsed_time = time_module.time() - start_time
+                    usage_stats = st.session_state.gpt_extractor.get_usage_stats()
+
+                    # Store results
                     st.session_state.generated_report = chain3_result
-                    st.session_state.report_chain1 = chain1_result
-                    st.session_state.report_chain2 = chain2_result
-                    st.session_state.report_chain3 = chain3_result
                     st.session_state.report_timestamp = pd.Timestamp.now().strftime("%Y-%m-%d %H:%M:%S")
+                    st.session_state.report_usage = {
+                        'elapsed_time': elapsed_time,
+                        'input_tokens': usage_stats.input_tokens,
+                        'output_tokens': usage_stats.output_tokens,
+                        'total_tokens': usage_stats.total_tokens,
+                        'provider': st.session_state.gpt_extractor.provider_name,
+                        'used_scope_analysis': scope_analysis_done
+                    }
 
                     # Clear the proceed flag
                     if 'proceed_without_scope' in st.session_state:
@@ -709,7 +707,7 @@ SCOPE ANALYSIS RESULTS:
                     status_text.empty()
                     progress_bar.empty()
 
-                    st.success("✅ Report generated successfully!")
+                    st.success(f"✅ Report generated in {elapsed_time:.1f}s | {usage_stats.total_tokens:,} tokens")
                     st.rerun()  # Rerun to display the report
                 except Exception as e:
                     st.error(f"❌ Error generating report: {str(e)}")
@@ -722,6 +720,21 @@ SCOPE ANALYSIS RESULTS:
         # Report header and export buttons
         st.write(f"### 📄 EPC Recommendation Report")
         st.write(f"*Generated on {st.session_state.report_timestamp}*")
+
+        # Display usage stats if available
+        if 'report_usage' in st.session_state and st.session_state.report_usage:
+            usage = st.session_state.report_usage
+            col_s1, col_s2, col_s3, col_s4 = st.columns(4)
+            with col_s1:
+                st.metric("Duration", f"{usage.get('elapsed_time', 0):.1f}s")
+            with col_s2:
+                st.metric("Total Tokens", f"{usage.get('total_tokens', 0):,}")
+            with col_s3:
+                st.metric("Input Tokens", f"{usage.get('input_tokens', 0):,}")
+            with col_s4:
+                st.metric("Output Tokens", f"{usage.get('output_tokens', 0):,}")
+            scope_note = "with scope analysis" if usage.get('used_scope_analysis') else "without scope analysis"
+            st.caption(f"Provider: {usage.get('provider', 'N/A')} | Generated {scope_note}")
 
         # Export buttons
         col1, col2 = st.columns(2)
@@ -986,51 +999,50 @@ def show_scope_comparison(proposals):
 
     with col2:
         if st.button("🚀 Run AI Analysis", type="primary", use_container_width=True):
+            import time as time_module
             try:
+                # Reset usage stats before analysis
+                st.session_state.gpt_extractor.reset_usage_stats()
+                start_time = time_module.time()
+
                 # Create progress tracking
                 progress_bar = st.progress(0)
                 status_text = st.empty()
+                timer_display = st.empty()
 
                 # Prepare scope data
                 status_text.text("📋 Preparing scope data for analysis...")
                 progress_bar.progress(10)
-                scope_summary = st.session_state.gpt_extractor._prepare_scope_summary(proposals)
+
+                # Use the parallel analyze_scope_comprehensiveness method
+                status_text.text("⚙️ Running parallel multi-chain analysis...")
+                timer_display.text(f"⏱️ Elapsed: 0s")
                 progress_bar.progress(20)
 
-                # Chain 1: Initial qualitative analysis
-                status_text.text("⚙️ Chain 1: Running initial qualitative analysis...")
-                progress_bar.progress(25)
-                chain1_analysis = st.session_state.gpt_extractor._chain1_initial_scope_analysis(scope_summary)
-                progress_bar.progress(50)
-
-                # Chain 2: Significance evaluation
-                status_text.text("⚙️ Chain 2: Evaluating significance & risks...")
-                progress_bar.progress(55)
-                chain2_evaluation = st.session_state.gpt_extractor._chain2_significance_evaluation(scope_summary, chain1_analysis)
-                progress_bar.progress(75)
-
-                # Chain 3: Self-critique and validation
-                status_text.text("⚙️ Chain 3: Self-critique & validation...")
-                progress_bar.progress(80)
-                chain3_validation = st.session_state.gpt_extractor._chain3_self_critique(scope_summary, chain1_analysis, chain2_evaluation)
+                analysis_result = st.session_state.gpt_extractor.analyze_scope_comprehensiveness(proposals, parallel=True)
                 progress_bar.progress(100)
 
-                # Store results
-                from datetime import datetime
-                analysis_result = {
-                    "initial_analysis": chain1_analysis,
-                    "significance_evaluation": chain2_evaluation,
-                    "final_assessment": chain3_validation,
-                    "proposal_count": len(proposals),
-                    "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                # Get final timing and usage
+                elapsed_time = time_module.time() - start_time
+                usage_stats = st.session_state.gpt_extractor.get_usage_stats()
+
+                # Add timing and usage to results
+                analysis_result['elapsed_time'] = elapsed_time
+                analysis_result['usage_stats'] = {
+                    'input_tokens': usage_stats.input_tokens,
+                    'output_tokens': usage_stats.output_tokens,
+                    'total_tokens': usage_stats.total_tokens,
+                    'provider': st.session_state.gpt_extractor.provider_name
                 }
+
                 st.session_state.scope_ai_analysis = analysis_result
 
                 # Clean up progress indicators
                 status_text.empty()
                 progress_bar.empty()
+                timer_display.empty()
 
-                st.success("✅ Analysis complete!")
+                st.success(f"✅ Analysis complete in {elapsed_time:.1f}s | {usage_stats.total_tokens:,} tokens used")
                 st.rerun()
             except Exception as e:
                 st.error(f"❌ Error running AI analysis: {str(e)}")
@@ -1042,6 +1054,22 @@ def show_scope_comparison(proposals):
         if analysis.get('error'):
             st.error(analysis['error'])
         else:
+            # Display usage stats
+            st.write("---")
+            usage = analysis.get('usage_stats', {})
+            elapsed = analysis.get('elapsed_time', 0)
+            col_stat1, col_stat2, col_stat3, col_stat4 = st.columns(4)
+            with col_stat1:
+                st.metric("Duration", f"{elapsed:.1f}s")
+            with col_stat2:
+                st.metric("Total Tokens", f"{usage.get('total_tokens', 0):,}")
+            with col_stat3:
+                st.metric("Input Tokens", f"{usage.get('input_tokens', 0):,}")
+            with col_stat4:
+                st.metric("Output Tokens", f"{usage.get('output_tokens', 0):,}")
+
+            st.caption(f"Provider: {usage.get('provider', 'N/A')} | Generated: {analysis.get('timestamp', 'N/A')}")
+
             # Display results in expandable sections
             st.write("---")
 

@@ -6,9 +6,10 @@ Provides a unified interface for making LLM API calls with parallel execution su
 import os
 import json
 import asyncio
+import time
 import concurrent.futures
-from typing import Dict, List, Optional, Callable, Any
-from dataclasses import dataclass
+from typing import Dict, List, Optional, Callable, Any, Tuple
+from dataclasses import dataclass, field
 from enum import Enum
 from dotenv import load_dotenv
 
@@ -30,6 +31,27 @@ class ModelConfig:
     model_id: str
     max_tokens: int = 4000
     temperature: float = 0.2
+
+
+@dataclass
+class UsageStats:
+    """Track token usage and timing for API calls."""
+    input_tokens: int = 0
+    output_tokens: int = 0
+    total_tokens: int = 0
+    elapsed_time: float = 0.0
+    model: str = ""
+    provider: str = ""
+
+    def __add__(self, other: 'UsageStats') -> 'UsageStats':
+        return UsageStats(
+            input_tokens=self.input_tokens + other.input_tokens,
+            output_tokens=self.output_tokens + other.output_tokens,
+            total_tokens=self.total_tokens + other.total_tokens,
+            elapsed_time=self.elapsed_time + other.elapsed_time,
+            model=self.model or other.model,
+            provider=self.provider or other.provider
+        )
 
 
 # Model mappings for each provider
@@ -59,6 +81,9 @@ class AIClient:
         self.provider = provider
         self._client = None
         self._initialize_client()
+        # Track cumulative usage stats
+        self.total_usage = UsageStats()
+        self.last_usage = UsageStats()
 
     def _initialize_client(self):
         """Initialize the appropriate client based on provider."""
@@ -112,12 +137,27 @@ class AIClient:
             The assistant's response text
         """
         model = self.get_model(model_tier)
+        start_time = time.time()
 
         if self.provider == AIProvider.ANTHROPIC:
-            return self._anthropic_completion(messages, model, temperature, max_tokens, system_prompt)
+            result, usage = self._anthropic_completion(messages, model, temperature, max_tokens, system_prompt)
         else:
             # OpenAI and Grok use the same API format
-            return self._openai_completion(messages, model, temperature, max_tokens, system_prompt)
+            result, usage = self._openai_completion(messages, model, temperature, max_tokens, system_prompt)
+
+        # Update usage stats
+        usage.elapsed_time = time.time() - start_time
+        usage.model = model
+        usage.provider = self.provider.value
+        self.last_usage = usage
+        self.total_usage = self.total_usage + usage
+
+        return result
+
+    def reset_usage(self):
+        """Reset cumulative usage stats."""
+        self.total_usage = UsageStats()
+        self.last_usage = UsageStats()
 
     def _openai_completion(
         self,
@@ -126,7 +166,7 @@ class AIClient:
         temperature: float,
         max_tokens: int,
         system_prompt: Optional[str]
-    ) -> str:
+    ) -> Tuple[str, UsageStats]:
         """Make completion request using OpenAI-compatible API."""
         formatted_messages = []
 
@@ -143,7 +183,14 @@ class AIClient:
             max_tokens=max_tokens
         )
 
-        return response.choices[0].message.content
+        # Extract usage stats
+        usage = UsageStats()
+        if hasattr(response, 'usage') and response.usage:
+            usage.input_tokens = response.usage.prompt_tokens or 0
+            usage.output_tokens = response.usage.completion_tokens or 0
+            usage.total_tokens = response.usage.total_tokens or 0
+
+        return response.choices[0].message.content, usage
 
     def _anthropic_completion(
         self,
@@ -152,7 +199,7 @@ class AIClient:
         temperature: float,
         max_tokens: int,
         system_prompt: Optional[str]
-    ) -> str:
+    ) -> Tuple[str, UsageStats]:
         """Make completion request using Anthropic API."""
         formatted_messages = []
 
@@ -171,7 +218,14 @@ class AIClient:
 
         response = self._client.messages.create(**kwargs)
 
-        return response.content[0].text
+        # Extract usage stats
+        usage = UsageStats()
+        if hasattr(response, 'usage') and response.usage:
+            usage.input_tokens = response.usage.input_tokens or 0
+            usage.output_tokens = response.usage.output_tokens or 0
+            usage.total_tokens = usage.input_tokens + usage.output_tokens
+
+        return response.content[0].text, usage
 
     @staticmethod
     def run_parallel(tasks: List[Callable[[], Any]], max_workers: int = 3) -> List[Any]:

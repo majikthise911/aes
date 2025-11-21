@@ -4,7 +4,7 @@ from typing import Dict, Optional, List
 import os
 from dotenv import load_dotenv
 from datetime import datetime
-from .ai_provider import AIClient, AIProvider, provider_from_name, get_available_providers
+from .ai_provider import AIClient, AIProvider, provider_from_name, get_available_providers, UsageStats
 
 # Load environment variables from the config/.env file
 env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config', '.env')
@@ -31,6 +31,14 @@ class GPTExtractor:
         self.provider_name = provider
         self.ai_provider = provider_from_name(provider)
         self.ai_client = AIClient(self.ai_provider)
+
+    def get_usage_stats(self) -> UsageStats:
+        """Get cumulative usage stats from the AI client."""
+        return self.ai_client.total_usage
+
+    def reset_usage_stats(self):
+        """Reset usage stats before a new analysis."""
+        self.ai_client.reset_usage()
 
     def chunk_text(self, text: str, max_chunk_size: int = 50000) -> List[str]:
         """Split text into chunks if it's too large."""
