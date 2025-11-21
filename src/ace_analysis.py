@@ -98,20 +98,24 @@ def categorize_scope_item(item_text: str) -> str:
 def assess_ace_items_with_ai(df: pd.DataFrame, ai_client, progress_callback: Callable = None) -> pd.DataFrame:
     """
     Use AI to assess risk and generate internal notes for ACE items.
-    Processes items in batches for efficiency.
+    Processes items in parallel batches for speed.
     """
+    import concurrent.futures
+    import threading
+
     if df.empty:
         return df
 
-    # Process in batches of 10 items
-    batch_size = 10
+    # Larger batches + parallel processing for speed
+    batch_size = 20  # Process 20 items per API call
+    max_workers = 3  # 3 parallel API calls
     total_items = len(df)
-    results = []
 
+    # Prepare all batches
+    batches = []
     for i in range(0, total_items, batch_size):
         batch = df.iloc[i:i+batch_size]
         batch_items = []
-
         for _, row in batch.iterrows():
             batch_items.append({
                 'index': row.name,
@@ -120,46 +124,49 @@ def assess_ace_items_with_ai(df: pd.DataFrame, ai_client, progress_callback: Cal
                 'scope': row['Scope'],
                 'epc': row['EPC']
             })
+        batches.append((i, batch_items))
 
-        # Build prompt for batch
+    # Thread-safe progress tracking
+    completed_count = [0]
+    lock = threading.Lock()
+
+    def process_batch(batch_info):
+        start_idx, batch_items = batch_info
+        results = []
+
+        # Build prompt
         items_text = "\n".join([
-            f"{idx+1}. [{item['type']}] {item['item']}"
+            f"{idx+1}. [{item['type']}] {item['item'][:200]}"  # Truncate long items
             for idx, item in enumerate(batch_items)
         ])
 
-        prompt = f"""You are an expert solar/renewable energy project analyst reviewing EPC proposal scope items.
+        prompt = f"""Assess these EPC proposal items for risk to project owner (AES).
 
-For each item below, assess:
-1. RISK: Is this item a potential risk to the project owner (AES)? Answer: Yes, TBD (need more info), or No
-2. INTERNAL NOTE: Brief note (1-2 sentences) explaining your risk assessment and what AES should consider
+For each item, provide:
+- risk: Yes (risky), TBD (unclear), or No (safe)
+- note: Brief 1-sentence explanation
 
-Items to assess:
+Items:
 {items_text}
 
-Respond in JSON format:
-[
-  {{"index": 1, "risk": "Yes/TBD/No", "note": "Your assessment note"}},
-  ...
-]
+Respond as JSON array: [{{"index":1,"risk":"Yes/TBD/No","note":"..."}}]
 
-Risk Guidelines:
-- YES: Item clearly transfers risk/cost to owner, excludes important scope, or has ambiguous language that could be exploited
-- TBD: Item needs clarification or more context to assess properly
-- NO: Standard industry practice, reasonable assumption, or clearly defined with no hidden risk"""
+Risk = Yes if: transfers cost/risk to owner, excludes scope, ambiguous language
+Risk = TBD if: needs clarification
+Risk = No if: standard practice, clearly defined"""
 
         try:
             response = ai_client.chat_completion(
                 messages=[{"role": "user", "content": prompt}],
                 model_tier="fast",
-                temperature=0.2,
-                max_tokens=2000,
-                system_prompt="You are an expert EPC contract analyst. Respond only with valid JSON."
+                temperature=0.1,
+                max_tokens=3000,
+                system_prompt="Expert EPC analyst. Respond only with valid JSON array."
             )
 
-            # Parse JSON response
-            # Clean up response - find JSON array
+            # Parse JSON
             response_text = response.strip()
-            if response_text.startswith("```"):
+            if "```" in response_text:
                 response_text = response_text.split("```")[1]
                 if response_text.startswith("json"):
                     response_text = response_text[4:]
@@ -177,21 +184,31 @@ Risk Guidelines:
                     })
 
         except Exception as e:
-            # On error, mark batch as TBD
             for item in batch_items:
                 results.append({
                     'df_index': item['index'],
                     'risk': 'TBD',
-                    'note': f'AI assessment pending - please review manually'
+                    'note': 'Review manually'
                 })
 
-        # Progress callback
-        if progress_callback:
-            progress_callback(min(i + batch_size, total_items), total_items)
+        # Update progress
+        with lock:
+            completed_count[0] += len(batch_items)
+            if progress_callback:
+                progress_callback(completed_count[0], total_items)
+
+        return results
+
+    # Run batches in parallel
+    all_results = []
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = [executor.submit(process_batch, batch) for batch in batches]
+        for future in concurrent.futures.as_completed(futures):
+            all_results.extend(future.result())
 
     # Apply results to dataframe
     df_copy = df.copy()
-    for result in results:
+    for result in all_results:
         df_copy.loc[result['df_index'], 'Risk?'] = result['risk']
         df_copy.loc[result['df_index'], 'Internal Note'] = result['note']
 
