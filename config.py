@@ -100,6 +100,79 @@ def delete_report(report_id: str):
     except Exception:
         return False
 
+
+# ACE Log persistence
+ACE_LOGS_FILE = os.path.join(DATA_DIR, 'ace_logs.json')
+
+
+def save_ace_log(ace_data: dict):
+    """Save an ACE log with timestamp."""
+    from datetime import datetime
+
+    try:
+        logs = load_ace_logs()
+
+        ace_data['timestamp'] = datetime.now().isoformat()
+        ace_data['id'] = f"ace_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+
+        # Check if we already have a log for this project - update it instead of creating new
+        project_name = ace_data.get('project_name', '')
+        existing_idx = None
+        for idx, log in enumerate(logs):
+            if log.get('project_name') == project_name:
+                existing_idx = idx
+                break
+
+        if existing_idx is not None:
+            # Update existing
+            logs[existing_idx] = ace_data
+        else:
+            # Add new at beginning
+            logs.insert(0, ace_data)
+
+        # Keep only last 20
+        logs = logs[:20]
+
+        with open(ACE_LOGS_FILE, 'w') as f:
+            json.dump(logs, f, indent=2)
+
+        return ace_data['id']
+    except Exception as e:
+        st.error(f"Could not save ACE log: {e}")
+        return None
+
+
+def load_ace_logs():
+    """Load all saved ACE logs."""
+    if os.path.exists(ACE_LOGS_FILE):
+        try:
+            with open(ACE_LOGS_FILE, 'r') as f:
+                return json.load(f)
+        except Exception:
+            return []
+    return []
+
+
+def get_ace_log_for_project(project_name: str):
+    """Get saved ACE log for a specific project."""
+    logs = load_ace_logs()
+    for log in logs:
+        if log.get('project_name') == project_name:
+            return log
+    return None
+
+
+def delete_ace_log(log_id: str):
+    """Delete an ACE log by ID."""
+    try:
+        logs = load_ace_logs()
+        logs = [l for l in logs if l.get('id') != log_id]
+        with open(ACE_LOGS_FILE, 'w') as f:
+            json.dump(logs, f, indent=2)
+        return True
+    except Exception:
+        return False
+
 def apply_custom_css():
     """Apply custom CSS styling."""
     st.markdown("""

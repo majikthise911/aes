@@ -2367,16 +2367,26 @@ def show_ace_analysis(proposals):
         return
 
     # Check if we need to regenerate ACE data (project changed)
+    from config import get_ace_log_for_project, save_ace_log
+
     current_ace_project = st.session_state.get('ace_current_project', None)
     if current_ace_project != selected_project:
-        # Project changed - reset ACE data
+        # Project changed - try to load saved ACE log first
         st.session_state.ace_data = None
         st.session_state.clarification_log = None
         st.session_state.ace_current_project = selected_project
 
+        # Try to load saved ACE log for this project
+        saved_log = get_ace_log_for_project(selected_project)
+        if saved_log and saved_log.get('ace_data'):
+            st.session_state.ace_data = pd.DataFrame(saved_log['ace_data'])
+            st.session_state.ace_log_timestamp = saved_log.get('timestamp', '')
+            st.toast(f"Loaded saved ACE log from {saved_log.get('timestamp', '')[:16]}", icon="📂")
+
     # Initialize or regenerate ACE data from proposals
     if 'ace_data' not in st.session_state or st.session_state.ace_data is None:
         st.session_state.ace_data = generate_ace_log_from_proposals(proposals_with_scope)
+        st.session_state.ace_log_timestamp = None
 
     # Get project name
     project_name = selected_project
@@ -2510,6 +2520,16 @@ def show_ace_analysis(proposals):
                             'items': total_items
                         }
 
+                        # Auto-save after AI assessment
+                        ace_to_save = {
+                            'project_name': project_name,
+                            'ace_data': st.session_state.ace_data.to_dict('records'),
+                            'epc_names': st.session_state.ace_data['EPC'].unique().tolist() if 'EPC' in st.session_state.ace_data.columns else [],
+                            'ai_assessed': True,
+                            'ai_provider': selected_provider
+                        }
+                        save_ace_log(ace_to_save)
+
                         st.rerun()
 
                     except Exception as e:
@@ -2529,7 +2549,19 @@ def show_ace_analysis(proposals):
                 st.success(f"✅ Reset {len(st.session_state.ace_data)} ACE items")
                 st.rerun()
 
-        st.info(f"📄 **{project_name}**: {len(st.session_state.ace_data)} items from {len(proposals_with_scope)} EPC proposal(s)")
+        # Show status with saved info
+        saved_log = get_ace_log_for_project(project_name)
+        if saved_log:
+            from datetime import datetime
+            try:
+                ts = datetime.fromisoformat(saved_log.get('timestamp', ''))
+                saved_str = f" | 💾 Last saved: {ts.strftime('%b %d, %H:%M')}"
+            except:
+                saved_str = " | 💾 Saved"
+        else:
+            saved_str = " | ⚠️ Not saved"
+
+        st.info(f"📄 **{project_name}**: {len(st.session_state.ace_data)} items from {len(proposals_with_scope)} EPC proposal(s){saved_str}")
 
         # Main content tabs
         tab_review, tab_clarification = st.tabs(["📝 ACE Review", "📄 Clarification Log"])
@@ -2630,7 +2662,17 @@ def show_ace_analysis(proposals):
             col_b1, col_b2, col_b3 = st.columns(3)
             with col_b1:
                 if st.button("💾 Save Changes", type="primary"):
-                    st.success("Changes saved!")
+                    # Save to persistent storage
+                    ace_to_save = {
+                        'project_name': project_name,
+                        'ace_data': st.session_state.ace_data.to_dict('records'),
+                        'epc_names': st.session_state.ace_data['EPC'].unique().tolist() if 'EPC' in st.session_state.ace_data.columns else []
+                    }
+                    saved_id = save_ace_log(ace_to_save)
+                    if saved_id:
+                        st.success("✅ ACE log saved!")
+                    else:
+                        st.warning("Changes saved to session only")
 
             with col_b2:
                 excel_data = export_to_excel(
