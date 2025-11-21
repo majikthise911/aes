@@ -576,6 +576,11 @@ Return empty arrays [] if sections not found. No explanatory text, only JSON.
         Generate BOTH scope analysis AND recommendation report in one efficient pass.
         Runs scope and recommendation chains in parallel where possible.
 
+        Optimized 3-phase approach:
+        - Phase 1: Scope C1 + Rec C1 (parallel)
+        - Phase 2: Scope C2 + Rec C2 (parallel)
+        - Phase 3: Scope C3 + Rec C3 (parallel) + quick integration
+
         Returns dict with both scope_analysis and recommendation_report.
         """
         if not proposals_data or len(proposals_data) < 2:
@@ -606,14 +611,16 @@ Return empty arrays [] if sections not found. No explanatory text, only JSON.
             scope_chain2 = phase2_results[0]
             rec_chain2 = phase2_results[1]
 
-            # PHASE 3: Run scope Chain 3 to get final scope assessment
-            scope_chain3 = self._chain3_self_critique(scope_summary, scope_chain1, scope_chain2)
+            # PHASE 3: Run BOTH Chain 3s in parallel
+            scope_chain3_task = lambda: self._chain3_self_critique(scope_summary, scope_chain1, scope_chain2)
+            rec_chain3_task = lambda: self._chain3_final_recommendation(proposals_summary, "", rec_chain1, rec_chain2)
 
-            # PHASE 4: Run recommendation Chain 3 WITH scope results
-            scope_context = f"\n\nSCOPE ANALYSIS RESULTS:\n{scope_chain3}"
-            rec_chain3 = self._chain3_final_recommendation(
-                proposals_summary, scope_context, rec_chain1, rec_chain2
-            )
+            phase3_results = AIClient.run_parallel([scope_chain3_task, rec_chain3_task], max_workers=2)
+            scope_chain3 = phase3_results[0]
+            rec_chain3_preliminary = phase3_results[1]
+
+            # PHASE 4: Quick integration - enhance recommendation with scope insights
+            rec_chain3 = self._integrate_scope_into_recommendation(rec_chain3_preliminary, scope_chain3)
 
             # Build results
             scope_analysis = {
@@ -638,6 +645,33 @@ Return empty arrays [] if sections not found. No explanatory text, only JSON.
                 "scope_analysis": None,
                 "recommendation_report": None
             }
+
+    def _integrate_scope_into_recommendation(self, recommendation: str, scope_assessment: str) -> str:
+        """Quick integration of scope insights into the recommendation report."""
+        prompt = f"""Enhance this EPC recommendation report by integrating the scope analysis findings.
+
+CURRENT RECOMMENDATION REPORT:
+{recommendation}
+
+SCOPE ANALYSIS FINDINGS:
+{scope_assessment}
+
+Instructions:
+1. Add a "Scope & Risk Assessment" section if not present
+2. Integrate key scope findings into the recommendation rationale
+3. Highlight any scope-related risks that affect the recommendation
+4. Keep the overall structure and recommendation intact
+5. Be concise - don't repeat information unnecessarily
+
+Return the enhanced recommendation report."""
+
+        return self.ai_client.chat_completion(
+            messages=[{"role": "user", "content": prompt}],
+            model_tier="fast",  # Use fast model for integration
+            temperature=0.2,
+            max_tokens=4500,
+            system_prompt="You are enhancing an EPC recommendation report with scope analysis insights. Maintain quality while being efficient."
+        )
 
     def generate_epc_recommendation_report(self, proposals_data: List[Dict], scope_analysis: Dict = None, parallel: bool = True) -> str:
         """

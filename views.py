@@ -1838,7 +1838,7 @@ def show_ai_analysis(proposals):
     st.divider()
 
     # Sub-tabs for different AI features
-    ai_tab1, ai_tab2, ai_tab3, ai_tab4 = st.tabs(["🔍 Scope Analysis", "📝 Recommendation Report", "💬 Ask Questions", "📄 Source Documents"])
+    ai_tab1, ai_tab2, ai_tab3 = st.tabs(["🔍 Scope Analysis", "📝 Recommendation Report", "💬 Ask Questions"])
 
     # Tab 1: Scope Comprehensiveness Analysis
     with ai_tab1:
@@ -1852,9 +1852,34 @@ def show_ai_analysis(proposals):
     with ai_tab3:
         show_chatbot(proposals)
 
-    # Tab 4: Source Documents (PDF viewer)
-    with ai_tab4:
-        show_source_documents(proposals)
+def show_source_documents_compact(proposals):
+    """Compact PDF document viewer for Database tab sidebar."""
+    if not proposals:
+        st.write("No proposals")
+        return
+
+    for p in proposals:
+        pdf_path = p.get('metadata', {}).get('pdf_path')
+        epc_name = p.get('epc_contractor', {}).get('company_name', 'Unknown')
+        filename = p.get('metadata', {}).get('filename', 'Unknown')
+
+        if pdf_path and os.path.exists(pdf_path):
+            try:
+                with open(pdf_path, 'rb') as f:
+                    pdf_bytes = f.read()
+                st.download_button(
+                    label=f"📄 {epc_name[:15]}",
+                    data=pdf_bytes,
+                    file_name=filename,
+                    mime="application/pdf",
+                    use_container_width=True,
+                    key=f"pdf_{epc_name}_{filename}"
+                )
+            except:
+                st.write(f"❌ {epc_name[:15]}")
+        else:
+            st.write(f"⚠️ {epc_name[:15]} (no PDF)")
+
 
 def show_source_documents(proposals):
     """Display original PDF documents for verification."""
@@ -1955,6 +1980,10 @@ def show_database(proposals):
 
     with col_schema:
         st.markdown("**📁 Schema Browser**")
+
+        # Source Documents section
+        with st.expander("📄 Source Documents", expanded=False):
+            show_source_documents_compact(proposals)
 
         # Database tree
         with st.expander("🗄️ proposals_db", expanded=True):
