@@ -2199,26 +2199,51 @@ def show_ace_analysis(proposals):
     st.header("📋 ACE Analysis")
     st.caption("Assumptions, Clarifications & Exclusions extracted from uploaded proposals")
 
+    # Check if a specific project is selected (not "All")
+    selected_project = st.session_state.get('project_filter', 'All')
+
+    if selected_project == 'All':
+        st.warning("⚠️ Please select a specific project to run ACE Analysis.")
+        st.info("👆 Use the **Project** filter in the sidebar to select a single project. ACE Analysis must be run on one project at a time.")
+
+        # Show available projects
+        all_projects = list(set(p.get('project_info', {}).get('project_name', 'Unknown') for p in proposals))
+        if all_projects:
+            st.write("**Available projects:**")
+            for proj in sorted(all_projects):
+                st.write(f"• {proj}")
+        return
+
+    # Filter proposals to only the selected project
+    project_proposals = [p for p in proposals if p.get('project_info', {}).get('project_name', 'Unknown') == selected_project]
+
     # Check if proposals have scope data
-    proposals_with_scope = [p for p in proposals if p.get('scope') and any([
+    proposals_with_scope = [p for p in project_proposals if p.get('scope') and any([
         p['scope'].get('assumptions'),
         p['scope'].get('exclusions'),
         p['scope'].get('clarifications')
     ])]
 
     if not proposals_with_scope:
-        st.warning("⚠️ No scope data found in uploaded proposals.")
+        st.warning(f"⚠️ No scope data found for project: **{selected_project}**")
         st.info("💡 Upload EPC proposals and run AI extraction to populate assumptions, exclusions, and clarifications.")
         return
 
+    # Check if we need to regenerate ACE data (project changed)
+    current_ace_project = st.session_state.get('ace_current_project', None)
+    if current_ace_project != selected_project:
+        # Project changed - reset ACE data
+        st.session_state.ace_data = None
+        st.session_state.clarification_log = None
+        st.session_state.ace_current_project = selected_project
+
     # Initialize or regenerate ACE data from proposals
     if 'ace_data' not in st.session_state or st.session_state.ace_data is None:
-        st.session_state.ace_data = generate_ace_log_from_proposals(proposals)
+        st.session_state.ace_data = generate_ace_log_from_proposals(proposals_with_scope)
 
-    # Get project name from first proposal
-    project_name = proposals[0].get('project_info', {}).get('project_name', 'Project')
-    if 'ace_project_name' not in st.session_state:
-        st.session_state.ace_project_name = project_name
+    # Get project name
+    project_name = selected_project
+    st.session_state.ace_project_name = project_name
 
     # AI Provider selection
     available_providers = get_available_providers()
@@ -2337,12 +2362,12 @@ def show_ace_analysis(proposals):
 
         with col_regen:
             if st.button("🔄 Reset ACE Log", help="Re-extract from proposals (will reset all edits)"):
-                st.session_state.ace_data = generate_ace_log_from_proposals(proposals)
+                st.session_state.ace_data = generate_ace_log_from_proposals(proposals_with_scope)
                 st.session_state.clarification_log = None
                 st.success(f"✅ Reset {len(st.session_state.ace_data)} ACE items")
                 st.rerun()
 
-        st.info(f"📄 {len(st.session_state.ace_data)} items extracted from {len(proposals_with_scope)} proposal(s)")
+        st.info(f"📄 **{project_name}**: {len(st.session_state.ace_data)} items from {len(proposals_with_scope)} EPC proposal(s)")
 
         # Main content tabs
         tab_review, tab_clarification = st.tabs(["📝 ACE Review", "📄 Clarification Log"])
