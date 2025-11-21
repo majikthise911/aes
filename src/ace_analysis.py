@@ -101,7 +101,6 @@ def assess_ace_items_with_ai(df: pd.DataFrame, ai_client, progress_callback: Cal
     Processes items in parallel batches for speed.
     """
     import concurrent.futures
-    import threading
 
     if df.empty:
         return df
@@ -125,10 +124,6 @@ def assess_ace_items_with_ai(df: pd.DataFrame, ai_client, progress_callback: Cal
                 'epc': row['EPC']
             })
         batches.append((i, batch_items))
-
-    # Thread-safe progress tracking
-    completed_count = [0]
-    lock = threading.Lock()
 
     def process_batch(batch_info):
         start_idx, batch_items = batch_info
@@ -191,20 +186,21 @@ Risk = No if: standard practice, clearly defined"""
                     'note': 'Review manually'
                 })
 
-        # Update progress
-        with lock:
-            completed_count[0] += len(batch_items)
-            if progress_callback:
-                progress_callback(completed_count[0], total_items)
-
         return results
 
     # Run batches in parallel
     all_results = []
+    completed_batches = 0
+    total_batches = len(batches)
+
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = [executor.submit(process_batch, batch) for batch in batches]
         for future in concurrent.futures.as_completed(futures):
             all_results.extend(future.result())
+            completed_batches += 1
+            # Update progress from main thread (safe)
+            if progress_callback:
+                progress_callback(completed_batches * batch_size, total_items)
 
     # Apply results to dataframe
     df_copy = df.copy()
