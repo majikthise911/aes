@@ -512,235 +512,54 @@ def show_ai_report(proposals):
     if len(unique_projects) > 1:
         st.error("❌ Multiple projects detected")
         st.warning(f"You have {len(unique_projects)} different projects selected: {', '.join(unique_projects)}")
-        st.info("👈 Please use the sidebar filters to select a **single project** before generating the recommendation report. EPC selection should compare contractors bidding on the same project.")
-        # Clear any stale flags
-        if 'proceed_without_scope' in st.session_state:
-            del st.session_state.proceed_without_scope
-        if 'run_scope_then_report' in st.session_state:
-            del st.session_state.run_scope_then_report
+        st.info("👈 Please use the sidebar filters to select a **single project** before viewing the recommendation report.")
         return
-
-    # Check if we have cost data for meaningful analysis
-    cost_proposals = [p for p in proposals if p.get('costs', {}).get('total_project_cost')]
-    if len(cost_proposals) < 2:
-        st.warning("⚠️ Need cost data from at least 2 proposals for comprehensive analysis.")
-        st.info("Make sure your uploaded proposals contain pricing information for better AI analysis.")
-
-    # Report generation section
-    col1, col2 = st.columns([3, 1])
-
-    with col1:
-        st.write("### Generate Comprehensive EPC Analysis Report")
-        st.write("**Uses 3-chain reasoning with scope analysis integration:**")
-        st.write("- **Chain 1: Initial Analysis** - Cost, technical specs, and scope evaluation")
-        st.write("- **Chain 2: Deep Evaluation** - Trade-offs, risks, and value engineering")
-        st.write("- **Chain 3: Final Recommendation** - Self-critique and executive summary")
-        st.write("")
-        st.write("The report incorporates comprehensive scope analysis and provides actionable EPC selection guidance.")
 
     # Session state to store generated report
     if 'generated_report' not in st.session_state:
         st.session_state.generated_report = None
         st.session_state.report_timestamp = None
 
-    # Handle run scope then report flag
-    if st.session_state.get('run_scope_then_report', False):
-        progress_bar = st.progress(0)
-        status_text = st.empty()
+    # Check if report exists
+    if not st.session_state.generated_report:
+        st.info("📋 No recommendation report generated yet.")
+        st.write("**To generate a report:**")
+        st.write("1. Go to the **Scope Analysis** tab")
+        st.write("2. Click **Run Full AI Analysis**")
+        st.write("3. Both scope analysis and recommendation report will be generated together")
+        st.write("")
+        st.write("_This combined approach is faster and more efficient than running them separately._")
+        return
 
-        try:
-            # Step 1: Run scope analysis
-            status_text.text("📋 Running scope analysis first...")
-            progress_bar.progress(10)
+    # Report header and export buttons
+    st.write(f"### 📄 EPC Recommendation Report")
+    st.write(f"*Generated on {st.session_state.report_timestamp}*")
 
-            analysis_result = st.session_state.gpt_extractor.analyze_scope_comprehensiveness(proposals)
-            st.session_state.scope_ai_analysis = analysis_result
-            progress_bar.progress(50)
+    # Display usage stats if available
+    if 'report_usage' in st.session_state and st.session_state.report_usage:
+        usage = st.session_state.report_usage
+        col_s1, col_s2, col_s3, col_s4 = st.columns(4)
+        with col_s1:
+            st.metric("Duration", f"{usage.get('elapsed_time', 0):.1f}s")
+        with col_s2:
+            st.metric("Total Tokens", f"{usage.get('total_tokens', 0):,}")
+        with col_s3:
+            st.metric("Input Tokens", f"{usage.get('input_tokens', 0):,}")
+        with col_s4:
+            st.metric("Output Tokens", f"{usage.get('output_tokens', 0):,}")
+        scope_note = "with scope analysis" if usage.get('used_scope_analysis') else "without scope analysis"
+        st.caption(f"Provider: {usage.get('provider', 'N/A')} | Generated {scope_note}")
 
-            # Step 2: Generate recommendation report
-            status_text.text("🤖 Now generating recommendation report...")
-
-            # Prepare data summary
-            summary = st.session_state.gpt_extractor._prepare_proposals_summary(proposals)
-
-            # Get scope summary
-            scope_summary = f"""
-
-SCOPE ANALYSIS RESULTS:
-{analysis_result.get('final_assessment', 'No scope analysis available')}
-"""
-            progress_bar.progress(60)
-
-            # Run 3-chain recommendation
-            status_text.text("⚙️ Chain 1: Running initial analysis...")
-            chain1_result = st.session_state.gpt_extractor._chain1_initial_recommendation(summary, scope_summary)
-            progress_bar.progress(70)
-
-            status_text.text("⚙️ Chain 2: Conducting deep evaluation...")
-            chain2_result = st.session_state.gpt_extractor._chain2_deep_evaluation(summary, scope_summary, chain1_result)
-            progress_bar.progress(85)
-
-            status_text.text("⚙️ Chain 3: Generating final recommendation...")
-            chain3_result = st.session_state.gpt_extractor._chain3_final_recommendation(summary, scope_summary, chain1_result, chain2_result)
-            progress_bar.progress(100)
-
-            # Store results - save all chains for detailed report
-            st.session_state.generated_report = chain3_result
-            st.session_state.report_chain1 = chain1_result
-            st.session_state.report_chain2 = chain2_result
-            st.session_state.report_chain3 = chain3_result
-            st.session_state.report_timestamp = pd.Timestamp.now().strftime("%Y-%m-%d %H:%M:%S")
-
-            # Clear flag
-            del st.session_state.run_scope_then_report
-
-            # Clean up
-            status_text.empty()
-            progress_bar.empty()
-
-            st.success("✅ Scope analysis & recommendation report generated successfully!")
-            st.rerun()
-
-        except Exception as e:
-            st.error(f"❌ Error: {str(e)}")
-            status_text.empty()
-            progress_bar.empty()
-            if 'run_scope_then_report' in st.session_state:
-                del st.session_state.run_scope_then_report
-
-    # Check if scope analysis has been run for these specific proposals
-    # Need to verify it's for the CURRENT set of proposals, not cached from different project
-    scope_analysis_done = False
-    if 'scope_ai_analysis' in st.session_state and st.session_state.scope_ai_analysis:
-        analysis = st.session_state.scope_ai_analysis
-        # Verify the analysis has valid data and matches current proposals
-        if analysis.get('final_assessment') and not analysis.get('error'):
-            # Get the proposal count from analysis to verify it matches current proposals
-            analysis_proposal_count = analysis.get('proposal_count', 0)
-            if analysis_proposal_count == len(proposals):
-                scope_analysis_done = True
-            else:
-                # Analysis is for different set of proposals, clear it
-                st.session_state.scope_ai_analysis = None
-                # Also clear the proceed flag since analysis doesn't match
-                if 'proceed_without_scope' in st.session_state:
-                    del st.session_state.proceed_without_scope
-
-    # Check if we should auto-generate the report (scope done, no report yet)
-    should_auto_generate = scope_analysis_done and not st.session_state.generated_report
-
-    with col2:
-        # Debug info (can remove later)
-        st.caption(f"📊 {len(proposals)} proposals | Project: {list(unique_projects)[0] if len(unique_projects) == 1 else 'Multiple'}")
-
-        # Show warning if scope analysis not done
-        if not scope_analysis_done:
-            st.error("❌ Scope analysis required")
-            st.write("The recommendation report uses scope analysis for better insights.")
-            st.divider()
-
-            if st.button("🚀 Run Scope Analysis & Generate Report", type="primary", use_container_width=True):
-                st.session_state.run_scope_then_report = True
-                st.rerun()
-
-            st.divider()
-
-            if st.button("⚡ Skip Scope Analysis", type="secondary", use_container_width=True):
-                st.session_state.proceed_without_scope = True
-                st.rerun()
-        else:
-            st.success("✅ Scope analysis complete")
-            if st.session_state.generated_report:
-                st.success("✅ Report already generated")
-
-        # Show generate button if scope analysis is done OR user chose to proceed anyway
-        if scope_analysis_done or st.session_state.get('proceed_without_scope', False):
-            if scope_analysis_done and not st.session_state.generated_report:
-                st.info("✅ Using existing scope analysis - generating report...")
-
-            # Auto-generate or manual button
-            if should_auto_generate or st.button("🚀 Generate AI Report", type="primary", use_container_width=True, disabled=bool(st.session_state.generated_report)):
-                import time as time_module
-                # Generate report immediately when button is clicked
+    # Export buttons
+    col1, col2 = st.columns(2)
+    with col1:
+        # Export executive summary
+        if st.button("📥 Executive Summary", use_container_width=True, key="recommendation_exec_summary"):
+            # Create concise executive summary
+            with st.spinner("Creating executive summary..."):
                 try:
-                    # Reset usage stats and start timer
-                    st.session_state.gpt_extractor.reset_usage_stats()
-                    start_time = time_module.time()
-
-                    # Get scope analysis if available
-                    scope_analysis = None
-                    if scope_analysis_done:
-                        scope_analysis = st.session_state.scope_ai_analysis
-
-                    with st.status("Generating Recommendation Report...", expanded=True) as status:
-                        st.write("🤖 Preparing proposal data...")
-                        st.write("⚙️ Running parallel recommendation analysis...")
-                        st.write("_(Chain 1 & 2 running in parallel, then Chain 3)_")
-
-                        chain3_result = st.session_state.gpt_extractor.generate_epc_recommendation_report(
-                            proposals, scope_analysis, parallel=True
-                        )
-
-                        # Get timing and usage stats
-                        elapsed_time = time_module.time() - start_time
-                        usage_stats = st.session_state.gpt_extractor.get_usage_stats()
-
-                        # Store results
-                        st.session_state.generated_report = chain3_result
-                        st.session_state.report_timestamp = pd.Timestamp.now().strftime("%Y-%m-%d %H:%M:%S")
-                        st.session_state.report_usage = {
-                            'elapsed_time': elapsed_time,
-                            'input_tokens': usage_stats.input_tokens,
-                            'output_tokens': usage_stats.output_tokens,
-                            'total_tokens': usage_stats.total_tokens,
-                            'provider': st.session_state.gpt_extractor.provider_name,
-                            'used_scope_analysis': scope_analysis_done
-                        }
-
-                        # Clear the proceed flag
-                        if 'proceed_without_scope' in st.session_state:
-                            del st.session_state.proceed_without_scope
-
-                        status.update(label=f"✅ Complete in {elapsed_time:.1f}s | {usage_stats.total_tokens:,} tokens", state="complete")
-
-                    st.rerun()  # Rerun to display the report
-                except Exception as e:
-                    st.error(f"❌ Error generating report: {str(e)}")
-                    st.exception(e)  # Show full traceback for debugging
-
-    # Display report if available
-    if st.session_state.generated_report:
-        st.divider()
-
-        # Report header and export buttons
-        st.write(f"### 📄 EPC Recommendation Report")
-        st.write(f"*Generated on {st.session_state.report_timestamp}*")
-
-        # Display usage stats if available
-        if 'report_usage' in st.session_state and st.session_state.report_usage:
-            usage = st.session_state.report_usage
-            col_s1, col_s2, col_s3, col_s4 = st.columns(4)
-            with col_s1:
-                st.metric("Duration", f"{usage.get('elapsed_time', 0):.1f}s")
-            with col_s2:
-                st.metric("Total Tokens", f"{usage.get('total_tokens', 0):,}")
-            with col_s3:
-                st.metric("Input Tokens", f"{usage.get('input_tokens', 0):,}")
-            with col_s4:
-                st.metric("Output Tokens", f"{usage.get('output_tokens', 0):,}")
-            scope_note = "with scope analysis" if usage.get('used_scope_analysis') else "without scope analysis"
-            st.caption(f"Provider: {usage.get('provider', 'N/A')} | Generated {scope_note}")
-
-        # Export buttons
-        col1, col2 = st.columns(2)
-        with col1:
-            # Export executive summary
-            if st.button("📥 Executive Summary", use_container_width=True, key="recommendation_exec_summary"):
-                # Create concise executive summary
-                with st.spinner("Creating executive summary..."):
-                    try:
-                        # Extract only key sections: Recommendation + Cost + Next Steps
-                        prompt = f"""Extract only the following sections from this EPC recommendation report:
+                    # Extract only key sections: Recommendation + Cost + Next Steps
+                    prompt = f"""Extract only the following sections from this EPC recommendation report:
 
 1. Top Recommended EPC (name and 2-3 sentence justification)
 2. Estimated Cost (total project cost comparison)
@@ -754,19 +573,19 @@ FULL REPORT:
 
 Return only these 4 sections formatted clearly."""
 
-                        response = st.session_state.gpt_extractor.client.chat.completions.create(
-                            model="gpt-4o-mini",
-                            messages=[
-                                {"role": "system", "content": "You extract key points for executive summaries. Be extremely concise and direct."},
-                                {"role": "user", "content": prompt}
-                            ],
-                            temperature=0.1,
-                            max_tokens=400
-                        )
+                    response = st.session_state.gpt_extractor.client.chat.completions.create(
+                        model="gpt-4o-mini",
+                        messages=[
+                            {"role": "system", "content": "You extract key points for executive summaries. Be extremely concise and direct."},
+                            {"role": "user", "content": prompt}
+                        ],
+                        temperature=0.1,
+                        max_tokens=400
+                    )
 
-                        exec_summary_content = response.choices[0].message.content
+                    exec_summary_content = response.choices[0].message.content
 
-                        summary_content = f"""
+                    summary_content = f"""
 EXECUTIVE SUMMARY
 EPC CONTRACTOR RECOMMENDATION
 Generated: {st.session_state.report_timestamp}
@@ -777,44 +596,32 @@ Generated: {st.session_state.report_timestamp}
 
 Generated by AES EPC Proposal Dashboard
 """
-                        st.download_button(
-                            label="💾 Download Executive Summary",
-                            data=summary_content,
-                            file_name=f"epc_exec_summary_{pd.Timestamp.now().strftime('%Y%m%d_%H%M%S')}.txt",
-                            mime="text/plain",
-                            use_container_width=True
-                        )
-                    except Exception as e:
-                        st.error(f"Error creating summary: {str(e)}")
+                    st.download_button(
+                        label="💾 Download Executive Summary",
+                        data=summary_content,
+                        file_name=f"epc_exec_summary_{pd.Timestamp.now().strftime('%Y%m%d_%H%M%S')}.txt",
+                        mime="text/plain",
+                        use_container_width=True
+                    )
+                except Exception as e:
+                    st.error(f"Error creating summary: {str(e)}")
 
-        with col2:
-            # Export detailed report with all chains
-            if st.button("📄 Detailed Report", use_container_width=True, key="recommendation_detailed_report"):
-                timestamp = st.session_state.report_timestamp
+    with col2:
+        # Export detailed report with all chains
+        if st.button("📄 Detailed Report", use_container_width=True, key="recommendation_detailed_report"):
+            timestamp = st.session_state.report_timestamp
 
-                # Create full detailed report with all 3 chains
-                detailed_report = f"""
+            # Create full detailed report
+            detailed_report = f"""
 DETAILED EPC RECOMMENDATION REPORT
 Multi-Chain Reasoning Analysis
 Generated: {timestamp}
 
 {'=' * 80}
-CHAIN 1: INITIAL COMPREHENSIVE ANALYSIS
+FINAL RECOMMENDATION
 {'=' * 80}
 
-{st.session_state.get('report_chain1', 'Chain 1 data not available')}
-
-{'=' * 80}
-CHAIN 2: DEEP EVALUATION & TRADE-OFF ANALYSIS
-{'=' * 80}
-
-{st.session_state.get('report_chain2', 'Chain 2 data not available')}
-
-{'=' * 80}
-CHAIN 3: FINAL RECOMMENDATION & SYNTHESIS
-{'=' * 80}
-
-{st.session_state.get('report_chain3', st.session_state.generated_report)}
+{st.session_state.generated_report}
 
 {'=' * 80}
 END OF REPORT
@@ -823,63 +630,36 @@ END OF REPORT
 Generated by AES EPC Proposal Dashboard
 Multi-Chain AI Analysis System
 """
-                st.download_button(
-                    label="💾 Download Detailed Report",
-                    data=detailed_report,
-                    file_name=f"epc_detailed_report_{pd.Timestamp.now().strftime('%Y%m%d_%H%M%S')}.txt",
-                    mime="text/plain",
-                    use_container_width=True
-                )
+            st.download_button(
+                label="💾 Download Detailed Report",
+                data=detailed_report,
+                file_name=f"epc_detailed_report_{pd.Timestamp.now().strftime('%Y%m%d_%H%M%S')}.txt",
+                mime="text/plain",
+                use_container_width=True
+            )
 
-        # Display the report content
-        st.markdown(st.session_state.generated_report)
+    # Display the report content
+    st.markdown(st.session_state.generated_report)
 
-        st.divider()
+    st.divider()
 
-        # Additional actions
-        col1, col2, col3 = st.columns(3)
+    # Additional actions
+    col1, col2, col3 = st.columns(3)
 
-        with col1:
-            if st.button("🔄 Regenerate Report"):
-                st.session_state.generated_report = None
-                st.session_state.report_timestamp = None
-                st.rerun()
+    with col1:
+        if st.button("🔄 Regenerate Report"):
+            st.session_state.generated_report = None
+            st.session_state.report_timestamp = None
+            st.session_state.scope_ai_analysis = None
+            st.rerun()
 
-        with col2:
-            if st.button("📊 View Cost Analysis"):
-                st.info("💡 Switch to the 'Cost Analysis' tab to view detailed cost comparisons.")
+    with col2:
+        if st.button("📊 View Cost Analysis"):
+            st.info("💡 Switch to the 'Cost Analysis' tab to view detailed cost comparisons.")
 
-        with col3:
-            if st.button("📋 View Comparison"):
-                st.info("💡 Switch to the 'Comparison' tab to view side-by-side EPC analysis.")
-
-        # Report insights summary
-        st.subheader("💡 Key Insights Summary")
-
-        # Quick stats about the analysis
-        epc_count = len(set([p.get('epc_contractor', {}).get('company_name', 'Unknown') for p in proposals]))
-        cost_range = None
-        if cost_proposals:
-            costs = [p['costs']['total_project_cost'] for p in cost_proposals]
-            cost_range = max(costs) - min(costs)
-
-        col1, col2, col3, col4 = st.columns(4)
-
-        with col1:
-            st.metric("EPC Contractors Analyzed", epc_count)
-
-        with col2:
-            st.metric("Proposals with Cost Data", len(cost_proposals))
-
-        with col3:
-            if cost_range:
-                st.metric("Cost Spread", f"${cost_range:,.0f}")
-            else:
-                st.metric("Cost Spread", "N/A")
-
-        with col4:
-            tech_types = len(set([p.get('technology', {}).get('type', 'Unknown') for p in proposals]))
-            st.metric("Technology Types", tech_types)
+    with col3:
+        if st.button("📋 View Comparison"):
+            st.info("💡 Switch to the 'Comparison' tab to view side-by-side EPC analysis.")
 
 def show_chatbot(proposals):
     """Display AI chatbot for asking questions about proposals."""
@@ -908,8 +688,8 @@ def show_chatbot(proposals):
     with st.expander("💡 Example Questions"):
         st.write("- What are the main cost differences between the EPCs?")
         st.write("- Which EPC has the most comprehensive scope?")
-        st.write("- What assumptions does Mortenson make in their proposal?")
-        st.write("- What items are excluded from Blattner's proposal?")
+        st.write("- What assumptions does EPC Alpha make in their proposal?")
+        st.write("- What items are excluded from EPC Beta's proposal?")
         st.write("- Compare the equipment specifications across all proposals")
         st.write("- What are the payment terms and warranties offered?")
         st.write("- Which proposal has the fastest schedule?")
@@ -994,37 +774,53 @@ def show_scope_comparison(proposals):
         st.info(f"💡 This analysis uses {provider_name} with multi-chain reasoning. Analysis takes ~30-60 seconds and evaluates all proposals comprehensively.")
 
     with col2:
-        if st.button("🚀 Run AI Analysis", type="primary", use_container_width=True):
+        if st.button("🚀 Run Full AI Analysis", type="primary", use_container_width=True):
             import time as time_module
             try:
                 # Reset usage stats before analysis
                 st.session_state.gpt_extractor.reset_usage_stats()
                 start_time = time_module.time()
 
-                with st.status("Running AI Analysis...", expanded=True) as status:
-                    st.write("📋 Preparing scope data...")
+                with st.status("Running Full AI Analysis (Scope + Recommendation)...", expanded=True) as status:
+                    st.write("📋 Preparing proposal data...")
+                    st.write("⚙️ Phase 1: Running Scope & Recommendation Chain 1 in parallel...")
+                    st.write("⚙️ Phase 2: Running Chain 2s in parallel...")
+                    st.write("⚙️ Phase 3-4: Generating final assessments...")
 
-                    st.write("⚙️ Running parallel multi-chain analysis...")
-                    st.write("_(Chain 1 & 2 running in parallel, then Chain 3)_")
-
-                    analysis_result = st.session_state.gpt_extractor.analyze_scope_comprehensiveness(proposals, parallel=True)
+                    # Run combined analysis
+                    full_result = st.session_state.gpt_extractor.generate_full_analysis(proposals)
 
                     # Get final timing and usage
                     elapsed_time = time_module.time() - start_time
                     usage_stats = st.session_state.gpt_extractor.get_usage_stats()
 
-                    # Add timing and usage to results
-                    analysis_result['elapsed_time'] = elapsed_time
-                    analysis_result['usage_stats'] = {
-                        'input_tokens': usage_stats.input_tokens,
-                        'output_tokens': usage_stats.output_tokens,
-                        'total_tokens': usage_stats.total_tokens,
-                        'provider': st.session_state.gpt_extractor.provider_name
-                    }
+                    if full_result.get('error'):
+                        st.error(f"Error: {full_result['error']}")
+                    else:
+                        # Store scope analysis
+                        scope_result = full_result['scope_analysis']
+                        scope_result['elapsed_time'] = elapsed_time
+                        scope_result['usage_stats'] = {
+                            'input_tokens': usage_stats.input_tokens,
+                            'output_tokens': usage_stats.output_tokens,
+                            'total_tokens': usage_stats.total_tokens,
+                            'provider': st.session_state.gpt_extractor.provider_name
+                        }
+                        st.session_state.scope_ai_analysis = scope_result
 
-                    st.session_state.scope_ai_analysis = analysis_result
+                        # Store recommendation report
+                        st.session_state.generated_report = full_result['recommendation_report']
+                        st.session_state.report_timestamp = full_result['timestamp']
+                        st.session_state.report_usage = {
+                            'elapsed_time': elapsed_time,
+                            'input_tokens': usage_stats.input_tokens,
+                            'output_tokens': usage_stats.output_tokens,
+                            'total_tokens': usage_stats.total_tokens,
+                            'provider': st.session_state.gpt_extractor.provider_name,
+                            'used_scope_analysis': True
+                        }
 
-                    status.update(label=f"✅ Complete in {elapsed_time:.1f}s | {usage_stats.total_tokens:,} tokens", state="complete")
+                        status.update(label=f"✅ Complete in {elapsed_time:.1f}s | {usage_stats.total_tokens:,} tokens", state="complete")
 
                 st.rerun()
             except Exception as e:
@@ -1197,7 +993,7 @@ def show_database_query(proposals):
             st.write("- Show me all proposals under $500M")
             st.write("- Which EPCs have the lowest cost per watt?")
             st.write("- Find proposals with more than 10 exclusions")
-            st.write("- Show me Mortenson and Blattner proposals only")
+            st.write("- Show me EPC Alpha and EPC Beta proposals only")
             st.write("- What proposals have batteries included?")
             st.write("- List proposals by cost from lowest to highest")
 
@@ -2042,7 +1838,7 @@ def show_ai_analysis(proposals):
     st.divider()
 
     # Sub-tabs for different AI features
-    ai_tab1, ai_tab2, ai_tab3 = st.tabs(["🔍 Scope Analysis", "📝 Recommendation Report", "💬 Ask Questions"])
+    ai_tab1, ai_tab2, ai_tab3, ai_tab4 = st.tabs(["🔍 Scope Analysis", "📝 Recommendation Report", "💬 Ask Questions", "📄 Source Documents"])
 
     # Tab 1: Scope Comprehensiveness Analysis
     with ai_tab1:
@@ -2055,6 +1851,85 @@ def show_ai_analysis(proposals):
     # Tab 3: Chatbot Q&A
     with ai_tab3:
         show_chatbot(proposals)
+
+    # Tab 4: Source Documents (PDF viewer)
+    with ai_tab4:
+        show_source_documents(proposals)
+
+def show_source_documents(proposals):
+    """Display original PDF documents for verification."""
+    st.subheader("📄 Source Documents")
+
+    if not proposals:
+        st.warning("No proposals available")
+        return
+
+    st.write("View and download original proposal documents to verify extracted data.")
+
+    # Check which proposals have PDFs
+    proposals_with_pdfs = []
+    proposals_without_pdfs = []
+
+    for p in proposals:
+        pdf_path = p.get('metadata', {}).get('pdf_path')
+        epc_name = p.get('epc_contractor', {}).get('company_name', 'Unknown EPC')
+        filename = p.get('metadata', {}).get('filename', 'Unknown file')
+
+        if pdf_path and os.path.exists(pdf_path):
+            proposals_with_pdfs.append({
+                'epc': epc_name,
+                'filename': filename,
+                'path': pdf_path,
+                'proposal': p
+            })
+        else:
+            proposals_without_pdfs.append({
+                'epc': epc_name,
+                'filename': filename,
+                'proposal': p
+            })
+
+    if proposals_with_pdfs:
+        st.success(f"✅ {len(proposals_with_pdfs)} proposal(s) have source PDFs available")
+
+        for item in proposals_with_pdfs:
+            with st.expander(f"📄 {item['epc']} - {item['filename']}", expanded=False):
+                col1, col2 = st.columns([3, 1])
+
+                with col1:
+                    # Show key extracted data for verification
+                    p = item['proposal']
+                    costs = p.get('costs', {})
+                    capacity = p.get('capacity', {})
+
+                    st.write("**Extracted Data Summary:**")
+                    st.write(f"- Total Cost: ${costs.get('total_project_cost', 'N/A'):,.0f}" if costs.get('total_project_cost') else "- Total Cost: N/A")
+                    st.write(f"- DC Capacity: {capacity.get('dc_mw', 'N/A')} MW")
+                    st.write(f"- AC Capacity: {capacity.get('ac_mw', 'N/A')} MW")
+                    st.write(f"- Cost/Watt DC: ${costs.get('cost_per_watt_dc', 'N/A')}" if costs.get('cost_per_watt_dc') else "- Cost/Watt DC: N/A")
+
+                with col2:
+                    # Download button
+                    try:
+                        with open(item['path'], 'rb') as f:
+                            pdf_bytes = f.read()
+                        st.download_button(
+                            label="⬇️ Download PDF",
+                            data=pdf_bytes,
+                            file_name=item['filename'],
+                            mime="application/pdf",
+                            use_container_width=True
+                        )
+                    except Exception as e:
+                        st.error(f"Error loading PDF: {str(e)}")
+
+    if proposals_without_pdfs:
+        st.warning(f"⚠️ {len(proposals_without_pdfs)} proposal(s) do not have source PDFs stored")
+        with st.expander("Proposals without PDFs"):
+            for item in proposals_without_pdfs:
+                st.write(f"- {item['epc']} ({item['filename']})")
+            st.info("💡 Re-upload these proposals to store the source PDFs. New uploads automatically save PDFs for verification.")
+
 
 def show_database(proposals):
     """PostgreSQL database client interface."""

@@ -571,6 +571,74 @@ Return empty arrays [] if sections not found. No explanatory text, only JSON.
         except:
             return None
 
+    def generate_full_analysis(self, proposals_data: List[Dict]) -> Dict:
+        """
+        Generate BOTH scope analysis AND recommendation report in one efficient pass.
+        Runs scope and recommendation chains in parallel where possible.
+
+        Returns dict with both scope_analysis and recommendation_report.
+        """
+        if not proposals_data or len(proposals_data) < 2:
+            return {
+                "error": "Need at least 2 proposals for analysis",
+                "scope_analysis": None,
+                "recommendation_report": None
+            }
+
+        # Prepare data summaries
+        proposals_summary = self._prepare_proposals_summary(proposals_data)
+        scope_summary = self._prepare_scope_summary(proposals_data)
+
+        try:
+            # PHASE 1: Run all Chain 1s in parallel (scope + recommendation)
+            scope_chain1_task = lambda: self._chain1_initial_scope_analysis(scope_summary)
+            rec_chain1_task = lambda: self._chain1_initial_recommendation(proposals_summary, "")
+
+            phase1_results = AIClient.run_parallel([scope_chain1_task, rec_chain1_task], max_workers=2)
+            scope_chain1 = phase1_results[0]
+            rec_chain1 = phase1_results[1]
+
+            # PHASE 2: Run all Chain 2s in parallel
+            scope_chain2_task = lambda: self._chain2_significance_evaluation(scope_summary, scope_chain1)
+            rec_chain2_task = lambda: self._chain2_deep_evaluation(proposals_summary, "", rec_chain1)
+
+            phase2_results = AIClient.run_parallel([scope_chain2_task, rec_chain2_task], max_workers=2)
+            scope_chain2 = phase2_results[0]
+            rec_chain2 = phase2_results[1]
+
+            # PHASE 3: Run scope Chain 3 to get final scope assessment
+            scope_chain3 = self._chain3_self_critique(scope_summary, scope_chain1, scope_chain2)
+
+            # PHASE 4: Run recommendation Chain 3 WITH scope results
+            scope_context = f"\n\nSCOPE ANALYSIS RESULTS:\n{scope_chain3}"
+            rec_chain3 = self._chain3_final_recommendation(
+                proposals_summary, scope_context, rec_chain1, rec_chain2
+            )
+
+            # Build results
+            scope_analysis = {
+                "initial_analysis": scope_chain1,
+                "significance_evaluation": scope_chain2,
+                "final_assessment": scope_chain3,
+                "proposal_count": len(proposals_data),
+                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "provider": self.provider_name
+            }
+
+            return {
+                "scope_analysis": scope_analysis,
+                "recommendation_report": rec_chain3,
+                "provider": self.provider_name,
+                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            }
+
+        except Exception as e:
+            return {
+                "error": str(e),
+                "scope_analysis": None,
+                "recommendation_report": None
+            }
+
     def generate_epc_recommendation_report(self, proposals_data: List[Dict], scope_analysis: Dict = None, parallel: bool = True) -> str:
         """
         Generate a comprehensive EPC recommendation report using multi-chain reasoning.
