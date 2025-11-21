@@ -820,6 +820,21 @@ def show_scope_comparison(proposals):
                             'used_scope_analysis': True
                         }
 
+                        # Save report persistently
+                        from config import save_analysis_report
+                        project_name = list(unique_projects)[0] if unique_projects else "Unknown"
+                        epc_names = [p.get('epc_contractor', {}).get('company_name', 'Unknown') for p in proposals]
+                        report_to_save = {
+                            'project_name': project_name,
+                            'epc_names': epc_names,
+                            'scope_analysis': scope_result,
+                            'recommendation_report': full_result['recommendation_report'],
+                            'usage': st.session_state.report_usage
+                        }
+                        saved_id = save_analysis_report(report_to_save)
+                        if saved_id:
+                            st.toast(f"Report saved: {saved_id}", icon="💾")
+
                         status.update(label=f"✅ Complete in {elapsed_time:.1f}s | {usage_stats.total_tokens:,} tokens", state="complete")
 
                 st.rerun()
@@ -1838,7 +1853,7 @@ def show_ai_analysis(proposals):
     st.divider()
 
     # Sub-tabs for different AI features
-    ai_tab1, ai_tab2, ai_tab3 = st.tabs(["🔍 Scope Analysis", "📝 Recommendation Report", "💬 Ask Questions"])
+    ai_tab1, ai_tab2, ai_tab3, ai_tab4 = st.tabs(["🔍 Scope Analysis", "📝 Recommendation Report", "💬 Ask Questions", "📁 Saved Reports"])
 
     # Tab 1: Scope Comprehensiveness Analysis
     with ai_tab1:
@@ -1851,6 +1866,128 @@ def show_ai_analysis(proposals):
     # Tab 3: Chatbot Q&A
     with ai_tab3:
         show_chatbot(proposals)
+
+    # Tab 4: Saved Reports
+    with ai_tab4:
+        show_saved_reports()
+
+
+def show_saved_reports():
+    """Display and manage saved analysis reports."""
+    from config import load_analysis_reports, get_report_by_id, delete_report
+    from datetime import datetime
+
+    st.subheader("📁 Saved Analysis Reports")
+    st.caption("Previously generated scope analyses and recommendations are saved here for reference.")
+
+    reports = load_analysis_reports()
+
+    if not reports:
+        st.info("No saved reports yet. Run a Scope Analysis to generate and save a report.")
+        return
+
+    st.write(f"**{len(reports)} saved report(s)**")
+
+    # Report selector
+    report_options = []
+    for r in reports:
+        ts = r.get('timestamp', 'Unknown')
+        try:
+            dt = datetime.fromisoformat(ts)
+            ts_display = dt.strftime("%Y-%m-%d %H:%M")
+        except:
+            ts_display = ts[:16] if len(ts) > 16 else ts
+
+        project = r.get('project_name', 'Unknown Project')
+        epcs = r.get('epc_names', [])
+        epc_count = len(epcs) if epcs else 0
+        report_options.append(f"{ts_display} | {project} ({epc_count} EPCs)")
+
+    selected_idx = st.selectbox(
+        "Select a report to view",
+        options=range(len(report_options)),
+        format_func=lambda x: report_options[x],
+        key="saved_report_select"
+    )
+
+    if selected_idx is not None:
+        selected_report = reports[selected_idx]
+
+        # Report metadata
+        col_meta1, col_meta2, col_meta3 = st.columns(3)
+        with col_meta1:
+            ts = selected_report.get('timestamp', 'Unknown')
+            try:
+                dt = datetime.fromisoformat(ts)
+                st.metric("Generated", dt.strftime("%b %d, %Y at %H:%M"))
+            except:
+                st.metric("Generated", ts[:16])
+        with col_meta2:
+            st.metric("Project", selected_report.get('project_name', 'Unknown'))
+        with col_meta3:
+            usage = selected_report.get('usage', {})
+            st.metric("Tokens Used", f"{usage.get('total_tokens', 0):,}")
+
+        # EPCs included
+        epcs = selected_report.get('epc_names', [])
+        if epcs:
+            st.write(f"**EPCs analyzed:** {', '.join(epcs)}")
+
+        st.divider()
+
+        # Report content tabs
+        report_tab1, report_tab2 = st.tabs(["📋 Scope Analysis", "📝 Recommendation"])
+
+        with report_tab1:
+            scope = selected_report.get('scope_analysis', {})
+            if scope:
+                # Rankings
+                if scope.get('rankings'):
+                    st.markdown("### 🏆 EPC Rankings")
+                    st.markdown(scope['rankings'])
+
+                # Key Findings
+                if scope.get('key_findings'):
+                    st.markdown("### 🔍 Key Findings")
+                    st.markdown(scope['key_findings'])
+
+                # Risk Assessment
+                if scope.get('risk_assessment'):
+                    st.markdown("### ⚠️ Risk Assessment")
+                    st.markdown(scope['risk_assessment'])
+            else:
+                st.info("No scope analysis data in this report")
+
+        with report_tab2:
+            recommendation = selected_report.get('recommendation_report', '')
+            if recommendation:
+                st.markdown(recommendation)
+            else:
+                st.info("No recommendation report in this report")
+
+        # Actions
+        st.divider()
+        col_act1, col_act2, col_act3 = st.columns([1, 1, 2])
+
+        with col_act1:
+            # Load into current session
+            if st.button("📥 Load Report", help="Load this report into the current session"):
+                st.session_state.scope_ai_analysis = selected_report.get('scope_analysis')
+                st.session_state.generated_report = selected_report.get('recommendation_report')
+                st.session_state.report_usage = selected_report.get('usage', {})
+                st.success("Report loaded into current session!")
+                st.rerun()
+
+        with col_act2:
+            # Delete
+            if st.button("🗑️ Delete Report", type="secondary"):
+                report_id = selected_report.get('id')
+                if report_id and delete_report(report_id):
+                    st.success("Report deleted")
+                    st.rerun()
+                else:
+                    st.error("Could not delete report")
+
 
 def show_source_documents_compact(proposals):
     """Compact PDF document viewer for Database tab sidebar."""
