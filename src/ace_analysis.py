@@ -198,9 +198,9 @@ Risk = No if: standard practice, clearly defined"""
         for future in concurrent.futures.as_completed(futures):
             all_results.extend(future.result())
             completed_batches += 1
-            # Update progress from main thread (safe)
+            # Update progress from main thread (safe) - cap at total_items
             if progress_callback:
-                progress_callback(completed_batches * batch_size, total_items)
+                progress_callback(min(completed_batches * batch_size, total_items), total_items)
 
     # Apply results to dataframe
     df_copy = df.copy()
