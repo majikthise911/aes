@@ -2191,8 +2191,10 @@ def show_ace_analysis(proposals):
     """ACE Analysis tab - Auto-generate ACE log from proposals, edit, and create clarification logs."""
     from src.ace_analysis import (
         generate_ace_log_from_proposals, calculate_ace_summary, filter_for_clarification,
-        generate_clarification_log, export_to_excel, SCOPE_CATEGORIES, RISK_OPTIONS
+        generate_clarification_log, export_to_excel, assess_ace_items_with_ai,
+        SCOPE_CATEGORIES, RISK_OPTIONS
     )
+    from src.ai_provider import AIClient, provider_from_name, get_available_providers
 
     st.header("📋 ACE Analysis")
     st.caption("Assumptions, Clarifications & Exclusions extracted from uploaded proposals")
@@ -2217,6 +2219,14 @@ def show_ace_analysis(proposals):
     project_name = proposals[0].get('project_info', {}).get('project_name', 'Project')
     if 'ace_project_name' not in st.session_state:
         st.session_state.ace_project_name = project_name
+
+    # AI Provider selection
+    available_providers = get_available_providers()
+    if not available_providers:
+        available_providers = ["OpenAI (GPT-4o)"]  # Default
+
+    # Get current provider from session state or default
+    current_provider = st.session_state.get('ace_ai_provider', available_providers[0])
 
     # Two-column layout: sidebar summary + main content
     col_summary, col_main = st.columns([1, 3])
@@ -2279,16 +2289,60 @@ def show_ace_analysis(proposals):
                 st.caption(f"• {cat}: {count}")
 
     with col_main:
-        # Regenerate button
-        col_regen, col_info = st.columns([1, 2])
+        # AI Provider and action buttons
+        col_provider, col_ai_btn, col_regen = st.columns([2, 1, 1])
+
+        with col_provider:
+            selected_provider = st.selectbox(
+                "AI Provider",
+                options=available_providers,
+                index=available_providers.index(current_provider) if current_provider in available_providers else 0,
+                key="ace_provider_select",
+                help="Select AI model for risk assessment"
+            )
+            st.session_state.ace_ai_provider = selected_provider
+
+        with col_ai_btn:
+            # Check if AI assessment has been run
+            has_ai_assessment = st.session_state.ace_data['Risk?'].notna().any() and (st.session_state.ace_data['Risk?'] != '').any()
+            ai_btn_label = "🔄 Re-run AI Assessment" if has_ai_assessment else "🤖 Run AI Assessment"
+
+            if st.button(ai_btn_label, type="primary", help="AI will assess risk and add internal notes"):
+                with st.status(f"Running AI risk assessment with {selected_provider}...", expanded=True) as status:
+                    try:
+                        ai_provider = provider_from_name(selected_provider)
+                        ai_client = AIClient(ai_provider)
+
+                        total_items = len(st.session_state.ace_data)
+                        progress_bar = st.progress(0)
+                        status_text = st.empty()
+
+                        def update_progress(current, total):
+                            progress_bar.progress(current / total)
+                            status_text.text(f"Assessing items {current}/{total}...")
+
+                        st.session_state.ace_data = assess_ace_items_with_ai(
+                            st.session_state.ace_data,
+                            ai_client,
+                            progress_callback=update_progress
+                        )
+
+                        status.update(label=f"✅ AI assessment complete!", state="complete")
+                        st.success(f"Assessed {total_items} items with {selected_provider}")
+                        st.rerun()
+
+                    except Exception as e:
+                        status.update(label="❌ AI assessment failed", state="error")
+                        st.error(f"Error: {str(e)}")
+
         with col_regen:
-            if st.button("🔄 Regenerate ACE Log", help="Re-extract from proposals (will reset edits)"):
+            if st.button("🔄 Reset ACE Log", help="Re-extract from proposals (will reset all edits)"):
                 st.session_state.ace_data = generate_ace_log_from_proposals(proposals)
                 st.session_state.clarification_log = None
-                st.success(f"✅ Regenerated {len(st.session_state.ace_data)} ACE items")
+                st.success(f"✅ Reset {len(st.session_state.ace_data)} ACE items")
                 st.rerun()
-        with col_info:
-            st.info(f"📄 {len(st.session_state.ace_data)} items extracted from {len(proposals_with_scope)} proposal(s)")
+
+        st.info(f"📄 {len(st.session_state.ace_data)} items extracted from {len(proposals_with_scope)} proposal(s)")
 
         # Main content tabs
         tab_review, tab_clarification = st.tabs(["📝 ACE Review", "📄 Clarification Log"])

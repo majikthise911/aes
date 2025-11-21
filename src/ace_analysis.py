@@ -3,7 +3,8 @@ ACE Analysis module for processing ACE logs and generating clarification logs.
 Generates ACE logs from uploaded proposal scope data.
 """
 import pandas as pd
-from typing import Dict, List, Optional
+import json
+from typing import Dict, List, Optional, Callable
 from io import BytesIO
 
 
@@ -92,6 +93,109 @@ def categorize_scope_item(item_text: str) -> str:
         return 'General & Administrative'
     else:
         return 'Other'
+
+
+def assess_ace_items_with_ai(df: pd.DataFrame, ai_client, progress_callback: Callable = None) -> pd.DataFrame:
+    """
+    Use AI to assess risk and generate internal notes for ACE items.
+    Processes items in batches for efficiency.
+    """
+    if df.empty:
+        return df
+
+    # Process in batches of 10 items
+    batch_size = 10
+    total_items = len(df)
+    results = []
+
+    for i in range(0, total_items, batch_size):
+        batch = df.iloc[i:i+batch_size]
+        batch_items = []
+
+        for _, row in batch.iterrows():
+            batch_items.append({
+                'index': row.name,
+                'item': row['ACE Item'],
+                'type': row['Type'],
+                'scope': row['Scope'],
+                'epc': row['EPC']
+            })
+
+        # Build prompt for batch
+        items_text = "\n".join([
+            f"{idx+1}. [{item['type']}] {item['item']}"
+            for idx, item in enumerate(batch_items)
+        ])
+
+        prompt = f"""You are an expert solar/renewable energy project analyst reviewing EPC proposal scope items.
+
+For each item below, assess:
+1. RISK: Is this item a potential risk to the project owner (AES)? Answer: Yes, TBD (need more info), or No
+2. INTERNAL NOTE: Brief note (1-2 sentences) explaining your risk assessment and what AES should consider
+
+Items to assess:
+{items_text}
+
+Respond in JSON format:
+[
+  {{"index": 1, "risk": "Yes/TBD/No", "note": "Your assessment note"}},
+  ...
+]
+
+Risk Guidelines:
+- YES: Item clearly transfers risk/cost to owner, excludes important scope, or has ambiguous language that could be exploited
+- TBD: Item needs clarification or more context to assess properly
+- NO: Standard industry practice, reasonable assumption, or clearly defined with no hidden risk"""
+
+        try:
+            response = ai_client.chat_completion(
+                messages=[{"role": "user", "content": prompt}],
+                model_tier="fast",
+                temperature=0.2,
+                max_tokens=2000,
+                system_prompt="You are an expert EPC contract analyst. Respond only with valid JSON."
+            )
+
+            # Parse JSON response
+            # Clean up response - find JSON array
+            response_text = response.strip()
+            if response_text.startswith("```"):
+                response_text = response_text.split("```")[1]
+                if response_text.startswith("json"):
+                    response_text = response_text[4:]
+            response_text = response_text.strip()
+
+            assessments = json.loads(response_text)
+
+            for assessment in assessments:
+                idx = assessment.get('index', 0) - 1
+                if 0 <= idx < len(batch_items):
+                    results.append({
+                        'df_index': batch_items[idx]['index'],
+                        'risk': assessment.get('risk', 'TBD'),
+                        'note': assessment.get('note', '')
+                    })
+
+        except Exception as e:
+            # On error, mark batch as TBD
+            for item in batch_items:
+                results.append({
+                    'df_index': item['index'],
+                    'risk': 'TBD',
+                    'note': f'AI assessment pending - please review manually'
+                })
+
+        # Progress callback
+        if progress_callback:
+            progress_callback(min(i + batch_size, total_items), total_items)
+
+    # Apply results to dataframe
+    df_copy = df.copy()
+    for result in results:
+        df_copy.loc[result['df_index'], 'Risk?'] = result['risk']
+        df_copy.loc[result['df_index'], 'Internal Note'] = result['note']
+
+    return df_copy
 
 
 def get_risk_color(risk_value: str) -> str:
