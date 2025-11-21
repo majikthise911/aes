@@ -2446,6 +2446,25 @@ def show_ace_analysis(proposals):
 
             st.caption(f"Showing {len(filtered_df)} of {len(df)} items")
 
+            # Custom CSS to enable text wrapping in data editor
+            st.markdown("""
+            <style>
+            .stDataFrame [data-testid="stDataFrameResizable"] div[data-testid="column-header"],
+            .stDataFrame [data-testid="stDataFrameResizable"] div[data-testid="cell"] {
+                white-space: pre-wrap !important;
+                word-wrap: break-word !important;
+            }
+            div[data-testid="stDataEditor"] div[data-testid="data-grid-canvas"] {
+                max-height: none !important;
+            }
+            div[data-testid="stDataEditor"] [data-testid="data-grid-canvas"] div {
+                white-space: pre-wrap !important;
+                overflow-wrap: break-word !important;
+                line-height: 1.4 !important;
+            }
+            </style>
+            """, unsafe_allow_html=True)
+
             # Editable data editor
             edited_df = st.data_editor(
                 filtered_df,
